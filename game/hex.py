@@ -95,7 +95,7 @@ class HexBoard:
         Method for printing the board in a nice format.
         '''
         for i in range(self.BOARD_SIZE[0]):
-            print('  '*(self.BOARD_SIZE[0]-i-1), end='')
+            print('  '*i, end='')
             for j in range(self.BOARD_SIZE[1]):
                 print(self.BOARD[i][j], end=' ')
             print('')
