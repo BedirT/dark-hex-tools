@@ -9,7 +9,7 @@
 
 #  EMPTY BOARD SIZE OF BOARD_SIZE
 
-class HexBoard:
+class Hex:
     '''
     Global:
         valid_moves     - All the valid moves in the current board. Essentially
@@ -68,8 +68,6 @@ class HexBoard:
             print('Valid moves are:', self.valid_moves)
             return 0, 0, 'f', 0
         
-        # reward system: win +1 / loss -1
-        self.valid_moves.remove(action)
         if result == color:
             reward = 1
         elif result == '=':
@@ -95,7 +93,7 @@ class HexBoard:
         Method for printing the board in a nice format.
         '''
         for i in range(self.BOARD_SIZE[0]):
-            print('  '*i, end='')
+            print(' '*i, end='')
             for j in range(self.BOARD_SIZE[1]):
                 print(self.BOARD[i][j], end=' ')
             print('')
@@ -125,7 +123,7 @@ class HexBoard:
         '''
         Testing the connections for a given cell.
         '''
-        print('connections are', self.cell_connections(cellToCheck))
+        print('connections are', self.__cell_connections(cellToCheck))
 
     def __placeStone(self, cell, color):
         '''
@@ -143,6 +141,7 @@ class HexBoard:
             print('Invalid Action Attempted')
             return False
         self.BOARD[cell[0]][cell[1]] = color
+        self.valid_moves.remove(cell)
         return True
 
     def __cell_connections(self, cell):
@@ -163,8 +162,6 @@ class HexBoard:
         col = cell[1]
 
         positions = []
-        1, 1
-        3, 3
         if col + 1 < self.BOARD_SIZE[1]:
             positions.append([row, col + 1])
         if col - 1 >= 0:

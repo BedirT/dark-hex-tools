@@ -1,0 +1,137 @@
+%%%%%%%%%%%%%%%
+% This style of this thesis is based on the thesis proposal required to be submitted at the start of the Master's thesis project in the Artificial Intelligence program.
+% It has been updated with the new high-res banner for the Faculty of Science and Engineering, and includes, among other features, a contents page, an acknowledgements page, and appendices.
+
+% Author: Manvi Agarwal
+% Last modified: 15 December 2020
+%%%%%%%%%%%%%%%
+
+
+
+\documentclass[a4paper,12pt,twoside]{article}
+%\documentclass[a4paper,12pt]{article}
+\usepackage{comment}
+\usepackage{lipsum}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{wrapfig}    % inline figures
+\usepackage{enumitem}
+\usepackage{mwe}
+\usepackage{graphicx} % Use for Images
+\usepackage{here}     % Forced Figure Placement
+\usepackage{pslatex}	% Use PostScript Fonts
+\usepackage{fancyhdr} % Use headers
+\usepackage{float}
+% Here I keep the left and right margins equal. You can choose to have unequal margins if you want a two-sided book effect.
+\usepackage[
+	top    = 1.5cm,
+	bottom = 1.80cm,
+	left   = 2.00cm,
+	right  = 2.00cm,
+	includeheadfoot]{geometry} % Use similar margins to the Word Template
+\setlength{\parindent}{0pt}
+
+% Define the page styles
+\fancypagestyle{titlepage}{
+	\fancyhf{}
+	\fancyhead[C]{\includegraphics[width=0.7\textwidth]{images/banner.png}}
+	\renewcommand{\headrulewidth}{0pt}
+}
+
+%\fancypagestyle{body}{
+%	\fancyhf{}
+%  \fancyhead[C]{\includegraphics{images/banner.png}}
+%}
+
+\fancypagestyle{body}{
+    \fancyhf{}
+    \fancyhead[LE,RO]{\thepage}
+    \fancyhead[RE,LO]{Chapter \leftmark}
+}
+
+
+
+\fancypagestyle{contents}{
+    \fancyhf{}
+    \fancyhead[LE,RO]{\thepage}
+    \fancyhead[RE,LO]{\leftmark}
+}
+
+\fancypagestyle{appendix}{
+    \fancyhf{}
+    \fancyhead[LE,RO]{\thepage}
+    \fancyhead[RE,LO]{APPENDICES}
+}
+
+\fancypagestyle{acknowledgements}{
+    \fancyhf{}
+    \fancyhead[LE,RO]{\thepage}
+}
+
+
+\renewcommand{\headrulewidth}{1.5pt}
+\renewcommand{\arraystretch}{1.2}
+\usepackage{tabularx}
+
+% include bibliography in table of contents
+%\usepackage[nottoc,numbib]{tocbibind}
+\usepackage[nottoc]{tocbibind}
+\renewcommand{\refname}{Bibliography}
+
+% Stylistic note: I use `\\` at the end of every paragraph to give some space between two paragraphs because I think it looks neater. You can change the inter-paragraph spacing by using 
+% \setlength{\parskip}{1em} [Note that this may affect how the lines in the content pages are spaced]
+% instead of `\\` at the end of each paragraph
+% or you can leave it out altogether if you want no spacing between paragraphs
+
+% Begin the actual document
+\begin{document}
+\pagestyle{body}
+
+%\setlength{\headheight}{50pt}
+
+\title{
+    \vspace{2cm}{\bf{\Huge Dark-Hex: \\An Imperfect Information Game}}\\ % Change the title
+    \vspace{1cm}{\bf \large by M Bedir Tapkan}\\
+    \vspace{5cm}{\normalsize A thesis submitted in partial fulfillment \\of the requirements for the degree of \\\bf{Master's in Computing Science}}\\
+    \vspace{2cm}{\bf{\large University of Alberta}}\\
+    \vspace{5cm}\normalsize \today
+}
+\date{}
+
+\maketitle
+\thispagestyle{titlepage}
+
+\newpage
+
+\setlength{\headheight}{32pt}
+
+\thispagestyle{acknowledgements}    % remove this if you want `CONTENTS' to appear in the header of the first Contents page
+\include{chapters/contents}
+
+\include{chapters/acknowledgements}
+
+\include{chapters/abstract}
+
+\pagestyle{body}
+
+\include{chapters/introduction}
+
+\include{chapters/literature-review}
+
+\include{chapters/methods}
+
+\include{chapters/experiments}
+
+\include{chapters/results}
+
+\include{chapters/conclusion}
+\pagestyle{contents}
+
+\bibliographystyle{ieeetr}
+\bibliography{biblio}
+
+\include{chapters/appendix}
+
+\end{document}
