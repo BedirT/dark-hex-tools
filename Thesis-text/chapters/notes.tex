@@ -10,7 +10,7 @@ I will list the current versions discussed, and look into them in detail when de
 \subsubsection{Classic Dark Hex (Kriegspiel Hex)}
 Dark Hex is the extension for Kriegspiel Chess on Hex game. It turns the perfect information gameof Hex to its imperfect version. The rules of winning and losing still stands as Classic Hex. What changes is that the players are not exposed to oponents move information. So for a player the current state is his/her own stones on the board, the number of moves made by oponent, cells where there is no known stone, and opponent stones where the player tried to make a move and got rejected.\\
 
-\bf{Rejection:} If an opponent stone is on the position the player is trying to play on it will result in rejection. Rejection is not a terminal for the current player, meaning the player still needs to make a move, only this time he/she has information on one more of the opponents stones.\\
+{\bf Rejection:} If an opponent stone is on the position the player is trying to play on it will result in rejection. Rejection is not a terminal for the current player, meaning the player still needs to make a move, only this time he/she has information on one more of the opponents stones.\\
 
 {\bf Example Game:}
 TODO
@@ -23,12 +23,12 @@ Abrupt or short Dark Hex is also an interesting version of Dark Hex. The differe
 
 \subsubsection{Noisy Dark Hex - (?name)}
 
-Noise is an extension for the other versions of DH. The game follows exact version of Abrupt DH or Classical DH with the exception of noise.
+Noise is an extension for the other versions of DH. The game follows exact version of Abrupt DH or Classical DH with the exception of noise.\\
 
-{\bf Noise:} Knowledge of the attempted move is publicly available for both players instead of only the player who tried to make the move. i.e. Player 1 makes a move on a2, there is a Player 2 stone on a2 therefor collision or rejection happens (depending on the type of the game), Player 1 knows the exact location of where one of Player 2's stones are is, Player 2 hears 'a noise' meaning that he/she will have the information that Player 1 tried to make a move on one of his/her stones, but won't know which location that is.
+{\bf Noise:} Knowledge of the attempted move is publicly available for both players instead of only the player who tried to make the move. i.e. Player 1 makes a move on a2, there is a Player 2 stone on a2 therefor collision or rejection happens (depending on the type of the game), Player 1 knows the exact location of where one of Player 2's stones are is, Player 2 hears 'a noise' meaning that he/she will have the information that Player 1 tried to make a move on one of his/her stones, but won't know which location that is.\\
 
 \subsubsection{Flash Dark Hex - (?name)}
 
-Same as Noisy Dark Hex except that instead of a noise, flash takes place.
+Same as Noisy Dark Hex except that instead of a noise, flash takes place.\\
 
 {\bf Flash:} Instead of noise this time oponent gets a 'flash' for the collision or rejections. Flash's are shown on exact location where collision or rejections has happened.  
