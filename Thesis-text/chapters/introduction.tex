@@ -1,15 +1,28 @@
 \section{Introduction}
-\lipsum[14]
 
-\subsection{Research Questions}
+\textbf{Section structure is temporary}
 
-To summarize, this thesis focuses on the following problems:
+\subsection{Definitions (Maybe on background instead)}
 
-% I added line breaks in the middle of the items because I preferred to have some blank space on the right side of the research questions as well.
+\textbf{Game ---} Game in Game Theory is defined as a set of states which has a result dependent on the actions of the players. Since we are mostly concerned on computational needs and limitations; we will accept a slightly different definition instead. A \textbf{game} is a series of actions taken by two or more players which result in a different state for every action. This definition is more complete for our purposes, since we consider information state rather then individual board states. For example;
 
-\begin{itemize}[leftmargin=0.85in]
-    \item[Q1.  ] \lipsum[1][1] \\\lipsum[1][2]
-    \item[Q2.  ] \lipsum[1][1] \\\lipsum[1][2]
-\end{itemize}
+\vspace{12px}
+\centerline{player2 =
+$\left\{
+\begin{tabular}{@{}l@{}}
+    . \hspace{3px} .\\
+    \hspace{5px} . \hspace{1px} W
+\end{tabular}
+\right\}\neq
+\left\{
+\begin{tabular}{@{}l@{}}
+    B \hspace{1px} .\\
+    \hspace{5px} . \hspace{1px} W
+\end{tabular}
+\right\}$}
 
-\subsection{Thesis Outline}
+\vspace{12px}
+Here player2(W)'s information state changes depending if the move tried hits a black stone prior to a legal move or not.
+
+\vspace{14px}
+\textbf{Strategy ---} An action plan for a player which includes an answer for every possible opponent move or game state.
