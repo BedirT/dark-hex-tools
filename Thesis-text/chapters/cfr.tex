@@ -1,0 +1,49 @@
+\Section~\ref{sec:cfr}{Counterfactual Regret Minimization}
+
+In this section, we will describe the Counterfactual Regret Minimization algorithm.
+We will first start with terminology and definitions, continue with the regret in a simple non-sequential game of Rock Paper Scissors. We then proceed and explain
+the algorithm in its pure (vanilla) form before we go into variants such as 
+MCCFR, RCFR, Deep CFR, and so on. We will be using the earlier definitions from
+extensive form games.
+
+\subsection{What is Regret and Regret Minimization} % (fold)
+\label{sub:regret}
+Consider yourself making an important decision; you will either study for your exam tomorrow
+or go out with your friends who seem to be eager to hang out with you. Here
+we could make a decision based on what we think is the best for us, and in the end, 
+get a reward depending on our choice. Here we can intuitively think about what the regret will be. If we go out with friends, let's call it event $f$, we will get a reward $r_f$
+and otherwise, if we study, let's call it event $s$, we get a reward $r_s$. Regret
+will be the reward we got from the action chosen minus the reward we could get if we
+have chosen the other action. In our case it will be -if we went out- $R = r_s - r_f$.
+Simply how much do we regret not choosing to go to the other event? 
+
+Now let's add a third option, going home and watching a movie and call it $m$.
+Now how do we calculate regret? The cumulative regret will follow from the first
+part, and we sum the regrets we have from all simultaneous choices we 
+didn't make;
+
+$$R= \sum_{i\in E}{r_f-r_i}$$
+
+where $E$ is the number of events we have and $r_f$ is the event we chose. 
+
+The same logic goes for regret in games, every time we make a decision and take an action
+we prioritize an action over the others, which will let us calculate the cumulative regret,
+we then can use this regret to optimize our actions if that situation was to occur again.
+
+\subsubsection{A Better Strategy} % (fold)
+\label{ssub:betterStrategy}
+We can use the notion of regret and self-simulated play to make our actions better in future states
+of the game. We will do this by minimizing expected regret in the game over time.
+Here we will consider the normal form zero-sum two-player simultaneous-move game of Rock-Paper-Scissors (RPS)
+because of its simplicity and being non-sequential. This simple method will give us the 
+Nash equilibrium if we run enough iterations.
+
+The RPS game is a simple three action game, each action has a counteraction, and an action it counters.
+Rock beats Scissors, Scissors beats Paper, and Paper beats Rock. The players choose an action
+simultaneously. Player who wins the round gets a reward of $+1$ while the other player gets $-1$.
+
+% insert regret matching and minimizing
+
+% subsubsection  (end)
+
+% subsection  (end)
