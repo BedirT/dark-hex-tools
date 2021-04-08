@@ -134,3 +134,6 @@ dmypy.json
 *.aux
 *.log
 *.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
