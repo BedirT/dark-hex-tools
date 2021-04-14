@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from game.Hex import Hex
+from game.hex import Hex
 
 class DarkHex(Hex):
 
@@ -40,12 +40,47 @@ class DarkHex(Hex):
         '''
         Method for printing the players visible board in a nice format.
         '''
-
         for i in range(self.BOARD_SIZE[0]):
             print(' '*i, end='')
             for j in range(self.BOARD_SIZE[1]):
                 print(self.BOARDS[player][i][j], end=' ')
             print('')
+
+    def step(self, color, action):
+        '''
+        Classic method to take a step, or make a move in the game. (Playing a stone
+        on the board)
+
+        args:
+            color   - The color of the stone for the move being made.
+            action  - The board position that the stone will be tried to place on.
+
+        returns:
+            Format >> [BOARD, done, result, reward]
+
+            BOARD   - The current board position, state.
+            done    - The truth value for if the game is over or not.
+            result  - The winner of the game. If there is no winner yet (tie) returns
+                    '=', otherwise returns the color that wins. The result returns 'f'
+                    if the input given is invalid (If the move specified is illegal,
+                    etc.).
+            reward  - For the given player (color) if the current result is win the
+                    reward is 1, if lose reward is -1 and 0 if it's a tie.
+        '''
+        if self.__placeStone(action, color): 
+            result = self.check_game_status()
+        else:
+            print('Valid moves are:', self.valid_moves)
+            return 0, 0, 'f', 0
+        
+        if result == color:
+            reward = 1
+        elif result == '=':
+            reward = 0
+        else:
+            reward = -1
+        
+        return self.BOARD, self.done, result, reward
 
     def __placeStone(self, cell, color):
         '''
