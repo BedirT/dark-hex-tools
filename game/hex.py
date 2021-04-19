@@ -33,7 +33,7 @@ class Hex:
         self.BOARD_SIZE = BOARD_SIZE
 
         if BOARD is None:
-            self.BOARD = [['.' for __ in range(self.BOARD_SIZE[0])] for _ in range(self.BOARD_SIZE[1])]
+            self.BOARD = [['.' for __ in range(self.BOARD_SIZE[1])] for _ in range(self.BOARD_SIZE[0])]
         else:
             self.BOARD = BOARD
             self.BOARD_SIZE = [len(self.BOARD), len(self.BOARD[0])]
@@ -188,16 +188,17 @@ class Hex:
             'W'/'B'/'=' - winner is white/black or its a tie ('=')
         '''
         # checking for white
-        self.CHECK_BOARD = [[False for _ in range(self.BOARD_SIZE[0])] for _ in range(self.BOARD_SIZE[1])] 
+        self.CHECK_BOARD = [[False for _ in range(self.BOARD_SIZE[1])] for _ in range(self.BOARD_SIZE[0])] 
         for i in range(self.BOARD_SIZE[0]):
             if self.BOARD[i][0] == 'W':
                 self.CHECK_BOARD[i][0] = True
                 self.__check_connections(self.__cell_connections([i, 0]), 'W')
+                # print(self.CHECK_BOARD)
                 if self.done:
                     self.done = False
                     return 'W'
         # checking for black
-        self.CHECK_BOARD = [[False for _ in range(self.BOARD_SIZE[0])] for _ in range(self.BOARD_SIZE[1])] 
+        self.CHECK_BOARD = [[False for _ in range(self.BOARD_SIZE[1])] for _ in range(self.BOARD_SIZE[0])] 
         for i in range(self.BOARD_SIZE[1]):
             if self.BOARD[0][i] == 'B':
                 self.CHECK_BOARD[0][i] = True
