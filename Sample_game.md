@@ -1,5 +1,7 @@
 ## Sample Game for test_DarkHex.py
 
+Run ```python3 test_darkHex.py``` is all that is necessary.
+
 Here I will be giving a short example for test_darkHex.py game. We
 are using fixed-policy agent as the opponent for the player.
 
