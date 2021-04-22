@@ -70,6 +70,10 @@ might exploit our selections, so we do not want to be predictable. Here we have 
 to help us overcome this issue.
 
 \textbf{Regret Matching:} Choosing actions randomly according to the positive regret distribution.
+Positive regrets shows us the relative loss for not choosing an action. Therefor we use regret matching
+and choose the next action proportional to the relative regret, for each action that will be the regret
+over their sum. For example for picking scissors when opponent picked rock our relative regrets will be 
+$0, \frac{1}{3}, \frac{2}{3}$ for scissors, rock and paper respectively. 
 
 % subsubsection  (end)
 
