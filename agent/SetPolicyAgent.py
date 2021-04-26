@@ -34,6 +34,10 @@ class PolicyPerRound:
         for i,ch in enumerate(self.children):
             if any(x in self._policy_elements(ch.policy) for x in self._occupied_cells(state)):
                 continue
+            elif self.children_prob[i] == -1:
+                # prioritize and change the prob
+                self.children_prob[i] = 0
+                return ch
             else:
                 valid.append(ch)
                 valid_prob.append(self.children_prob[i])
@@ -87,7 +91,7 @@ class FixedPolicyAgent_wTree(Agent):
         x = PolicyPerRound([0, 0, 0, .5,     0, 0, 0, .5,     0, 0, 0, 0])
         x = PolicyPerRound([0, 0, 0, 0,     0, 0, 1, 0,     0, 0, 0, 0],    children=[x, x0])
 
-        x = PolicyPerRound([0, 0, 0, 0,     .5, 0, 0, 0,    .5, 0, 0, 0],   children=[x, y1, z1], children_prob=[0, 0.5, 0.5])
+        x = PolicyPerRound([0, 0, 0, 0,     .5, 0, 0, 0,    .5, 0, 0, 0],   children=[x, y1, z1], children_prob=[-1, 0.5, 0.5])
         xx = PolicyPerRound([0, 0, 0, 0,     0, 1, 0, 0,     0, 0, 0, 0],    children=[x])
 
         # ISO 2

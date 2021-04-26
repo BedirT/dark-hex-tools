@@ -18,12 +18,18 @@ while game.check_game_status() == '=':
             action = actor1.step(observation=game.BOARDS['W'], success=s)
             board, done, result, reward = game.step('W', action)
             s = False
-        # game.printBoard_for_player('W')
+        game.printBoard_for_player('W')
     else:
         result = 'f'
         while result == 'f':
-            action = list(map(int, (input('x y: ').split(' '))))
-            board, done, result, reward = game.step('B', action)
+            try:
+                action = list(map(int, (input('x y: ').strip().split(' '))))
+                board, done, result, reward = game.step('B', action[::-1])
+            except KeyboardInterrupt:
+                exit()
+            # except:
+            #     print("Please enter a valid input, the format should be: int int")
+            #     continue
         game.printBoard_for_player('B')
     print()
     # game.printBoard()
