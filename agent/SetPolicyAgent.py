@@ -108,7 +108,7 @@ class FixedPolicyAgent_wTree(Agent):
         x  = PolicyPerRound([0, 0, 0, 0,       .5, 0, 0, 0,    .5, 0, 0, 0])
         x  = PolicyPerRound([0, 0, 0, 0,       0, 1, 0, 0,     0, 0, 0, 0],    children=[x, x0])
 
-        x = PolicyPerRound([0, 0, 0, .5,    0, 0, 0, .5,    0, 0, 0, 0],   children=[x, y1, z1], children_prob=[0, 0.5, 0.5])
+        x = PolicyPerRound([0, 0, 0, .5,    0, 0, 0, .5,    0, 0, 0, 0],   children=[x, y1, z1], children_prob=[-1, 0.5, 0.5])
         x = PolicyPerRound([0, 0, 0, 0,     0, 0, 1, 0,     0, 0, 0, 0],    children=[x])
         root = PolicyPerRound(policy=[], children=[x, xx], children_prob=[.5, .5])
 

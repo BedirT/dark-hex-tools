@@ -32,6 +32,10 @@ class Hex:
         self.num_cols = BOARD_SIZE[1]
         self.num_cells = self.num_rows * self.num_cols
 
+        # to print game as a history
+        self.game_history = ['.'] * self.num_cells
+        self.cur_move_num = 0
+
         if BOARD:
             self.BOARD = BOARD
             # add check board_size
@@ -98,10 +102,16 @@ class Hex:
         if not self.verbose:
             print("Verbose is off, output is not shown.")
             return
+        print('  ' + '{0: <3}'.format('B') * self.num_cols)
+        print(' ' + '-' * (self.num_cols * 3 +1))
         for cell in range(self.num_cells):
-            print(self.BOARD[cell], end=' ') 
+            if cell % self.num_cols == 0: # first col
+                print('W\ ', end= '')
+            print('{0: <3}'.format(self.game_history[cell]), end='') 
             if cell % self.num_cols == self.num_cols-1: # last col
-                print('\n' + (' ' * (cell//self.num_cols)), end = ' ')
+                print('\W\n' + (' ' * (cell//self.num_cols)), end = ' ')
+        print('  ' + '-' * (self.num_cols * 3 +1))        
+        print(' ' * (self.num_rows+4) + '{0: <3}'.format('B') * self.num_cols)
 
     def __checkEdge(self, color, node):
         '''
