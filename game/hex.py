@@ -20,7 +20,8 @@ class Hex:
     BOARD_SIZE      - Size of the board
     '''
 
-    def __init__(self, BOARD_SIZE=[3, 3], BOARD=None, verbose=True):
+    def __init__(self, BOARD_SIZE=[3, 3], BOARD=None, 
+                 verbose=True, legality_check=False):
         '''
         Initializing a board. 
 
@@ -46,6 +47,8 @@ class Hex:
             self.valid_moves = list(range(self.num_cells))
         self.done = False
         self.verbose = verbose
+
+        self.legality_check = legality_check
  
     def step(self, color, action):
         '''
@@ -209,10 +212,16 @@ class Hex:
         the winner, or '=' if there is no winner.
 
         returns:
-            format >> 'W'/'B'/'='
+            format >> 'W'/'B'/'='/'i'
 
             'W'/'B'/'=' - winner is white/black or its a tie ('=')
+            'i'         - illegal game position
         '''
+        # Check for legality
+        if self.legality_check:
+            if not self.check_legal():
+                return 'i'
+
         # checking for white
         self.CHECK_BOARD = [False for _ in range(self.num_cells)] 
         for i in range(self.num_rows):
@@ -249,3 +258,27 @@ class Hex:
                     return
                 self.CHECK_BOARD[c] = True
                 self.__check_connections(self.__cell_connections(c), color)
+
+    def check_legal(self):
+        # number of the stones are illegal
+        bNum = self.BOARD.count('B')
+        wNum = self.BOARD.count('W')
+        if abs(bNum - wNum) > 1:
+            return False
+        
+        # # white wins with removing any white stone
+        # for c in range(len(self.BOARD)):
+        #     temp = self.BOARD[c]
+        #     self.BOARD[c] = '.'; self.legality_check = False
+        #     res = self.game_status()
+        #     self.BOARD[c] = temp; self.legality_check = True
+        #     if res == 'W':
+        #         return False
+
+        return True
+            
+        
+
+        
+
+        
