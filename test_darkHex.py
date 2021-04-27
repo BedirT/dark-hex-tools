@@ -2,6 +2,12 @@ from typing import Set
 from game.darkHex import DarkHex
 from agent.RandomAgent import RandomAgent
 from agent.SetPolicyAgent import FixedPolicyAgent_wTree
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--verbose_white", "-vw", action="store_true", 
+                    help="Turn on outputs for white player.", default=False)
+args = parser.parse_args()
 
 game = DarkHex(BOARD_SIZE=[3,4])
 done = False
@@ -26,12 +32,14 @@ while not done:
     s = True
     if i % 2 == 0:
         result = 'f'
-        game.verbose = False
+        if not args.verbose_white:
+            game.verbose = False
         while result == 'f':
             action = actor1.step(observation=game.BOARDS['W'], success=s)
             board, done, result, reward = game.step('W', action)
             s = False
-        # game.print_information_set('W')
+        if args.verbose_white:    
+            game.print_information_set('W')
     else:
         result = 'f'
         game.verbose = True
