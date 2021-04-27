@@ -128,8 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.DS_Store
-
 # Latex ignores
 *.aux
 *.log
@@ -137,3 +135,7 @@ dmypy.json
 *.synctex.gz
 *.fdb_latexmk
 *.fls
+
+# System
+.DS_Store
+.vscode

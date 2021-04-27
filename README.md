@@ -10,4 +10,6 @@ implemented here.
 
 - [What is Hex](https://en.wikipedia.org/wiki/Hex_(board_game))
 - [Dark-Hex Open Spiel Implementation](https://github.com/deepmind/open_spiel/blob/master/open_spiel/games/dark_hex.h)
+
 - [Thesis Write-up](Thesis-text/main.pdf)
+- [Sample Game](Sample_game.md)
