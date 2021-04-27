@@ -4,14 +4,14 @@ from game.hex import Hex
 
 class DarkHex(Hex):
 
-    def __init__(self, BOARD_SIZE=[3, 3]):
+    def __init__(self, BOARD_SIZE=[3, 3], verbose=True):
         '''
         Initializing a board. 
 
         args:
             BOARD_SIZE  - Size of the board, initially set to 3 by 3. [num_R, num_C]
         '''
-        super().__init__(BOARD_SIZE=BOARD_SIZE)
+        super().__init__(BOARD_SIZE=BOARD_SIZE, verbose=verbose)
 
         self.rev_color = {'W': 'B', 'B': 'W'}
 
@@ -27,24 +27,27 @@ class DarkHex(Hex):
         args:
             action    - The position to empty. In the format [row, column]
         '''
-        self.BOARD[action[0]][action[1]] = '.'
+        self.BOARD[action] = '.'
         self.valid_moves.append(action)
 
-        self.BOARDS['B'][action[0]][action[1]] = '.'
+        self.BOARDS['B'][action] = '.'
         self.valid_moves_colors['B'].append(action)
 
-        self.BOARDS['W'][action[0]][action[1]] = '.'
+        self.BOARDS['W'][action] = '.'
         self.valid_moves_colors['W'].append(action)
 
     def printBoard_for_player(self, player):
         '''
         Method for printing the players visible board in a nice format.
         '''
-        for i in range(self.BOARD_SIZE[0]):
-            print(' '*i, end='')
-            for j in range(self.BOARD_SIZE[1]):
-                print(self.BOARDS[player][i][j], end=' ')
-            print('')
+        if not self.verbose:
+            print("Verbose is off, output is not shown.")
+            return
+        for cell in range(self.num_cells):
+            print(self.BOARDS[player][cell], end=' ') 
+            if cell % self.num_cols == self.num_cols-1: # last col
+                print('\n' + (' ' * (cell//self.num_cols)), end = ' ')
+        print()
 
     def step(self, color, action):
         '''
@@ -68,9 +71,8 @@ class DarkHex(Hex):
                     reward is 1, if lose reward is -1 and 0 if it's a tie.
         '''
         if self.__placeStone(action, color): 
-            result = self.check_game_status()
+            result = self.game_status()
         else:
-            print('Valid moves are:', self.valid_moves)
             return 0, 0, 'f', 0
         
         if result == color:
@@ -91,21 +93,26 @@ class DarkHex(Hex):
 
         args:
             cell    - The location on the board to place the stone.
-                    In the format [row, column]
+                      int format
             color   - The color of the stone.
         
         returns:
             True if the action was valid, and false otherwise.
         '''
-        if self.BOARDS[color][cell[0]][cell[1]] != '.':
-            print('Invalid Move.')
+        if self.BOARDS[color][cell] != '.':
+            if self.verbose:
+                print('Invalid Move.')
+                print('Valid moves are:', self.valid_moves_colors[color])
             return False
-        if self.BOARD[cell[0]][cell[1]] != '.':
-            print('This cell is taken.')
-            self.BOARDS[color][cell[0]][cell[1]] = self.rev_color[color]
+        if self.BOARD[cell] != '.':
+            self.BOARDS[color][cell] = self.rev_color[color]
+            self.valid_moves_colors[color].remove(cell)
+            if self.verbose:
+                print('This cell is taken.')
+                print('Valid moves are here:', self.valid_moves_colors[color])
             return False
-        self.BOARD[cell[0]][cell[1]] = color
+        self.BOARD[cell] = color
         self.valid_moves.remove(cell)
-        self.BOARDS[color][cell[0]][cell[1]] = color
+        self.BOARDS[color][cell] = color
         self.valid_moves_colors[color].remove(cell)
         return True

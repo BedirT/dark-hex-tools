@@ -191,9 +191,8 @@ class FixedPolicyAgent(Agent):
 
     def _pos_moves(self):
         moves = []
-        for i in range(self.board_size[0]):
-            for j in range(self.board_size[1]):
-                moves.append([i, j])
+        for i in range(self.board_size[0] * self.board_size[1]):
+            moves.append(i)
         return moves
 
     def _get_valid_games(self):
