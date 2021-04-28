@@ -21,7 +21,9 @@ class Hex:
     '''
 
     def __init__(self, BOARD_SIZE=[3, 3], BOARD=None, 
-                 verbose=True, legality_check=False):
+                 verbose=True, legality_check=False,
+                 b_early_w=False, w_early_w=False,
+                 partial_pos=False):
         '''
         Initializing a board. 
 
@@ -49,6 +51,9 @@ class Hex:
         self.verbose = verbose
 
         self.legality_check = legality_check
+        self.b_early_w = b_early_w
+        self.w_early_w = w_early_w
+        self.partial_pos = partial_pos
  
     def step(self, color, action):
         '''
@@ -219,7 +224,9 @@ class Hex:
         '''
         # Check for legality
         if self.legality_check:
-            if not self.check_legal():
+            if self.partial_pos and self.check_legal_partial():
+                return 'i'
+            elif not self.check_legal():
                 return 'i'
 
         # checking for white
@@ -263,21 +270,40 @@ class Hex:
         # number of the stones are illegal
         bNum = self.BOARD.count('B')
         wNum = self.BOARD.count('W')
-        if abs(bNum - wNum) > 1:
+        if bNum - wNum > 1 and wNum > bNum:
             return False
         
-        # # white wins with removing any white stone
-        # for c in range(len(self.BOARD)):
-        #     temp = self.BOARD[c]
-        #     self.BOARD[c] = '.'; self.legality_check = False
-        #     res = self.game_status()
-        #     self.BOARD[c] = temp; self.legality_check = True
-        #     if res == 'W':
-        #         return False
+        # white wins with removing a white stone
+        if self.w_early_w and self.check_early_win('W'):
+            return False
+        # black wins with removing a black stone
+        if self.b_early_w and self.check_early_win('B'):
+            return False
+
+        return True
+
+    def check_legal_partial(self):
+        # number of the stones are illegal
+        bNum = self.BOARD.count('B')
+        wNum = self.BOARD.count('W')
+        
+        # white wins with removing a white stone
+        if self.w_early_w and self.check_early_win('W'):
+            return False
+        # black wins with removing a black stone
+        if self.b_early_w and self.check_early_win('B'):
+            return False
 
         return True
             
-        
+    def check_early_win(self, color):
+        for c in range(len(self.BOARD)):
+            temp = self.BOARD[c]
+            self.BOARD[c] = '.'; self.legality_check = False
+            res = self.game_status()
+            self.BOARD[c] = temp; self.legality_check = True
+            if res == color:
+                return True
 
         
 
