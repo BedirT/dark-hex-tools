@@ -6,160 +6,138 @@
 
 # PONE (Probability One)
 # Finding prob one winning states up to given depth (bottom up)
-import numpy as np
-from itertools import combinations, combinations_with_replacement, permutations, product
-from game.darkHex import DarkHex
+from itertools import combinations, permutations
 from game.hex import Hex
 import copy 
+import pickle
 
 from tqdm import tqdm
 
 class PONE:
-    def __init__(self, board_size, color):
+    def __init__(self, board_size):
         self.num_rows = board_size[0]
         self.num_cols = board_size[1]
         self.num_cells = self.num_rows * self.num_cols
 
-        self.color = color
-        self.opp_color = 'B' if color == 'W' else 'W'
+        self.color = 'B' # manually set
+        self.opp_color = 'B' if self.color == 'W' else 'W'
 
-        self.permutations = self.all_permutations()
-
-        self.positions = {}
-        self.partial_positions = [{} for _ in range(self.num_cells)]
-        
+        self.state_results = {}
+        self.prob1_wins = []
         self.find_positions()
-        self.find_partial_positions()
-
-        print(self.ryan_alg(['.', '.', '.', 
-                                '.', 'B', '.', 
-                                    'B', '.', '.'], 2))
         
-    def ryan_alg(self, state, h):
+    def ryan_alg(self, state, e, h):
         game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], BOARD=state)
         vm = game.valid_moves
 
-        w = self.partial_positions[h][tuple(state)]
-        # print(state, w, h)
-        if w == self.color:
+        try:
+            status = self.state_results[(*state, e, h)]
+        except:
+            print((*state, e, h))
+            print(self.state_results)
+            exit()
+        print(e, h, state)
+        if status == self.color:
+            print('here')
             return True
-        elif not w == self.opp_color:
+        elif status == self.opp_color:
+            print('here2')
+            return False 
+        else: # status == '='
+            print('here3')
             if h == 0:
+                print('here4')
                 for x in vm:
+                    print('here5')
                     n_state = self.update_state(state, x, self.color)
-                    if n_state and self.ryan_alg(n_state, h+1):
+                    if (*n_state, e, h) in self.state_results \
+                        and self.ryan_alg(n_state, e, h+1):
                         return True
             elif h > 0:
+                print('here6')
                 for y in vm:
+                    print('here7')
                     n_state_W = self.update_state(state, y, self.opp_color)
                     n_state_B = self.update_state(state, y, self.color)
                     if n_state_W and n_state_B and \
-                       self.ryan_alg(n_state_W, h-1) and \
-                       self.ryan_alg(n_state_B, h+1):
+                       self.ryan_alg(n_state_W, e, h-1) and \
+                       self.ryan_alg(n_state_B, e, h+1):
                         return True
         return False
     
     def update_state(self, state, add, color):
-        new_state = copy.deepcopy(state)
+        new_state = list(copy.deepcopy(state))
         new_state[add] = color
-        if self.positions[tuple(new_state)] == 'i':
-            return False
         return new_state
 
     def find_positions(self):
-        '''
-        For each position decides if;
-            - White win
-            - Black win
-            - Illegal
-        Returns ?
-        '''
-        for e, positions in enumerate(self.permutations):
-            for pos in tqdm(positions):
-                res = self.check_legal_pos(pos, e)
-                if (self.num_cells - e) % 2 == 0:
-                    if res not in 'Bi':
-                        self.positions[pos] = res
-                else:
-                    if res not in 'Wi':
-                        self.positions[pos] = res
+        for e in range(self.num_cells): # empty cells
+            for h in range(self.num_cells//2): # hidden cells
+                states = self.all_states(e, h)
+                for state in tqdm(states):
+                    res = self.is_legal(state, e, h)
+                    if res:
+                        self.state_results[(*state, e, h)] = res
+                        print((*state, e, h))
+                        if self.ryan_alg(state, e, h):
+                            self.prob1_wins.append((state, e, h))
 
-    def find_partial_positions(self):
-        # # create new positions
-        # for h in range(self.num_cells//2):
-        #     # max number of hidden cells will be num_cells//2
-        for pos in tqdm(self.positions):
-            e = pos.count('.')
-            indexes_w = [i for i, x in enumerate(pos) if x == 'W']
-            for h in range(self.num_cells//2):
-                # get all possible indexes for h (white to remove)
-                # iterate through all
-                to_rem = combinations(indexes_w, h)
-                for tr in to_rem:
-                    p = [x if i not in tr else '.' for i, x in enumerate(pos)]
-                    game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], 
-                                BOARD=p, legality_check=True,
-                                partial_pos=True)
-                    res = game.game_status()
-                    info = self.information_sets(p, h)
-                    if (self.num_cells - e) % 2 == 0:
-                        # k = 2n
-                        if res not in 'Bi' and not info:
-                            self.partial_positions[h][p] = res
-                    else:
-                        # k = 2n + 1
-                        if res not in 'Wi' and not info:
-                            self.partial_positions[h][p] = res
+    def is_legal(self, state, e, h):
+        # Check if the given state is legal
+        # if so is it B winning or W winning
+        # play a game
+        game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], 
+                                BOARD=list(state), legality_check=True,
+                                h = h)
+        info_sets = True
+        if h > 0:
+            # if partial position, check info sets
+            info_sets = self.information_sets(state, e, h)
+        # Check if the state has odd or even number of
+        # empty cells.
+        if (self.num_cells - e) % 2 == 0:
+            # k = 2n
+            game.w_early_w = True # check for early White win set
+            if game.game_status() not in 'Bi' and info_sets:
+                return game.game_status()
+        else:
+            # k = 2n + 1
+            game.b_early_w = True # check for early Black win set
+            if game.game_status() not in 'Wi' and info_sets:
+                return game.game_status()
 
-    def information_sets(self, pos, h):
+        return False
+
+    def information_sets(self, pos, e, h):
         '''
         Do we not need all info-sets?
         According to algo only finding that there is one 
         exists is enough?
         '''
-        info_set = []
         indexes_empty = [i for i, x in enumerate(pos) if x == '.']
         comb = combinations(indexes_empty, h)
         for c in comb:
             # place the stones on chosen indexes
-            p = [x if i not in c else 'W' for i, x in enumerate(pos)]
+            p = [x if i not in c else 'W' for i, x in enumerate(pos)] + [e, 0]
             # check if legal
-            res = self.check_legal_pos(p, h)
-            if (self.num_cells - h) % 2 == 0:
-                if res not in 'Bi':
-                    return True
-                    # info_set.append(p)
-            else:
-                if res not in 'Wi':
-                    return True
-                    info_set.append(p)
+            if tuple(p) in self.state_results:
+                # key exists, therefore legal
+                return True
         return False
 
-    def check_legal_pos(self, pos, h):
-        if (self.num_cells - h) % 2 == 0:
-            # k = 2n
-            game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], 
-                       BOARD=list(pos), legality_check=True,
-                       b_early_w=False, w_early_w=True)
-            res = game.game_status()
-            return res
-        else:
-            # k = 2n + 1
-            game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], 
-                       BOARD=list(pos), legality_check=True,
-                       b_early_w=True, w_early_w=False)
-            res = game.game_status()
-            return res
-
-    def all_permutations(self):
+    def all_states(self, e, h):
         '''
         Returns all the board states possible
         '''
-        ls_w_num_h = [[] for _ in range(self.num_cells + 1)] 
-        perms = [p for p in product('BW.', repeat=self.num_cells)]
-        for perm in perms:
-            num_of_empty = perm.count('.')
-            ls_w_num_h[num_of_empty].append(perm)
-        return ls_w_num_h
+        ls = []
+        for num_w in range(self.num_cells//2):
+            seq = '.' * (e + h) + self.opp_color * num_w + \
+                  self.color * (self.num_cells - e - h - num_w)
+            ls.extend(list(set(permutations(seq))))
+        return ls
 
-# p = PONE([3,3], 'B')
+p = PONE([2,2])
+print(len(p.prob1_wins))
+
+with open('prob1_2x2.pkl', 'wb') as f:
+    pickle.dump(p.prob1_wins, f)

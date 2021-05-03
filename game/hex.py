@@ -22,8 +22,7 @@ class Hex:
 
     def __init__(self, BOARD_SIZE=[3, 3], BOARD=None, 
                  verbose=True, legality_check=False,
-                 b_early_w=False, w_early_w=False,
-                 partial_pos=False):
+                 b_early_w=False, w_early_w=False, h=0):
         '''
         Initializing a board. 
 
@@ -53,7 +52,7 @@ class Hex:
         self.legality_check = legality_check
         self.b_early_w = b_early_w
         self.w_early_w = w_early_w
-        self.partial_pos = partial_pos
+        self.h = h
  
     def step(self, color, action):
         '''
@@ -136,7 +135,6 @@ class Hex:
             True/False  - True if end of the board for given color 
                         False if not
         '''
-
         if (color == 'W' and self.__find_col(node) == self.num_cols-1) or \
            (color == 'B' and self.__find_row(node) == self.num_rows-1):
             return True
@@ -148,12 +146,12 @@ class Hex:
     def __find_col(self, node):
         return node % self.num_cols
 
-    def __testConnections(self, cellToCheck):
+    def testConnections(self, cellToCheck):
         '''
         Testing the connections for a given cell.
         '''
         if self.verbose:
-            print('connections are', self.__cell_connections(cellToCheck))
+            print(str(cellToCheck), 'connections are', self.__cell_connections(cellToCheck))
 
     def __placeStone(self, cell, color):
         '''
@@ -173,6 +171,8 @@ class Hex:
             return False
         self.BOARD[cell] = color
         self.valid_moves.remove(cell)
+        self.game_history[cell] = color + str(self.cur_move_num)
+        self.cur_move_num += 1
         return True
 
     def __cell_connections(self, cell):
@@ -205,7 +205,6 @@ class Hex:
             positions.append(self.__pos_by_coord(row - 1, col))
             if col + 1 < self.num_cols:
                 positions.append(self.__pos_by_coord(row - 1, col + 1))
-        
         return positions
     
     def __pos_by_coord(self, r, c):
@@ -224,29 +223,29 @@ class Hex:
         '''
         # Check for legality
         if self.legality_check:
-            if self.partial_pos and self.check_legal_partial():
-                return 'i'
-            elif not self.check_legal():
+            if not self.check_legal():
                 return 'i'
 
-        # checking for white
-        self.CHECK_BOARD = [False for _ in range(self.num_cells)] 
-        for i in range(self.num_rows):
-            pos = self.__pos_by_coord(i, 0)
-            if self.BOARD[pos] == 'W':
-                self.CHECK_BOARD[pos] = True
-                self.__check_connections(self.__cell_connections(pos), 'W')
-                if self.done:
-                    return 'W'
         # checking for black
-        self.CHECK_BOARD = [False for _ in range(self.num_cells)]
+        self.CHECK_BOARD = [False for _ in range(self.num_cells)] 
         for i in range(self.num_cols):
             pos = self.__pos_by_coord(0, i)
             if self.BOARD[pos] == 'B':
                 self.CHECK_BOARD[pos] = True
                 self.__check_connections(self.__cell_connections(pos), 'B')
                 if self.done:
+                    self.done = False
                     return 'B'
+        # checking for white
+        self.CHECK_BOARD = [False for _ in range(self.num_cells)]
+        for i in range(self.num_rows):
+            pos = self.__pos_by_coord(i, 0)
+            if self.BOARD[pos] == 'W':
+                self.CHECK_BOARD[pos] = True
+                self.__check_connections(self.__cell_connections(pos), 'W')
+                if self.done:
+                    self.done = False
+                    return 'W'
         return '=' 
 
     def __check_connections(self, connections, color):
@@ -270,22 +269,8 @@ class Hex:
         # number of the stones are illegal
         bNum = self.BOARD.count('B')
         wNum = self.BOARD.count('W')
-        if bNum - wNum > 1 and wNum > bNum:
+        if bNum - wNum - self.h > 1 and wNum > bNum:
             return False
-        
-        # white wins with removing a white stone
-        if self.w_early_w and self.check_early_win('W'):
-            return False
-        # black wins with removing a black stone
-        if self.b_early_w and self.check_early_win('B'):
-            return False
-
-        return True
-
-    def check_legal_partial(self):
-        # number of the stones are illegal
-        bNum = self.BOARD.count('B')
-        wNum = self.BOARD.count('W')
         
         # white wins with removing a white stone
         if self.w_early_w and self.check_early_win('W'):

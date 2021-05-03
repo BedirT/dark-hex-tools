@@ -10,9 +10,8 @@ parser.add_argument("--verbose_white", "-vw", action="store_true",
 args = parser.parse_args()
 
 game = DarkHex(BOARD_SIZE=[3,4])
-done = False
+result = '='
 
-# actor1 = RandomAgent('B')
 actor1 = FixedPolicyAgent_wTree('W', game.valid_moves)
 actor2 = RandomAgent('B')
 
@@ -28,7 +27,7 @@ W\ 0   1   2   3  \W\n\
   W\ 8   9   10  11 \W\n\
      ---------------\n\
        B   B   B   B' )
-while not done:
+while result == '=':
     s = True
     if i % 2 == 0:
         result = 'f'
