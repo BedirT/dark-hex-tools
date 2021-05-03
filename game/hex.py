@@ -53,6 +53,7 @@ class Hex:
         self.b_early_w = b_early_w
         self.w_early_w = w_early_w
         self.h = h
+        self.CHECK = False
  
     def step(self, color, action):
         '''
@@ -224,6 +225,9 @@ class Hex:
         # Check for legality
         if self.legality_check:
             if not self.check_legal():
+                if self.CHECK:
+                    print('really ???')
+                    self.CHECK = False
                 return 'i'
 
         # checking for black
@@ -269,7 +273,10 @@ class Hex:
         # number of the stones are illegal
         bNum = self.BOARD.count('B')
         wNum = self.BOARD.count('W')
-        if bNum - wNum - self.h > 1 and wNum > bNum:
+        if self.CHECK:
+            print('Black: {}, White: {}\nEarly W win: {}'.format(bNum, wNum, self.check_early_win('W')))
+        if (self.e + self.h + bNum + wNum > self.num_cells) or \
+           (bNum - (wNum + self.h) > 1 and wNum > bNum):
             return False
         
         # white wins with removing a white stone

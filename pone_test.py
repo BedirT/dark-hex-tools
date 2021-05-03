@@ -7,11 +7,41 @@
 # PONE (Probability One)
 # Finding prob one winning states up to given depth (bottom up)
 from itertools import combinations, permutations
+import math
+
+from tqdm.auto import trange
 from game.hex import Hex
 import copy 
 import pickle
 
 from tqdm import tqdm
+
+CHECK = ('B', '.', '.', '.', 2, 1) # supposed to be 'B'
+CHECK_CALL_STACK = []
+ACTIVATE_CHECK = False
+
+def pit(it, *pargs, **nargs):
+    import enlighten
+    global __pit_man__
+    try:
+        __pit_man__
+    except NameError:
+        __pit_man__ = enlighten.get_manager()
+    man = __pit_man__
+    try:
+        it_len = len(it)
+    except:
+        it_len = None
+    try:
+        ctr = None
+        for i, e in enumerate(it):
+            if i == 0:
+                ctr = man.counter(*pargs, **{**dict(leave = False, total = it_len), **nargs})
+            yield e
+            ctr.update()
+    finally:
+        if ctr is not None:
+            ctr.close()
 
 class PONE:
     def __init__(self, board_size):
@@ -27,60 +57,72 @@ class PONE:
         self.find_positions()
         
     def ryan_alg(self, state, e, h):
-        game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], BOARD=state)
-        vm = game.valid_moves
-
+        vm = [i for i, x in enumerate(state) if x == '.']
+        if (*state, e, h) == CHECK:
+            print('VM`s', vm)
         try:
             status = self.state_results[(*state, e, h)]
         except:
-            print((*state, e, h))
-            print(self.state_results)
-            exit()
-        print(e, h, state)
+            print("ERROR: Couldn't find the state in state_results", (*state, e, h))
+            print(self.state_results); exit()
+        if ACTIVATE_CHECK:
+            CHECK_CALL_STACK.append((*state, e, h))
         if status == self.color:
-            print('here')
             return True
         elif status == self.opp_color:
-            print('here2')
             return False 
         else: # status == '='
-            print('here3')
             if h == 0:
-                print('here4')
                 for x in vm:
-                    print('here5')
-                    n_state = self.update_state(state, x, self.color)
-                    if (*n_state, e, h) in self.state_results \
-                        and self.ryan_alg(n_state, e, h+1):
+                    n_state = self.update_state(state, x, self.color, e-1, h+1)
+                    if ACTIVATE_CHECK and n_state:
+                        print(n_state)
+                    if (*n_state, e-1, h+1) in self.state_results \
+                        and self.ryan_alg(n_state, e-1, h+1):
                         return True
             elif h > 0:
-                print('here6')
-                for y in vm:
-                    print('here7')
-                    n_state_W = self.update_state(state, y, self.opp_color)
-                    n_state_B = self.update_state(state, y, self.color)
-                    if n_state_W and n_state_B and \
-                       self.ryan_alg(n_state_W, e, h-1) and \
-                       self.ryan_alg(n_state_B, e, h+1):
+                # if h+1 > self.num_cells//2:
+                #     return False
+                for y in vm:    
+                    n_state_W = self.update_state(state, y, self.opp_color, e, h-1)
+                    n_state_B = self.update_state(state, y, self.color, e-1, h+1)
+                    if (*n_state_W, e, h-1) in self.state_results and \
+                        (*n_state_B, e-1, h+1) in self.state_results and \
+                        self.ryan_alg(n_state_W, e, h-1) and \
+                        self.ryan_alg(n_state_B, e-1, h+1):
                         return True
         return False
     
-    def update_state(self, state, add, color):
+    def update_state(self, state, add, color, e, h):
         new_state = list(copy.deepcopy(state))
         new_state[add] = color
-        return new_state
+        res = self.is_legal(new_state, e, h)
+        if res:
+            self.state_results[(*state, e, h)] = res
+            return new_state
+        return []
 
     def find_positions(self):
-        for e in range(self.num_cells): # empty cells
-            for h in range(self.num_cells//2): # hidden cells
+        for e in pit(range(self.num_cells), color='red'): # empty cells
+            for h in pit(range(self.num_cells//2), color='green'): # hidden cells
                 states = self.all_states(e, h)
-                for state in tqdm(states):
-                    res = self.is_legal(state, e, h)
+                for s in pit(range(len(states)), color='blue'):
+                    state=states[s]
+                    if (*state, e, h) not in self.state_results:
+                        res = self.is_legal(state, e, h)
+                    else:
+                        res = self.state_results[(*state, e, h)]
                     if res:
+                        if (*state, e, h) == CHECK:
+                            print('in-activate')
+                            global ACTIVATE_CHECK
+                            ACTIVATE_CHECK = True
                         self.state_results[(*state, e, h)] = res
-                        print((*state, e, h))
+                        
                         if self.ryan_alg(state, e, h):
+                            self.state_results[(*state, e, h)] = self.color
                             self.prob1_wins.append((state, e, h))
+                        
 
     def is_legal(self, state, e, h):
         # Check if the given state is legal
@@ -98,13 +140,15 @@ class PONE:
         if (self.num_cells - e) % 2 == 0:
             # k = 2n
             game.w_early_w = True # check for early White win set
-            if game.game_status() not in 'Bi' and info_sets:
-                return game.game_status()
+            gs = game.game_status()
+            if gs not in 'Bi' and info_sets:
+                return gs
         else:
             # k = 2n + 1
+            gs = game.game_status()
             game.b_early_w = True # check for early Black win set
-            if game.game_status() not in 'Wi' and info_sets:
-                return game.game_status()
+            if gs not in 'Wi' and info_sets:
+                return gs
 
         return False
 
@@ -120,8 +164,7 @@ class PONE:
             # place the stones on chosen indexes
             p = [x if i not in c else 'W' for i, x in enumerate(pos)] + [e, 0]
             # check if legal
-            if tuple(p) in self.state_results:
-                # key exists, therefore legal
+            if self.is_legal(p, e, 0):
                 return True
         return False
 
@@ -130,14 +173,28 @@ class PONE:
         Returns all the board states possible
         '''
         ls = []
-        for num_w in range(self.num_cells//2):
+        for num_w in range(self.num_cells//2 + 1):
+            num_b = (self.num_cells - e - h - num_w)
             seq = '.' * (e + h) + self.opp_color * num_w + \
-                  self.color * (self.num_cells - e - h - num_w)
-            ls.extend(list(set(permutations(seq))))
+                  self.color * num_b
+            if num_w <= num_b and num_b <= math.ceil(self.num_cells/2):
+                ls.extend(list(set(permutations(seq))))
         return ls
 
 p = PONE([2,2])
-print(len(p.prob1_wins))
+chcc = [(x, p.state_results[x]) for x in p.state_results if p.state_results[x] != '=']
+# print(len(chcc))
+# print(len(p.prob1_wins))
+
+# print(len(CHECK_CALL_STACK))
+# for i in CHECK_CALL_STACK[-1::-1]:
+#     print(i)
+
+print(p.is_legal(('.', '.', '.', '.'), 4, 1))
 
 with open('prob1_2x2.pkl', 'wb') as f:
     pickle.dump(p.prob1_wins, f)
+
+with open('prob1_state_res.pkl', 'wb') as f:
+    pickle.dump(chcc, f)
+
