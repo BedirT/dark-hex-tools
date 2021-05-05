@@ -22,7 +22,7 @@ class Hex:
 
     def __init__(self, BOARD_SIZE=[3, 3], BOARD=None, 
                  verbose=True, legality_check=False,
-                 b_early_w=False, w_early_w=False, h=0, e=0):
+                 b_early_w=False, w_early_w=False, h=0):
         '''
         Initializing a board. 
 
@@ -52,7 +52,6 @@ class Hex:
         self.b_early_w = b_early_w
         self.w_early_w = w_early_w
         self.h = h
-        self.e = e
         self.CHECK = False
  
     def step(self, color, action):
@@ -275,7 +274,7 @@ class Hex:
         wNum = self.BOARD.count('W')
         if self.CHECK:
             print('Black: {}, White: {}\nEarly W win: {}'.format(bNum, wNum, self.check_early_win('W')))
-        if (self.e + self.h + bNum + wNum > self.num_cells) or \
+        if (self.h + bNum + wNum > self.num_cells) or \
            (bNum - (wNum + self.h) > 1 or wNum > bNum):
             return False
         

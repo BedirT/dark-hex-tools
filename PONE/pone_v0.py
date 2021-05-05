@@ -1,47 +1,22 @@
-# Already counted all permutations
-# format:
-#   X.WX.WW.X
+# PONE old version
+# WARNING! - This algorithm is faulty
+#            included in the document only
+#            for archive reasons. Please do
+#            not use it. For the correct version
+#            use "PONE/pone.py".
 
-# lets change the game to use these string format instead of arrays
-
-# PONE (Probability One)
-# Finding prob one winning states up to given depth (bottom up)
 from itertools import combinations, permutations
 import math
 
-from tqdm.auto import trange
 from game.hex import Hex
 import copy 
 import pickle
 
-from tqdm import tqdm
+from util.pit import pit
 
 CHECK = ('.', '.', '.','.', 'B', '.','.', '.','.', 8, 0) # supposed to be 'B'
 CHECK_CALL_STACK = []
 ACTIVATE_CHECK = False
-
-def pit(it, *pargs, **nargs):
-    import enlighten
-    global __pit_man__
-    try:
-        __pit_man__
-    except NameError:
-        __pit_man__ = enlighten.get_manager()
-    man = __pit_man__
-    try:
-        it_len = len(it)
-    except:
-        it_len = None
-    try:
-        ctr = None
-        for i, e in enumerate(it):
-            if i == 0:
-                ctr = man.counter(*pargs, **{**dict(leave = False, total = it_len), **nargs})
-            yield e
-            ctr.update()
-    finally:
-        if ctr is not None:
-            ctr.close()
 
 class PONE:
     def __init__(self, board_size):
@@ -124,7 +99,6 @@ class PONE:
                             if ACTIVATE_CHECK:
                                 ACTIVATE_CHECK = False
                         
-
     def is_legal(self, state, e, h):
         # Check if the given state is legal
         # if so is it B winning or W winning
