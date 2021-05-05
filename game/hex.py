@@ -22,7 +22,7 @@ class Hex:
 
     def __init__(self, BOARD_SIZE=[3, 3], BOARD=None, 
                  verbose=True, legality_check=False,
-                 b_early_w=False, w_early_w=False, h=0):
+                 b_early_w=False, w_early_w=False, h=0, e=0):
         '''
         Initializing a board. 
 
@@ -48,11 +48,11 @@ class Hex:
             self.valid_moves = list(range(self.num_cells))
         self.done = False
         self.verbose = verbose
-
         self.legality_check = legality_check
         self.b_early_w = b_early_w
         self.w_early_w = w_early_w
         self.h = h
+        self.e = e
         self.CHECK = False
  
     def step(self, color, action):
@@ -276,7 +276,7 @@ class Hex:
         if self.CHECK:
             print('Black: {}, White: {}\nEarly W win: {}'.format(bNum, wNum, self.check_early_win('W')))
         if (self.e + self.h + bNum + wNum > self.num_cells) or \
-           (bNum - (wNum + self.h) > 1 and wNum > bNum):
+           (bNum - (wNum + self.h) > 1 or wNum > bNum):
             return False
         
         # white wins with removing a white stone
@@ -290,13 +290,11 @@ class Hex:
             
     def check_early_win(self, color):
         for c in range(len(self.BOARD)):
+            if self.BOARD[c] in 'BW':
+                continue
             temp = self.BOARD[c]
             self.BOARD[c] = '.'; self.legality_check = False
             res = self.game_status()
             self.BOARD[c] = temp; self.legality_check = True
             if res == color:
-                return True
-
-        
-
-        
+                return True     
