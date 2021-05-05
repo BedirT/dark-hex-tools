@@ -4,6 +4,9 @@ from agent.RandomAgent import RandomAgent
 from agent.SetPolicyAgent import FixedPolicyAgent_wTree
 import argparse
 
+C_PLAYER1 = 'B'
+C_PLAYER2 = 'W'
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--verbose_white", "-vw", action="store_true", 
                     help="Turn on outputs for white player.", default=False)
@@ -12,8 +15,8 @@ args = parser.parse_args()
 game = DarkHex(BOARD_SIZE=[3,4])
 result = '='
 
-actor1 = FixedPolicyAgent_wTree('W', game.valid_moves)
-actor2 = RandomAgent('B')
+actor1 = FixedPolicyAgent_wTree(C_PLAYER2, game.valid_moves)
+actor2 = RandomAgent(C_PLAYER1)
 
 i = 0
 print('Player 1 (W) is played by the FixedPolicyAgent\n\
@@ -34,24 +37,24 @@ while result == '=':
         if not args.verbose_white:
             game.verbose = False
         while result == 'f':
-            action = actor1.step(observation=game.BOARDS['W'], success=s)
-            board, done, result, reward = game.step('W', action)
+            action = actor1.step(observation=game.BOARDS[C_PLAYER2], success=s)
+            board, done, result, reward = game.step(C_PLAYER2, action)
             s = False
         if args.verbose_white:    
-            game.print_information_set('W')
+            game.print_information_set(C_PLAYER2)
     else:
         result = 'f'
         game.verbose = True
         while result == 'f':
             try:
                 action = int(input('move: ').strip())
-                board, done, result, reward = game.step('B', action)
+                board, done, result, reward = game.step(C_PLAYER1, action)
             except KeyboardInterrupt:
                 exit()
             except:
                 print("Please enter a valid input, the format should be an int. i.e. 3")
                 continue
-        game.print_information_set('B')
+        game.print_information_set(C_PLAYER1)
     i+=1
 game.verbose = True
 print('\nGame is over, the winner is:', game.game_status())

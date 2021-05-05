@@ -8,7 +8,8 @@
 #     6 7 8    te
 
 #  EMPTY BOARD SIZE OF BOARD_SIZE
-import numpy as np
+C_PLAYER1 = 'B'
+C_PLAYER2 = 'W'
 
 class Hex:
     '''
@@ -109,7 +110,7 @@ class Hex:
         if not self.verbose:
             print("Verbose is off, output is not shown.")
             return
-        print('  ' + '{0: <3}'.format('B') * self.num_cols)
+        print('  ' + '{0: <3}'.format(C_PLAYER1) * self.num_cols)
         print(' ' + '-' * (self.num_cols * 3 +1))
         for cell in range(self.num_cells):
             if cell % self.num_cols == 0: # first col
@@ -118,7 +119,7 @@ class Hex:
             if cell % self.num_cols == self.num_cols-1: # last col
                 print('\W\n' + (' ' * (cell//self.num_cols)), end = ' ')
         print('  ' + '-' * (self.num_cols * 3 +1))        
-        print(' ' * (self.num_rows+4) + '{0: <3}'.format('B') * self.num_cols)
+        print(' ' * (self.num_rows+4) + '{0: <3}'.format(C_PLAYER1) * self.num_cols)
 
     def __checkEdge(self, color, node):
         '''
@@ -135,8 +136,8 @@ class Hex:
             True/False  - True if end of the board for given color 
                         False if not
         '''
-        if (color == 'W' and self.__find_col(node) == self.num_cols-1) or \
-           (color == 'B' and self.__find_row(node) == self.num_rows-1):
+        if (color == C_PLAYER2 and self.__find_col(node) == self.num_cols-1) or \
+           (color == C_PLAYER1 and self.__find_row(node) == self.num_rows-1):
             return True
         return False
 
@@ -216,9 +217,9 @@ class Hex:
         the winner, or '=' if there is no winner.
 
         returns:
-            format >> 'W'/'B'/'='/'i'
+            format >> C_PLAYER2/C_PLAYER1/'='/'i'
 
-            'W'/'B'/'=' - winner is white/black or its a tie ('=')
+            C_PLAYER2/C_PLAYER1/'=' - winner is white/black or its a tie ('=')
             'i'         - illegal game position
         '''
         # Check for legality
@@ -233,22 +234,22 @@ class Hex:
         self.CHECK_BOARD = [False for _ in range(self.num_cells)] 
         for i in range(self.num_cols):
             pos = self.__pos_by_coord(0, i)
-            if self.BOARD[pos] == 'B':
+            if self.BOARD[pos] == C_PLAYER1:
                 self.CHECK_BOARD[pos] = True
-                self.__check_connections(self.__cell_connections(pos), 'B')
+                self.__check_connections(self.__cell_connections(pos), C_PLAYER1)
                 if self.done:
                     self.done = False
-                    return 'B'
+                    return C_PLAYER1
         # checking for white
         self.CHECK_BOARD = [False for _ in range(self.num_cells)]
         for i in range(self.num_rows):
             pos = self.__pos_by_coord(i, 0)
-            if self.BOARD[pos] == 'W':
+            if self.BOARD[pos] == C_PLAYER2:
                 self.CHECK_BOARD[pos] = True
-                self.__check_connections(self.__cell_connections(pos), 'W')
+                self.__check_connections(self.__cell_connections(pos), C_PLAYER2)
                 if self.done:
                     self.done = False
-                    return 'W'
+                    return C_PLAYER2
         return '=' 
 
     def __check_connections(self, connections, color):
@@ -270,19 +271,18 @@ class Hex:
 
     def check_legal(self):
         # number of the stones are illegal
-        bNum = self.BOARD.count('B')
-        wNum = self.BOARD.count('W')
-        if self.CHECK:
-            print('Black: {}, White: {}\nEarly W win: {}'.format(bNum, wNum, self.check_early_win('W')))
+        bNum = self.BOARD.count(C_PLAYER1)
+        wNum = self.BOARD.count(C_PLAYER2)
         if (self.h + bNum + wNum > self.num_cells) or \
            (bNum - (wNum + self.h) > 1 or wNum > bNum):
+            print('NEVER COME HERE')
             return False
         
         # white wins with removing a white stone
-        if self.w_early_w and self.check_early_win('W'):
+        if self.w_early_w and self.check_early_win(C_PLAYER2):
             return False
         # black wins with removing a black stone
-        if self.b_early_w and self.check_early_win('B'):
+        if self.b_early_w and self.check_early_win(C_PLAYER1):
             return False
 
         return True

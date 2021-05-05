@@ -2,6 +2,9 @@ from copy import deepcopy
 
 from game.hex import Hex
 
+C_PLAYER1 = 'B'
+C_PLAYER2 = 'W'
+
 class DarkHex(Hex):
 
     def __init__(self, BOARD_SIZE=[3, 3], verbose=True):
@@ -13,13 +16,13 @@ class DarkHex(Hex):
         '''
         super().__init__(BOARD_SIZE=BOARD_SIZE, verbose=verbose)
 
-        self.rev_color = {'W': 'B', 'B': 'W'}
+        self.rev_color = {C_PLAYER2: C_PLAYER1, C_PLAYER1: C_PLAYER2}
 
-        self.BOARDS = {'W': deepcopy(self.BOARD), 'B': deepcopy(self.BOARD)}
-        self.num_moves = {'W': 0, 'B': 0}
-        self.num_opp_known = {'W': 0, 'B': 0}
+        self.BOARDS = {C_PLAYER2: deepcopy(self.BOARD), C_PLAYER1: deepcopy(self.BOARD)}
+        self.num_moves = {C_PLAYER2: 0, C_PLAYER1: 0}
+        self.num_opp_known = {C_PLAYER2: 0, C_PLAYER1: 0}
 
-        self.valid_moves_colors = {'W': deepcopy(self.valid_moves), 'B': deepcopy(self.valid_moves)}
+        self.valid_moves_colors = {C_PLAYER2: deepcopy(self.valid_moves), C_PLAYER1: deepcopy(self.valid_moves)}
 
     def rewind(self, action):
         '''
@@ -32,11 +35,11 @@ class DarkHex(Hex):
         self.BOARD[action] = '.'
         self.valid_moves.append(action)
 
-        self.BOARDS['B'][action] = '.'
-        self.valid_moves_colors['B'].append(action)
+        self.BOARDS[C_PLAYER1][action] = '.'
+        self.valid_moves_colors[C_PLAYER1].append(action)
 
-        self.BOARDS['W'][action] = '.'
-        self.valid_moves_colors['W'].append(action)
+        self.BOARDS[C_PLAYER2][action] = '.'
+        self.valid_moves_colors[C_PLAYER2].append(action)
 
     def print_information_set(self, player):
         if not self.verbose:
@@ -55,7 +58,7 @@ class DarkHex(Hex):
         '''
         Method for printing the players visible board in a nice format.
         '''
-        print('  ' + '{0: <3}'.format('B') * self.num_cols)
+        print('  ' + '{0: <3}'.format(C_PLAYER1) * self.num_cols)
         print(' ' + '-' * (self.num_cols * 3 +1))
         for cell in range(self.num_cells):
             if cell % self.num_cols == 0: # first col
@@ -64,7 +67,7 @@ class DarkHex(Hex):
             if cell % self.num_cols == self.num_cols-1: # last col
                 print('\W\n' + (' ' * (cell//self.num_cols)), end = ' ')
         print('  ' + '-' * (self.num_cols * 3 +1))        
-        print(' ' * (self.num_rows+4) + '{0: <3}'.format('B') * self.num_cols)
+        print(' ' * (self.num_rows+4) + '{0: <3}'.format(C_PLAYER1) * self.num_cols)
 
     def step(self, color, action):
         '''
