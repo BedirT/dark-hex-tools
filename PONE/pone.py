@@ -1,11 +1,10 @@
-# Already counted all permutations
-# format:
-#   X.WX.WW.X
-
-# lets change the game to use these string format instead of arrays
-
 # PONE (Probability One)
-# Finding prob one winning states up to given depth (bottom up)
+#
+# Finds all probability one wins for the given player
+# for the game Hex. 
+# Traverses every legal game state recursively, and marks
+# the win states with probability one.
+
 from itertools import combinations, permutations
 import math
 import copy
@@ -42,7 +41,6 @@ class PONE:
         Returns:
             - True/False  If given state and h is a definite win
         '''
-        vm = [i for i, x in enumerate(state) if x == '.']
         next_move = True # if there is a next move
         # if white's turn - play white and continue (add a hidden stone)
         if self.turn_info(state, h) != self.color:
@@ -62,6 +60,7 @@ class PONE:
         elif status == self.opp_color or not next_move:
             return False 
         else: # status == '='
+            vm = [i for i, x in enumerate(state) if x == '.']
             if h == 0:
                 for x in vm:
                     n_state = self.update_state(state, x, self.color, h) # black moves

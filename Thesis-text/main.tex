@@ -24,6 +24,8 @@
 \usepackage{pslatex}	% Use PostScript Fonts
 \usepackage{fancyhdr} % Use headers
 \usepackage{float}
+\usepackage{algpseudocode}
+\usepackage{algorithm
 % Here I keep the left and right margins equal. You can choose to have unequal margins if you want a two-sided book effect.
 \usepackage[
 	top    = 1.5cm,
@@ -127,10 +129,12 @@
     \input{chapters/dark-hex/AbruptDH}
     \input{chapters/dark-hex/notes}
 
+\input{chapters/pone}
+
 \pagestyle{contents}
 
-% \bibliographystyle{ieeetr}
-% \bibliography{biblio}
+\bibliographystyle{ieeetr}
+\bibliography{biblio}
 
 % \include{chapters/appendix}
 
