@@ -274,8 +274,7 @@ class Hex:
         bNum = self.BOARD.count(C_PLAYER1)
         wNum = self.BOARD.count(C_PLAYER2)
         if (self.h + bNum + wNum > self.num_cells) or \
-           (bNum - (wNum + self.h) > 1 or wNum > bNum):
-            print('NEVER COME HERE')
+           (bNum - (wNum + self.h) > 1 or (wNum + self.h) > bNum):
             return False
         
         # white wins with removing a white stone

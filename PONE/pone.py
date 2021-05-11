@@ -8,6 +8,8 @@
 from itertools import combinations, permutations
 import math
 import copy
+from time import time
+import numpy as np
 
 from game.hex import Hex
 from util.pit import pit
@@ -25,7 +27,7 @@ class PONE:
         self.color = C_PLAYER1 # manually set
         self.opp_color = C_PLAYER1 if self.color == C_PLAYER2 else C_PLAYER2
 
-        self.state_results = {}
+        self.state_results = [{} for _ in range(self.num_cells)]
         self.prob1_wins = []
         self.find_positions()
         
@@ -50,7 +52,7 @@ class PONE:
                 next_move = False # There is no next move
 
         try:
-            status = self.state_results[(*state, h)]
+            status = self.state_results[h][state]
         except:
             print("ERROR: Couldn't find the state in state_results", (*state, h))
             print(self.state_results); exit()
@@ -64,7 +66,7 @@ class PONE:
             if h == 0:
                 for x in vm:
                     n_state = self.update_state(state, x, self.color, h) # black moves
-                    if (*n_state, h) in self.state_results \
+                    if n_state in self.state_results[h] \
                         and self.pone_search(n_state, h):
                         return True
             elif h > 0:
@@ -74,8 +76,8 @@ class PONE:
                     n_state_hW = self.update_state(state, y, self.opp_color, h-1) # hit the hidden stone
                     n_state_B  = self.update_state(state, y, self.color, h) # black plays
                     # check if black won
-                    if  (*n_state_hW, h-1) in self.state_results and \
-                        (*n_state_B, h) in self.state_results and \
+                    if  n_state_hW in self.state_results[h-1] and \
+                        n_state_B in self.state_results[h] and \
                         self.pone_search(n_state_hW, h-1) and \
                         self.pone_search(n_state_B, h):
                         return True
@@ -97,9 +99,10 @@ class PONE:
         '''
         new_state = list(copy.deepcopy(state))
         new_state[loc] = color
+        new_state = tuple(new_state)
         if self.check_state(new_state, h):
             return new_state
-        return []
+        return ()
     
     def check_state(self, state: tuple, h: int) -> str:
         '''
@@ -116,7 +119,7 @@ class PONE:
         '''
         res = self.is_legal(state, h)
         if res:
-            self.state_results[(*state, h)] = res
+            self.state_results[h][state] = res
             return res
         return False
 
@@ -144,21 +147,33 @@ class PONE:
         in depth for prob 1 wins for players. It fills the dictionary
         'state results'.
         '''
+        tot = 0
+        tot1 = 0
+        tot2 = 0
         for e in pit(range(self.num_cells), color='red'): # empty cells
             for h in pit(range(self.num_cells//2), color='green'): # hidden cells
-                states = self.all_states(e, h)
+                time1 = time()
+                states = self.all_states(e + h)
+                time1_end = time()
                 for s in pit(range(len(states)), color='blue'):
                     state = states[s]
                     try:
-                        res = self.state_results[(*state, h)]
+                        res = self.state_results[h][state]
                     except:
                         res = self.is_legal(state, h)
-
                     if res: # if res is legal
-                        self.state_results[(*state, h)] = res
+                        self.state_results[h][state] = res
                         if self.pone_search(state, h):
-                            self.state_results[(*state, h)] = self.color
+                            self.state_results[h][state] = self.color
                             self.prob1_wins.append((state, h)) # is it needed?
+                time2_end = time()
+                tot += time2_end - time1
+                tot1 += time1_end - time1
+                tot2 += time2_end - time1_end
+        print('Part1\t\t\tPart2\n{}'.format('='*45))
+        print(tot1/tot, '\t' ,tot2/tot)
+        print(tot1, '\t' ,tot2)
+        print('Total time:', tot)
 
     def is_legal(self, state: tuple, h: int) -> str:
         '''
@@ -179,6 +194,7 @@ class PONE:
         info_sets = True
         if h > 0:
             # if partial position, check info sets
+
             info_sets = self.information_sets(state, h)
         # Check if the state has odd or even number of
         # empty cells.
@@ -231,11 +247,14 @@ class PONE:
             - ls:   List of all possible states for e.
         '''
         ls = []
+
         for num_w in range(self.num_cells//2 + 1):
             num_b = (self.num_cells - e - num_w) 
-            seq = '.' * e + self.opp_color * num_w + self.color * num_b
             if num_w <= num_b and num_b <= math.ceil(self.num_cells/2) and \
-                not (e + num_b + num_w > self.num_cells) and \
-                num_b - (num_w + self.h) <= 1:
-                ls.extend(list(set(permutations(seq))))
+                not (e + num_b + num_w > self.num_cells):
+                for positions in combinations(range(self.num_cells), num_w+num_b):
+                    seq = np.array(['.'] * self.num_cells)
+                    seq[list(positions[:num_w+1])] = self.opp_color
+                    seq[list(positions[num_w+1:])] = self.color
+                    ls.append(tuple(seq))
         return ls
