@@ -14,9 +14,18 @@ import numpy as np
 from game.hex import Hex
 from util.pit import pit
 
-# Colors for the playerss
+# Colors for the players
 C_PLAYER1 = 'B'
 C_PLAYER2 = 'W'
+
+CHECK = True
+TO_CHECK_STATE = ('.', '.', '.', '.', '.', '.', 'B', '.', '.') # ('.', 'B', '.', '.')
+TO_CHECK_H = 0
+
+def RES_CHECK(s, h):
+    if CHECK and TO_CHECK_STATE == s and TO_CHECK_H == h:
+        return True
+    return False
 
 class PONE:
     def __init__(self, board_size):
@@ -43,44 +52,48 @@ class PONE:
         Returns:
             - True/False  If given state and h is a definite win
         '''
-        next_move = True # if there is a next move
-        # if white's turn - play white and continue (add a hidden stone)
-        if self.turn_info(state, h) != self.color:
-            if self.check_state(state, h+1): # white made a move, if not illegal
-                h += 1 # white plays
-            else:
-                next_move = False # There is no next move
-
         try:
             status = self.state_results[h][state]
         except:
-            print("ERROR: Couldn't find the state in state_results", (*state, h))
-            print(self.state_results); exit()
+            print("ERROR: Couldn't find the state in state_results[{}] |\n{}"\
+                  .format(h, state)); exit()
                 
         if status == self.color:
             return True
-        elif status == self.opp_color or not next_move:
+        elif status == self.opp_color:
             return False 
         else: # status == '='
-            vm = [i for i, x in enumerate(state) if x == '.']
-            if h == 0:
-                for x in vm:
-                    n_state = self.update_state(state, x, self.color, h) # black moves
-                    if n_state in self.state_results[h] \
-                        and self.pone_search(n_state, h):
+            # if white's turn - play white and continue (add a hidden stone)
+            if self.turn_info(state, h) != self.color:
+                if self.check_state(state, h+1): # white made a move, if not illegal
+                    # h += 1 # white plays
+                    if self.pone_search(state, h+1):
                         return True
-            elif h > 0:
-                # if h+1 > self.num_cells//2:
-                #     return False
-                for y in vm:
-                    n_state_hW = self.update_state(state, y, self.opp_color, h-1) # hit the hidden stone
-                    n_state_B  = self.update_state(state, y, self.color, h) # black plays
-                    # check if black won
-                    if  n_state_hW in self.state_results[h-1] and \
-                        n_state_B in self.state_results[h] and \
-                        self.pone_search(n_state_hW, h-1) and \
-                        self.pone_search(n_state_B, h):
-                        return True
+                return False # There is no next move
+            else:
+                vm = [i for i, x in enumerate(state) if x == '.']
+                if h == 0:
+                    for x in vm:
+                        n_state = self.update_state(state, x, self.color, h) # black moves
+                        if n_state in self.state_results[h] \
+                            and self.pone_search(n_state, h):
+                            self.state_results[h][n_state] = self.color
+                            return True
+                elif h > 0:
+                    # if h+1 > self.num_cells//2:
+                    #     return False
+                    for y in vm:
+                        n_state_hW = self.update_state(state, y, self.opp_color, h-1) # hit the hidden stone
+                        if n_state_hW not in self.state_results[h-1]:
+                            continue
+                        n_state_B  = self.update_state(state, y, self.color, h) # black plays
+                        # check if black won
+                        if  n_state_B in self.state_results[h] and \
+                            self.pone_search(n_state_hW, h-1) and \
+                            self.pone_search(n_state_B, h):
+                            self.state_results[h][n_state_B] = self.color
+                            self.state_results[h-1][n_state_hW] = self.color
+                            return True
         return False
     
     def update_state(self, state: tuple, loc: int, color: str, h: int) -> list:
@@ -153,6 +166,8 @@ class PONE:
         for e in pit(range(self.num_cells), color='red'): # empty cells
             for h in pit(range(self.num_cells//2), color='green'): # hidden cells
                 time1 = time()
+                if e+h >= self.num_cells:
+                    continue
                 states = self.all_states(e + h)
                 time1_end = time()
                 for s in pit(range(len(states)), color='blue'):
@@ -194,7 +209,6 @@ class PONE:
         info_sets = True
         if h > 0:
             # if partial position, check info sets
-
             info_sets = self.information_sets(state, h)
         # Check if the state has odd or even number of
         # empty cells.
@@ -247,14 +261,13 @@ class PONE:
             - ls:   List of all possible states for e.
         '''
         ls = []
-
         for num_w in range(self.num_cells//2 + 1):
             num_b = (self.num_cells - e - num_w) 
             if num_w <= num_b and num_b <= math.ceil(self.num_cells/2) and \
                 not (e + num_b + num_w > self.num_cells):
                 for positions in combinations(range(self.num_cells), num_w+num_b):
                     seq = np.array(['.'] * self.num_cells)
-                    seq[list(positions[:num_w+1])] = self.opp_color
-                    seq[list(positions[num_w+1:])] = self.color
+                    seq[list(positions[:num_b+1])] = self.color
+                    seq[list(positions[num_b+1:])] = self.opp_color
                     ls.append(tuple(seq))
         return ls

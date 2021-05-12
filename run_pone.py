@@ -18,9 +18,6 @@ args = parser.parse_args()
 
 
 p = PONE([args.num_of_rows, args.num_of_cols])
-chcc = [(x, p.state_results[h][x]) 
-        for h in range(p.num_cells) for x in p.state_results[h]
-        if p.state_results[h][x] != '=' ]
 
 with open(args.out_file + '.pkl', 'wb') as f:
-    pickle.dump(chcc, f)
+    pickle.dump(p.state_results, f)
