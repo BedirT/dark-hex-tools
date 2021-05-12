@@ -3,7 +3,7 @@ Sample runner for PONE.
 '''
 
 import pickle
-from PONE.pone import PONE
+from PONE.pone_dp import PONE
 import argparse
 
 parser = argparse.ArgumentParser()
