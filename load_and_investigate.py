@@ -2,26 +2,35 @@
 import pickle
 import pandas as pd
 import numpy as np
+import argparse
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pickle
+import pandas as pd
+import numpy as np
 
-file_name = 'Exp_Results/4x3_pone_dp.pkl'
+file_name = 'Results/PONE/3x3_pone.pkl'
 
 with open(file_name, 'rb') as f:
-    a = pickle.load(f)
+    dct = pickle.load(f)
 
-ct_tot = [[0 for _ in range(7)] for _ in range(12)]
-ct_b = [[0 for _ in range(7)] for _ in range(12)]
+num_cols = dct['num_cols']
+num_rows = dct['num_rows']
+results = dct['results']
+
+print(results)
 
 all_total = 0
 new_data_b = []
 new_data_tot = []
-y_size=range(len(a))
-x_size=range(len(a[0]))
-round_tot_b_h = [0] * len(a[0])
+y_size=range(len(results))
+x_size=range(len(results[0]))
+round_tot_b_h = [0] * len(results[0])
 for e in y_size:
     round_tot_b = 0
     for h in x_size:
-        tot_b = len([x for x in a[e][h] if a[e][h][x] != '='])
-        tot = len([x for x in a[e][h]])
+        tot_b = len([x for x in results[e][h] if results[e][h][x] != '='])
+        tot = len([x for x in results[e][h]])
         new_data_b.append(tot_b)
         new_data_tot.append(tot)
         round_tot_b += tot_b
@@ -31,13 +40,17 @@ for e in y_size:
 round_tot_b_h.append(all_total)
 new_data_b.extend(round_tot_b_h)
 
-df = pd.DataFrame(np.array(new_data_b).reshape(len(a)+1, len(a[0])+1),
+df = pd.DataFrame(np.array(new_data_b).reshape(len(results)+1, len(results[0])+1),
                   index=[*y_size, 'TOT'], columns=[*x_size, 'TOT'])
 
-import seaborn as sns
-cm = sns.light_palette("blue", as_cmap=True)
-s = df.style.background_gradient(cmap=cm)
-s
+mask = np.zeros((len(results)+1, len(results[0])+1))
+mask[:,-1] = True
+mask[-1,:] = True
+
+sns.heatmap(df, mask=mask, cmap='Blues')
+sns.heatmap(df, alpha=0, cbar=False, annot=True, cmap='Blues', fmt='g', annot_kws={"size": 12, "color":"g"})
+
+plt.show()
 
 # inpe = 0
 # while inpe != -1:

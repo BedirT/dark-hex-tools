@@ -16,8 +16,13 @@ parser.add_argument("--out_file", "-f", default="default_file", type=str,
                     here is an example usage:\n\t'filepath/filename'")  
 args = parser.parse_args()
 
-
 p = PONE([args.num_of_rows, args.num_of_cols])
 
+dct = {
+        'results': p.state_results,
+        'num_cols': args.num_of_cols,
+        'num_rows': args.num_of_rows
+      }
+      
 with open(args.out_file + '.pkl', 'wb') as f:
-    pickle.dump(p.state_results, f)
+    pickle.dump(dct, f)
