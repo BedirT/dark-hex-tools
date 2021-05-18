@@ -1,5 +1,5 @@
-from game.hex import Hex
-from agent.RandomAgent import RandomAgent
+from Projects.base.game.hex import Hex
+from Projects.base.agent.RandomAgent import RandomAgent
 
 C_PLAYER1 = 'B'
 C_PLAYER2 = 'W'

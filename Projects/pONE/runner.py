@@ -1,10 +1,10 @@
 '''
 Sample runner for PONE.
 '''
-
 import pickle
-from PONE.pone_dp import PONE
+from Projects.pONE.pONE import pONE
 import argparse
+from pathlib import Path
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--num_of_rows", "-nr", default=3, type=int,
@@ -16,13 +16,21 @@ parser.add_argument("--out_file", "-f", default="default_file", type=str,
                     here is an example usage:\n\t'filepath/filename'")  
 args = parser.parse_args()
 
-p = PONE([args.num_of_rows, args.num_of_cols])
+p = pONE([args.num_of_rows, args.num_of_cols])
 
 dct = {
         'results': p.state_results,
         'num_cols': args.num_of_cols,
         'num_rows': args.num_of_rows
       }
-      
-with open(args.out_file + '.pkl', 'wb') as f:
+find_piece = args.out_file.rfind('/')
+if find_piece != -1:
+    folder_name = 'Exp_Results/pONE/{}x{}/{}'.format(args.num_of_rows, 
+        args.num_of_cols, args.out_file[:find_piece])
+    file_name = args.out_file[args.out_file.rfind('/')+1:]
+else:
+    folder_name = 'Exp_Results/pONE/{}x{}'.format(args.num_of_rows, args.num_of_cols)
+    file_name = args.out_file
+Path(folder_name).mkdir(parents=True, exist_ok=True)
+with open('{}/{}.pkl'.format(folder_name, file_name), 'wb') as f:
     pickle.dump(dct, f)

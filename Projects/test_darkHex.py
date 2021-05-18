@@ -1,7 +1,6 @@
-from typing import Set
-from game.darkHex import DarkHex
-from agent.RandomAgent import RandomAgent
-from agent.SetPolicyAgent import FixedPolicyAgent_wTree
+from Projects.base.game.darkHex import DarkHex
+from Projects.base.agent.RandomAgent import RandomAgent
+from Projects.base.agent.SetPolicyAgent import FixedPolicyAgent_wTree
 import argparse
 
 C_PLAYER1 = 'B'
