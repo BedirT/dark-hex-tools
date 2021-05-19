@@ -2,8 +2,18 @@
 import pickle
 import argparse
 from Projects.base.game.darkHex import C_PLAYER1, C_PLAYER2, DarkHex
+import random
 
 TEST_MODE = True
+
+customP1 = ['.','.','.',
+              '.','.','.',
+                '.','.','.',
+                  '.','.','.',]
+customP2 = ['.','.','.',
+              '.','.','.',
+                '.','.','.',
+                  '.','.','.',]
 
 def one_move(chc_state, current_state):
     # find the new move
@@ -24,32 +34,35 @@ def player_play(e, h, results, game_board):
             if mv:
                 print('Sure win move exists for current game')
                 return mv 
-    return False   
+    return random.randint(0, len(game_board)-1)
 
 def play_vs_pONE(results, num_rows, num_cols):
-    game = DarkHex(BOARD_SIZE=[num_rows,num_cols])
+    game = DarkHex(BOARD_SIZE=[num_rows,num_cols],
+                   custom_board_C_PLAYER1=customP1,
+                   custom_board_C_PLAYER1=customP2)
+    
+    e = game.BOARD.count('.')
     result = '='
 
     i = 0
     print('Player 1 (B) is played by the pONE agent\n\
-    Player 2 (B) is you, please make a move according\n\
-    to the given table indexes. For 3x4 board here\n\
-    are the board indexes;\n\n\
-    B   B   B   B \n\
-    ---------------\n\
-    W\ 0   1   2   3  \W\n\
-    W\ 4   5   6   7  \W\n\
-    W\ 8   9   10  11 \W\n\
-        ---------------\n\
-        B   B   B   B' )
-    e = 9
+Player 2 (B) is you, please make a move according\n\
+to the given table indexes. For 3x4 board here\n\
+are the board indexes;\n\n\
+B   B   B  \n\
+------------\n\
+W\ 0   1   2  \W\n\
+ W\ 3   4   5  \W\n\
+  W\ 6   7   8  \W\n\
+   W\ 9  10   11 \W\n\
+     --------------\n\
+        B   B   B' )
     while result == '=':
         if i % 2 == 0:
             result = 'f'
             while result == 'f':
                 action = player_play(e, game.totalHidden_for_player(C_PLAYER1), 
                                      results, game.BOARDS[C_PLAYER1])
-                print(action)
                 board, done, result, reward = game.step(C_PLAYER1, action)
         else:
             result = 'f'
@@ -80,4 +93,6 @@ if __name__ == '__main__':
     num_cols = dct['num_cols']
     num_rows = dct['num_rows']
 
-    play_vs_pONE(results, num_rows, num_cols)
+    e = game
+
+    play_vs_pONE(results, num_rows, num_cols, e)
