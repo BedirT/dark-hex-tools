@@ -303,3 +303,25 @@ class Hex:
             self.BOARD[c] = temp; self.legality_check = True
             if res == color:
                 return True     
+
+def customBoard_print(board, num_cols, num_rows):
+    '''
+    Method for printing the board in a nice format.
+    '''
+    num_cells = num_cols * num_rows
+    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(C_PLAYER1) * num_cols + colors.ENDC)
+    print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC)
+    for cell in range(num_cells):
+        if cell % num_cols == 0: # first col
+            print(colors.BOLD + colors.C_PLAYER2 + 'W\ ' + colors.ENDC, end= '')
+        if board[cell] == C_PLAYER1:
+            clr = colors.C_PLAYER1
+        elif board[cell] == C_PLAYER2:
+            clr = colors.C_PLAYER2
+        else:
+            clr = colors.NEUTRAL
+        print(clr + '{0: <3}'.format(board[cell]) + colors.ENDC, end='') 
+        if cell % num_cols == num_cols-1: # last col
+            print(colors.BOLD + colors.C_PLAYER2 + '\W\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
+    print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
+    print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(C_PLAYER1) * num_cols + colors.ENDC)

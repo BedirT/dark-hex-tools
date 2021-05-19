@@ -22,11 +22,7 @@ class DarkHex(Hex):
 
         self.BOARDS = {C_PLAYER2: deepcopy(self.BOARD), C_PLAYER1: deepcopy(self.BOARD)}
 
-        if custom_board_C_PLAYER1:
-            self.BOARDS[C_PLAYER1] = custom_board_C_PLAYER1
-        if custom_board_C_PLAYER2:
-            self.BOARDS[C_PLAYER2] = custom_board_C_PLAYER2
-        self.__set_board()
+        self.set_board(custom_board_C_PLAYER1, custom_board_C_PLAYER2)
         self.num_moves = {C_PLAYER2: 0, C_PLAYER1: 0}
         self.num_opp_known = {C_PLAYER2: 0, C_PLAYER1: 0}
 
@@ -49,13 +45,21 @@ class DarkHex(Hex):
         self.BOARDS[C_PLAYER2][action] = '.'
         self.valid_moves_colors[C_PLAYER2].append(action)
 
-    def __set_board(self):
-        for i, c in enumerate(self.BOARDS[C_PLAYER1]):
-            if c == C_PLAYER1:
-                self.BOARD[i] = c
-        for i, c in enumerate(self.BOARDS[C_PLAYER2]):
-            if c == C_PLAYER2:
-                self.BOARD[i] = c
+    def set_board(self, custom_board_C_PLAYER1, custom_board_C_PLAYER2):
+        if custom_board_C_PLAYER1:
+            self.BOARDS[C_PLAYER1] = custom_board_C_PLAYER1
+        if custom_board_C_PLAYER2:
+            self.BOARDS[C_PLAYER2] = custom_board_C_PLAYER2
+        for i, (c1, c2) in enumerate(zip(self.BOARDS[C_PLAYER1], self.BOARDS[C_PLAYER2])):
+            if c1 != c2 and not (c1 == '.' or c2 == '.'):
+                # print('Invalid custom board sequence.')
+                return False
+            if c1 == C_PLAYER1:
+                self.BOARD[i] = c1
+            if c2 == C_PLAYER2:
+                self.BOARD[i] = c2
+        return True #success
+            
 
     def print_information_set(self, player):
         if not self.verbose:

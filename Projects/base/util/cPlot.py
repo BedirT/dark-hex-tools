@@ -2,8 +2,15 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pickle
 
-def heat_map(results, num_cols, num_rows):
+def heat_map(in_file):
+    with open(in_file, 'rb') as f:
+        dct = pickle.load(f)
+
+    results = dct['results']
+    num_cols = dct['num_cols']
+    num_rows = dct['num_rows']
     all_total = 0; new_data_b = []; new_data_tot = []
     y_size=range(num_rows)
     x_size=range(num_cols)
