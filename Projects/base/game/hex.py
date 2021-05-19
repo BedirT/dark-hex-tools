@@ -11,6 +11,8 @@
 C_PLAYER1 = 'B'
 C_PLAYER2 = 'W'
 
+from Projects.base.util.colors import colors
+
 class Hex:
     '''
     valid_moves     - All the valid moves in the current board. Essentially
@@ -110,16 +112,22 @@ class Hex:
         if not self.verbose:
             print("Verbose is off, output is not shown.")
             return
-        print('  ' + '{0: <3}'.format(C_PLAYER1) * self.num_cols)
-        print(' ' + '-' * (self.num_cols * 3 +1))
+        print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(C_PLAYER1) * self.num_cols + colors.ENDC)
+        print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)
         for cell in range(self.num_cells):
             if cell % self.num_cols == 0: # first col
-                print('W\ ', end= '')
-            print('{0: <3}'.format(self.game_history[cell]), end='') 
+                print(colors.BOLD + colors.C_PLAYER2 + 'W\ ' + colors.ENDC, end= '')
+            if self.game_history[cell][0] == C_PLAYER1:
+                clr = colors.C_PLAYER1
+            elif self.game_history[cell][0] == C_PLAYER2:
+                clr = colors.C_PLAYER2
+            else:
+                clr = colors.NEUTRAL
+            print(clr + '{0: <3}'.format(self.game_history[cell]) + colors.ENDC, end='') 
             if cell % self.num_cols == self.num_cols-1: # last col
-                print('\W\n' + (' ' * (cell//self.num_cols)), end = ' ')
-        print('  ' + '-' * (self.num_cols * 3 +1))        
-        print(' ' * (self.num_rows+4) + '{0: <3}'.format(C_PLAYER1) * self.num_cols)
+                print(colors.BOLD + colors.C_PLAYER2 + '\W\n' + (' ' * (cell//self.num_cols)) + colors.ENDC, end = ' ')
+        print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)        
+        print(colors.BOLD + colors.C_PLAYER1 + ' ' * (self.num_rows+4) + '{0: <3}'.format(C_PLAYER1) * self.num_cols + colors.ENDC)
 
     def __checkEdge(self, color, node):
         '''
@@ -172,7 +180,7 @@ class Hex:
             return False
         self.BOARD[cell] = color
         self.valid_moves.remove(cell)
-        self.game_history[cell] = color + str(self.cur_move_num)
+        self.game_history[cell] = color + str(self.cur_move_num)                                
         self.cur_move_num += 1
         return True
 
@@ -226,7 +234,6 @@ class Hex:
         if self.legality_check:
             if not self.check_legal():
                 if self.CHECK:
-                    print('really ???')
                     self.CHECK = False
                 return 'i'
 

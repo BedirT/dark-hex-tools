@@ -1,11 +1,15 @@
 # loads pickle data on given path
 import pickle
 import argparse
-from Projects.base.game.darkHex import C_PLAYER1, C_PLAYER2, DarkHex
 import random
+from pathlib import Path
+
+from Projects.base.game.darkHex import C_PLAYER1, C_PLAYER2, DarkHex
+from Projects.base.util.drive import download_file_from_google_drive
 
 TEST_MODE = True
 
+customP1 = []; customP2 = [];
 # customP1 = ['.','.','.',
 #               '.','.','.',
 #                 '.','.','.',
@@ -39,7 +43,7 @@ def player_play(e, h, results, game_board):
 def play_vs_pONE(results, num_rows, num_cols):
     game = DarkHex(BOARD_SIZE=[num_rows,num_cols],
                    custom_board_C_PLAYER1=customP1,
-                   custom_board_C_PLAYER1=customP2)
+                   custom_board_C_PLAYER2=customP2)
     
     e = game.BOARD.count('.')
     result = '='
@@ -85,7 +89,29 @@ if __name__ == '__main__':
     parser.add_argument("--in_file", "-if", type=str,
                         help="File path to load the results from")
     args = parser.parse_args()
-
+    
+    if not args.in_file:
+        print('Please pick a pre-run game data to work on;')        
+        print('\t1) 3x3 First Player')
+        print('\t2) 4x3 First Player (Long edge)')
+        game_type = -1
+        while game_type <= 0 or game_type > 2:
+            try:
+                game_type = int(input('Please enter the item number only (i.e. 1): ').strip())
+            except KeyboardInterrupt:
+                exit()
+            except:
+                game_type = -1
+                print('Invalid input, please try again.')
+        if game_type == 1:
+            # Path('Exp_Results/pONE/3x3/').mkdir(parents=True, exist_ok=True)
+            args.in_file = 'Exp_Results/pONE/3x3/default_file.pkl'
+            # download_file_from_google_drive('', args.in_file)
+        elif game_type == 2:
+            # Path('Exp_Results/pONE/4x3/').mkdir(parents=True, exist_ok=True)
+            args.in_file = 'Exp_Results/pONE/4x3/default_file.pkl'
+            # download_file_from_google_drive('', args.in_file)
+            
     with open(args.in_file, 'rb') as f:
         dct = pickle.load(f)
 
@@ -93,6 +119,4 @@ if __name__ == '__main__':
     num_cols = dct['num_cols']
     num_rows = dct['num_rows']
 
-    e = game
-
-    play_vs_pONE(results, num_rows, num_cols, e)
+    play_vs_pONE(results, num_rows, num_cols)
