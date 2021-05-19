@@ -49,3 +49,6 @@ Please be aware that if the boards are inconsistent, the program will crash.
 ```python3 Projects/pONE/pONE_player.py -if 'Exp_Results/pONE/3x3/default_file.pkl'```
 
 - **Input file path (-if / --in_file):** Input path for pONE data saved.
+
+**UPDATE (v0.3):** I have uploaded and made it easier to use the playing option. If you do not specify any input file, you will have the online options to choose from. Just follow the menu after running the file;
+```$ python3 Projects/pONE/pONE_player.py```
