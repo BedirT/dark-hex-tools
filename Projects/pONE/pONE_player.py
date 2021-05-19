@@ -104,13 +104,13 @@ if __name__ == '__main__':
                 game_type = -1
                 print('Invalid input, please try again.')
         if game_type == 1:
-            # Path('Exp_Results/pONE/3x3/').mkdir(parents=True, exist_ok=True)
+            Path('Exp_Results/pONE/3x3/').mkdir(parents=True, exist_ok=True)
             args.in_file = 'Exp_Results/pONE/3x3/default_file.pkl'
-            # download_file_from_google_drive('', args.in_file)
+            download_file_from_google_drive('1oNl4UZAB6SxjA-aUi0M9oUiqlpIdXnwk', args.in_file)
         elif game_type == 2:
-            # Path('Exp_Results/pONE/4x3/').mkdir(parents=True, exist_ok=True)
+            Path('Exp_Results/pONE/4x3/').mkdir(parents=True, exist_ok=True)
             args.in_file = 'Exp_Results/pONE/4x3/default_file.pkl'
-            # download_file_from_google_drive('', args.in_file)
+            download_file_from_google_drive('1MpMn8Gf0a8tCWeb8Ag276FlLGX6tBCD9', args.in_file)
             
     with open(args.in_file, 'rb') as f:
         dct = pickle.load(f)
