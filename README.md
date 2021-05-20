@@ -13,3 +13,6 @@ implemented here.
 
 - [Thesis Write-up](Thesis-text/main.pdf)
 - [Sample Game](Sample_game.md)
+
+**Please add the project pythonpath for relative ref to work.**
+run ```export PYTHONPATH="${PYTHONPATH}:<path_to_repo>"```

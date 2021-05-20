@@ -1,14 +1,27 @@
-from Projects.base.game.hex import Hex
 import pickle
 import random
+import copy
 
-from Projects.base.game.darkHex import C_PLAYER1, C_PLAYER2, DarkHex
+from Projects.pONE.user_tools.glance import glance
+from Projects.base.game.hex import customBoard_print
+from Projects.base.game.darkHex import DarkHex, C_PLAYER1, C_PLAYER2
 from Projects.base.util.drive import missing_in_file
 from Projects.base.util.print_tools import wrap_it, question_cont
 from Projects.base.util.colors import colors
 
 preset_boards = [
-    [('.','.','.','.','.','.','.','.','.'), ('.','.','.','.','.','.','.','.','.')]
+    [('.','W','.','W','.','.','.','.','B','B','.','.'), 
+     ('.','W','.','W','.','.','.','.','B','B','.','.')],
+    [('W','.','.','W','.','.','.','.','B','B','.','.'), 
+     ('W','.','.','W','.','.','.','.','B','B','.','.')],
+    [('.','.','.','.','.','W','W','B','.','.','.','B'), 
+     ('.','.','.','.','.','W','W','B','.','.','.','B')],
+    [('.','.','.','.','.','.','W','B','W','.','B','.'), 
+     ('.','.','.','.','.','.','W','B','W','.','B','.')],
+    [('.','W','.','.','.','.','W','B','.','.','B','.'), 
+     ('.','W','.','.','.','.','W','B','.','.','B','.')],
+    [('.','.','.','.','W','.','B','.','.','B','W','.'), 
+     ('.','.','.','.','W','.','B','.','.','B','W','.')],
 ]
 
 TEST_MODE = True
@@ -38,6 +51,7 @@ def set_custom_boards(game):
     while True:
         wrap_it('\t1) Enter your own boards', colors.QUESTIONS)
         wrap_it('\t2) Choose from prewritten (Win moves)', colors.QUESTIONS)
+        wrap_it('\t3) Choose by glancing', colors.QUESTIONS)
         ans = input().strip()
         if ans == '1':
             while True:
@@ -64,7 +78,7 @@ def set_custom_boards(game):
                     wrap_it('Please enter a valid board, there is an invalid char.', colors.WARNING)
                     continue
                 # check if the boards are matching
-                suc = game.set_board(board1, board2)
+                suc = game.set_board([*board1], [*board2])
                 if not suc:
                     wrap_it('Entered boards doesnt match. Please re-enter.', colors.WARNING)
                     continue
@@ -77,20 +91,50 @@ def set_custom_boards(game):
                 for i, board_pos in enumerate(preset_boards):
                     print(colors.MIDTEXT + colors.BOLD + '{})'.format(i) + colors.ENDC)
                     print(colors.C_PLAYER1 + colors.BOLD + 'Board for player 1' + colors.ENDC)
-                    hex_game = Hex(BOARD=board_pos[0])
-                    hex_game.printBoard()
+                    customBoard_print(board_pos[0], game.num_cols, game.num_rows)
                     print(colors.C_PLAYER2 + colors.BOLD + 'Board for player 2' + colors.ENDC)
-                    hex_game = Hex(BOARD=board_pos[1])
-                    hex_game.printBoard()
+                    customBoard_print(board_pos[1], game.num_cols, game.num_rows)
                 choice = question_cont('Enter your choice:', int)
                 if choice < 0 or choice >= len(preset_boards):
                     wrap_it('Invalid input please try again.', colors.WARNING)
                     continue
+                board1 = preset_boards[choice][0]
+                board2 = preset_boards[choice][1]
+                suc = game.set_board([*board1], [*board2])
                 break
+            break
+        elif ans == '3':
+            ch = 0
+            if game.num_rows == 4 and game.num_cols == 3:
+                ch = 2
+            elif game.num_rows == 3 and game.num_cols == 3:
+                ch = 1
+            new_res, h = glance(board_type=ch)
+            while True:
+                try:
+                    choice = question_cont('Enter your choice:', int)
+                    board2 = new_res[choice]
+                    board1 = calc_new_board(board2, C_PLAYER1, h)
+                    suc = game.set_board([*board1], [*board2])
+                    break
+                except KeyboardInterrupt:
+                    exit()
+                except:
+                    wrap_it('Invalid value. Try again.', colors.WARNING)
             break
         else:
             wrap_it('Please enter a valid value.', colors.WARNING)
     return game
+
+def calc_new_board(board, clr, h):
+    tmp = copy.copy(board)
+    for _ in range(h):
+        while True:
+            idx = random.randint(0, len(board)-1)
+            if tmp[idx] == '.':
+                tmp[idx] = clr
+                break
+    return tmp
 
 def play_vs_pONE(results, num_rows, num_cols):
     game = DarkHex(BOARD_SIZE=[num_rows,num_cols])
