@@ -139,3 +139,6 @@ dmypy.json
 # System
 .DS_Store
 .vscode
+
+# Result files
+Exp_Results/
