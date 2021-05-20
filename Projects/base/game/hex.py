@@ -39,7 +39,7 @@ class Hex:
 
         # to print game as a history
         self.game_history = ['.'] * self.num_cells
-        self.cur_move_num = 0
+        self.cur_move_num = 1
 
         if BOARD:
             self.BOARD = BOARD
@@ -112,6 +112,9 @@ class Hex:
         if not self.verbose:
             print("Verbose is off, output is not shown.")
             return
+        if self.game_history.count('.') != self.BOARD.count('.'):
+            for x in range(len(self.game_history)):
+                self.game_history[x] = self.BOARD[x] + '0' if self.BOARD[x] != '.' else '.'
         print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(C_PLAYER1) * self.num_cols + colors.ENDC)
         print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)
         for cell in range(self.num_cells):

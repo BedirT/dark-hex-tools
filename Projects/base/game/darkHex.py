@@ -47,9 +47,9 @@ class DarkHex(Hex):
 
     def set_board(self, custom_board_C_PLAYER1, custom_board_C_PLAYER2):
         if custom_board_C_PLAYER1:
-            self.BOARDS[C_PLAYER1] = custom_board_C_PLAYER1
+            self.BOARDS[C_PLAYER1] = [*custom_board_C_PLAYER1]
         if custom_board_C_PLAYER2:
-            self.BOARDS[C_PLAYER2] = custom_board_C_PLAYER2
+            self.BOARDS[C_PLAYER2] = [*custom_board_C_PLAYER2]
         for i, (c1, c2) in enumerate(zip(self.BOARDS[C_PLAYER1], self.BOARDS[C_PLAYER2])):
             if c1 != c2 and not (c1 == '.' or c2 == '.'):
                 # print('Invalid custom board sequence.')

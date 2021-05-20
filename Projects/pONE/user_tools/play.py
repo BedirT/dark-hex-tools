@@ -1,6 +1,6 @@
 import pickle
 import random
-import copy
+from copy import copy
 
 from Projects.pONE.user_tools.glance import glance
 from Projects.base.game.hex import customBoard_print
@@ -26,26 +26,15 @@ preset_boards = [
 
 TEST_MODE = True
 
-def one_move(chc_state, current_state):
-    # find the new move
-    assert(len(chc_state) == len(current_state))
-    changed = False
-    for i in range(len(chc_state)):
-        if chc_state[i] != current_state[i]:
-            if changed or current_state[i] != '.':
-                return False
-            changed = True
-            move = i
-    return move
-
 def player_play(e, h, results, game_board):
-    for res in results[e-1][h]:
-        if results[e-1][h][res] == C_PLAYER1:
-            mv = one_move(res, game_board)
-            if mv:
+    res = copy(game_board)
+    for mv in range(len(game_board)):
+        if game_board[mv] == '.':
+            res[mv] = C_PLAYER1
+            if tuple(res) in results[e-1][h] and results[e-1][h][tuple(res)] == C_PLAYER1:
                 print('Sure win move exists for current game')
                 return mv 
-    return random.randint(0, len(game_board)-1)
+            res[mv] = '.'
 
 def set_custom_boards(game):
     while True:
