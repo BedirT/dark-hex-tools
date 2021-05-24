@@ -15,6 +15,7 @@ import numpy as np
 
 from Projects.base.game.hex import Hex
 from Projects.base.util.pit import pit
+from Projects.base.util.colors import pieces
 
 CHECK = True
 TO_CHECK_STATE = ('B', 'B', 'W', 'W')# ('.', '.', '.', '.', '.', '.', 'B', '.', '.') # ('.', 'B', '.', '.')
@@ -27,9 +28,10 @@ def RES_CHECK(s, h):
 
 class pONE:
     # Colors for the players
-    C_PLAYER1 = 'B'
-    C_PLAYER2 = 'W'
-    def __init__(self, board_size):
+    C_PLAYER1 = pieces.C_PLAYER1
+    C_PLAYER2 = pieces.C_PLAYER2
+
+    def __init__(self, board_size, player_to_run=1):
         self.num_rows = board_size[0]
         self.num_cols = board_size[1]
         self.num_cells = self.num_rows * self.num_cols

@@ -8,11 +8,11 @@
 #     6 7 8    te
 
 #  EMPTY BOARD SIZE OF BOARD_SIZE
-from Projects.base.util.colors import colors
+from Projects.base.util.colors import colors, pieces
 
 class Hex:
-    C_PLAYER1 = 'B'
-    C_PLAYER2 = 'W'
+    C_PLAYER1 = pieces.C_PLAYER1
+    C_PLAYER2 = pieces.C_PLAYER2
 
     '''
     valid_moves     - All the valid moves in the current board. Essentially

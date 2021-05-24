@@ -9,3 +9,7 @@ class colors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     WARNING = '\033[31m'
+
+class pieces:
+    C_PLAYER1 = 'B'
+    C_PLAYER2 = 'W'

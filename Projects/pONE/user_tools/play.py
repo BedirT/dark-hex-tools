@@ -4,10 +4,10 @@ from copy import copy
 
 from Projects.pONE.user_tools.glance import glance
 from Projects.base.game.hex import customBoard_print, print_init_board
-from Projects.base.game.darkHex import DarkHex, C_PLAYER1, C_PLAYER2
+from Projects.base.game.darkHex import DarkHex
 from Projects.base.util.drive import missing_in_file
 from Projects.base.util.print_tools import wrap_it, question_cont
-from Projects.base.util.colors import colors
+from Projects.base.util.colors import colors, pieces
 
 preset_boards = [
     [('.','W','.','W','.','.','.','.','B','B','.','.'), 
@@ -25,6 +25,9 @@ preset_boards = [
 ]
 
 TEST_MODE = True
+
+C_PLAYER1 = pieces.C_PLAYER1
+C_PLAYER2 = pieces.C_PLAYER2
 
 def player_play(e, h, results, game_board):
     res = copy(game_board)
