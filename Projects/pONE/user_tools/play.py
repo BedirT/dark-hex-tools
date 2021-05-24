@@ -3,7 +3,7 @@ import random
 from copy import copy
 
 from Projects.pONE.user_tools.glance import glance
-from Projects.base.game.hex import customBoard_print
+from Projects.base.game.hex import customBoard_print, print_init_board
 from Projects.base.game.darkHex import DarkHex, C_PLAYER1, C_PLAYER2
 from Projects.base.util.drive import missing_in_file
 from Projects.base.util.print_tools import wrap_it, question_cont
@@ -148,32 +148,27 @@ def play_vs_pONE(results, num_rows, num_cols):
     print('Player 1 (B) is played by the pONE agent\n\
     Player 2 (B) is you, please make a move according\n\
     to the given table indexes. For 3x4 board here\n\
-    are the board indexes;\n\n\
-    B   B   B  \n\
-    ------------\n\
-    W\ 0   1   2  \W\n\
-    W\ 3   4   5  \W\n\
-    W\ 6   7   8  \W\n\
-    W\ 9  10   11 \W\n\
-        --------------\n\
-            B   B   B' )
+    are the board indexes;\n')
+    print_init_board(game.num_cols, game.num_rows, game.C_PLAYER1, game.C_PLAYER2)
+
     while result == '=':
         if i % 2 == 0:
             result = 'f'
             while result == 'f':
                 action = player_play(e, game.totalHidden_for_player(C_PLAYER1), 
                                      results, game.BOARDS[C_PLAYER1])
-                board, done, result, reward = game.step(C_PLAYER1, action)
+                _, _, result, _ = game.step(C_PLAYER1, action)
         else:
             result = 'f'
             while result == 'f':
                 try:
                     action = int(input('move: ').strip())
-                    board, done, result, reward = game.step(C_PLAYER2, action)
+                    _, _, result, _ = game.step(C_PLAYER2, action)
                 except KeyboardInterrupt:
                     exit()
                 except:
-                    print("Please enter a valid input, the format should be an int. i.e. 3")
+                    print("Please enter a valid input, the format should be an int. i.e. 3. Valid indexes shown as in the board below;")
+                    print_init_board(game.num_cols, game.num_rows, game.C_PLAYER1, game.C_PLAYER2)
                     continue
             game.print_information_set(C_PLAYER1)
         if TEST_MODE:

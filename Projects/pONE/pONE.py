@@ -16,10 +16,6 @@ import numpy as np
 from Projects.base.game.hex import Hex
 from Projects.base.util.pit import pit
 
-# Colors for the players
-C_PLAYER1 = 'B'
-C_PLAYER2 = 'W'
-
 CHECK = True
 TO_CHECK_STATE = ('B', 'B', 'W', 'W')# ('.', '.', '.', '.', '.', '.', 'B', '.', '.') # ('.', 'B', '.', '.')
 TO_CHECK_H = 0
@@ -30,13 +26,16 @@ def RES_CHECK(s, h):
     return False
 
 class pONE:
+    # Colors for the players
+    C_PLAYER1 = 'B'
+    C_PLAYER2 = 'W'
     def __init__(self, board_size):
         self.num_rows = board_size[0]
         self.num_cols = board_size[1]
         self.num_cells = self.num_rows * self.num_cols
 
-        self.color = C_PLAYER1 # manually set
-        self.opp_color = C_PLAYER1 if self.color == C_PLAYER2 else C_PLAYER2
+        self.color = self.C_PLAYER1 # manually set
+        self.opp_color = self.C_PLAYER1 if self.color == self.C_PLAYER2 else self.C_PLAYER2
 
         self.state_results = [[{} for _ in range(self.num_cells//2+1)] for _ in range(self.num_cells)]
         self.prob1_wins = []
@@ -131,12 +130,12 @@ class pONE:
         Returns:
             - C_PLAYER1/C_PLAYER2   Player whose turn it is.
         '''
-        count_b = state.count(C_PLAYER1)
-        count_w = state.count(C_PLAYER2) + h
+        count_b = state.count(self.C_PLAYER1)
+        count_w = state.count(self.C_PLAYER2) + h
         if count_b <= count_w:
-            return C_PLAYER1
+            return self.C_PLAYER1
         else:
-            return C_PLAYER2
+            return self.C_PLAYER2
 
     def find_positions(self) -> None:
         '''
@@ -225,7 +224,7 @@ class pONE:
         comb = combinations(indexes_empty, h)
         for c in comb:
             # place the stones on chosen indexes
-            p = [x if i not in c else C_PLAYER2 for i, x in enumerate(state)]
+            p = [x if i not in c else self.C_PLAYER2 for i, x in enumerate(state)]
             # check if legal
             if self.is_legal(p, e, 0):
                 return True

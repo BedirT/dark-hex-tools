@@ -1,17 +1,14 @@
 from Projects.base.game.hex import Hex
 from Projects.base.agent.RandomAgent import RandomAgent
 
-C_PLAYER1 = 'B'
-C_PLAYER2 = 'W'
-
 game = Hex(verbose=True)
 
-actors = {C_PLAYER1: RandomAgent(C_PLAYER1), C_PLAYER2: RandomAgent(C_PLAYER2)}
+actors = {game.C_PLAYER1: RandomAgent(game.C_PLAYER1), game.C_PLAYER2: RandomAgent(game.C_PLAYER2)}
 
 i = 0; res = '='
 
 while res == '=':
-    player = C_PLAYER1 if i % 2 == 0 else C_PLAYER2
+    player = game.C_PLAYER1 if i % 2 == 0 else game.C_PLAYER2
     action = actors[player].step(game.BOARD)
     _, _, res, _ = game.step(player, action)
     game.printBoard(); print(); i+=1

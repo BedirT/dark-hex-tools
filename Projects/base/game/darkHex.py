@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 from Projects.base.game.hex import Hex
+from Projects.base.util.colors import colors
 
 class DarkHex(Hex):
     def __init__(self, BOARD_SIZE=[3, 3], verbose=True,
@@ -69,21 +70,29 @@ class DarkHex(Hex):
     def totalHidden_for_player(self, player):
         return self.num_moves[self.rev_color[player]] \
                - self.num_opp_known[player]
-
+    
     def printBoard_for_player(self, player):
         '''
-        Method for printing the players visible board in a nice format.
+        Method for printing the board in a nice format.
         '''
-        print('  ' + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols)
-        print(' ' + '-' * (self.num_cols * 3 +1))
+        if not self.verbose:
+            return
+        print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols + colors.ENDC)
+        print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)
         for cell in range(self.num_cells):
             if cell % self.num_cols == 0: # first col
-                print('W\ ', end= '')
-            print('{0: <3}'.format(self.BOARDS[player][cell]), end='') 
+                print(colors.BOLD + colors.C_PLAYER2 + self.C_PLAYER2 +'\\ ' + colors.ENDC, end= '')
+            if self.BOARDS[player][cell] == self.C_PLAYER1:
+                clr = colors.C_PLAYER1
+            elif self.BOARDS[player][cell] == self.C_PLAYER2:
+                clr = colors.C_PLAYER2
+            else:
+                clr = colors.NEUTRAL
+            print(clr + '{0: <3}'.format(self.BOARDS[player][cell]) + colors.ENDC, end='') 
             if cell % self.num_cols == self.num_cols-1: # last col
-                print('\W\n' + (' ' * (cell//self.num_cols)), end = ' ')
-        print('  ' + '-' * (self.num_cols * 3 +1))        
-        print(' ' * (self.num_rows+4) + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols)
+                print(colors.BOLD + colors.C_PLAYER2 + '\\' + self.C_PLAYER2 + '\n' + (' ' * (cell//self.num_cols)) + colors.ENDC, end = ' ')
+        print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)        
+        print(colors.BOLD + colors.C_PLAYER1 + ' ' * (self.num_rows+4) + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols + colors.ENDC)
 
     def step(self, color, action):
         '''

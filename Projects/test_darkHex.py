@@ -1,4 +1,5 @@
 from Projects.base.game.darkHex import DarkHex
+from Projects.base.game.hex import print_init_board
 from Projects.base.agent.RandomAgent import RandomAgent
 from Projects.base.agent.SetPolicyAgent import FixedPolicyAgent_wTree
 import argparse
@@ -18,14 +19,10 @@ i = 0
 print('Player 1 (W) is played by the FixedPolicyAgent\n\
 Player 2 (B) is you, please make a move according\n\
 to the given table indexes. For 3x4 board here\n\
-is the board indexes;\n\n\
- B   B   B   B \n\
- ---------------\n\
-W\ 0   1   2   3  \W\n\
- W\ 4   5   6   7  \W\n\
-  W\ 8   9   10  11 \W\n\
-     ---------------\n\
-       B   B   B   B' )
+is the board indexes;\n')
+print_init_board(num_cols=game.num_cols, num_rows=game.num_rows,
+                 p1=game.C_PLAYER1, p2=game.C_PLAYER2)
+
 while result == '=':
     s = True
     if i % 2 == 0:
@@ -48,7 +45,9 @@ while result == '=':
             except KeyboardInterrupt:
                 exit()
             except:
-                print("Please enter a valid input, the format should be an int. i.e. 3")
+                print("Please enter a valid input, the format should be an int. i.e. 3. Valid indexes shown as in the board below;")
+                print_init_board(num_cols=game.num_cols, num_rows=game.num_rows,
+                                 p1=game.C_PLAYER1, p2=game.C_PLAYER2)
                 continue
         game.print_information_set(game.C_PLAYER1)
     i+=1

@@ -119,7 +119,7 @@ class Hex:
         print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)
         for cell in range(self.num_cells):
             if cell % self.num_cols == 0: # first col
-                print(colors.BOLD + colors.C_PLAYER2 + 'W\ ' + colors.ENDC, end= '')
+                print(colors.BOLD + colors.C_PLAYER2 + self.C_PLAYER2 + '\\ ' + colors.ENDC, end= '')
             if self.game_history[cell][0] == self.C_PLAYER1:
                 clr = colors.C_PLAYER1
             elif self.game_history[cell][0] == self.C_PLAYER2:
@@ -128,7 +128,7 @@ class Hex:
                 clr = colors.NEUTRAL
             print(clr + '{0: <3}'.format(self.game_history[cell]) + colors.ENDC, end='') 
             if cell % self.num_cols == self.num_cols-1: # last col
-                print(colors.BOLD + colors.C_PLAYER2 + '\W\n' + (' ' * (cell//self.num_cols)) + colors.ENDC, end = ' ')
+                print(colors.BOLD + colors.C_PLAYER2 + '\\' + self.C_PLAYER2 + '\n' + (' ' * (cell//self.num_cols)) + colors.ENDC, end = ' ')
         print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)        
         print(colors.BOLD + colors.C_PLAYER1 + ' ' * (self.num_rows+4) + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols + colors.ENDC)
 
@@ -328,3 +328,19 @@ def customBoard_print(board, num_cols, num_rows):
             print(colors.BOLD + colors.C_PLAYER2 + '\W\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
     print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
     print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(self.C_PLAYER1) * num_cols + colors.ENDC)
+
+def print_init_board(num_cols, num_rows, p1, p2):
+    '''
+    Print the board numbers
+    '''
+    num_cells = num_cols * num_rows
+    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(p1) * num_cols + colors.ENDC)
+    print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC)
+    for cell in range(num_cells):
+        if cell % num_cols == 0: # first col
+            print(colors.BOLD + colors.C_PLAYER2 + p2 + '\ ' + colors.ENDC, end= '')
+        print(colors.NEUTRAL + '{0: <3}'.format(cell) + colors.ENDC, end='') 
+        if cell % num_cols == num_cols-1: # last col
+            print(colors.BOLD + colors.C_PLAYER2 + '\\' + p2 + '\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
+    print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
+    print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(p1) * num_cols + colors.ENDC)
