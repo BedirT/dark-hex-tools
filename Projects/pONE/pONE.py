@@ -6,7 +6,6 @@
 # the win states with probability one.
 #
 # DP Version - Eliminates the need of excessive recursion
-
 from itertools import combinations
 import math
 import copy
@@ -18,7 +17,9 @@ from Projects.base.util.pit import pit
 from Projects.base.util.colors import pieces
 
 CHECK = True
-TO_CHECK_STATE = ('B', 'B', 'W', 'W')# ('.', '.', '.', '.', '.', '.', 'B', '.', '.') # ('.', 'B', '.', '.')
+TO_CHECK_STATE = ('B','.','W',
+                    'B','W','.',
+                      'W','.','B')
 TO_CHECK_H = 0
 
 def RES_CHECK(s, h):
@@ -203,13 +204,13 @@ class pONE:
             # k = 2n
             game.w_early_w = True # check for early White win set
             gs = game.game_status()
-            if gs not in 'Bi' and info_sets:
+            if gs not in [self.C_PLAYER1,'i'] and info_sets:
                 return gs
         else:
             # k = 2n + 1
             gs = game.game_status()
             game.b_early_w = True # check for early Black win set
-            if gs not in 'Wi' and info_sets:
+            if gs not in [self.C_PLAYER2,'i'] and info_sets:
                 return gs
         return False
 

@@ -20,8 +20,7 @@ print('Player 1 (W) is played by the FixedPolicyAgent\n\
 Player 2 (B) is you, please make a move according\n\
 to the given table indexes. For 3x4 board here\n\
 is the board indexes;\n')
-print_init_board(num_cols=game.num_cols, num_rows=game.num_rows,
-                 p1=game.C_PLAYER1, p2=game.C_PLAYER2)
+print_init_board(num_cols=game.num_cols, num_rows=game.num_rows)
 
 while result == '=':
     s = True
