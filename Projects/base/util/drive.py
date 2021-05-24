@@ -1,6 +1,4 @@
 # https://stackoverflow.com/a/39225272/15269364
-
-from os import chroot
 from pathlib import Path
 import requests
 

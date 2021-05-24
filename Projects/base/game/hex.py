@@ -8,12 +8,12 @@
 #     6 7 8    te
 
 #  EMPTY BOARD SIZE OF BOARD_SIZE
-C_PLAYER1 = 'B'
-C_PLAYER2 = 'W'
-
 from Projects.base.util.colors import colors
 
 class Hex:
+    C_PLAYER1 = 'B'
+    C_PLAYER2 = 'W'
+
     '''
     valid_moves     - All the valid moves in the current board. Essentially
                     the list of empty cells.
@@ -115,14 +115,14 @@ class Hex:
         if self.game_history.count('.') != self.BOARD.count('.'):
             for x in range(len(self.game_history)):
                 self.game_history[x] = self.BOARD[x] + '0' if self.BOARD[x] != '.' else '.'
-        print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(C_PLAYER1) * self.num_cols + colors.ENDC)
+        print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols + colors.ENDC)
         print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)
         for cell in range(self.num_cells):
             if cell % self.num_cols == 0: # first col
                 print(colors.BOLD + colors.C_PLAYER2 + 'W\ ' + colors.ENDC, end= '')
-            if self.game_history[cell][0] == C_PLAYER1:
+            if self.game_history[cell][0] == self.C_PLAYER1:
                 clr = colors.C_PLAYER1
-            elif self.game_history[cell][0] == C_PLAYER2:
+            elif self.game_history[cell][0] == self.C_PLAYER2:
                 clr = colors.C_PLAYER2
             else:
                 clr = colors.NEUTRAL
@@ -130,7 +130,7 @@ class Hex:
             if cell % self.num_cols == self.num_cols-1: # last col
                 print(colors.BOLD + colors.C_PLAYER2 + '\W\n' + (' ' * (cell//self.num_cols)) + colors.ENDC, end = ' ')
         print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)        
-        print(colors.BOLD + colors.C_PLAYER1 + ' ' * (self.num_rows+4) + '{0: <3}'.format(C_PLAYER1) * self.num_cols + colors.ENDC)
+        print(colors.BOLD + colors.C_PLAYER1 + ' ' * (self.num_rows+4) + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols + colors.ENDC)
 
     def __checkEdge(self, color, node):
         '''
@@ -147,8 +147,8 @@ class Hex:
             True/False  - True if end of the board for given color 
                         False if not
         '''
-        if (color == C_PLAYER2 and self.__find_col(node) == self.num_cols-1) or \
-           (color == C_PLAYER1 and self.__find_row(node) == self.num_rows-1):
+        if (color == self.C_PLAYER2 and self.__find_col(node) == self.num_cols-1) or \
+           (color == self.C_PLAYER1 and self.__find_row(node) == self.num_rows-1):
             return True
         return False
 
@@ -228,9 +228,9 @@ class Hex:
         the winner, or '=' if there is no winner.
 
         returns:
-            format >> C_PLAYER2/C_PLAYER1/'='/'i'
+            format >> self.C_PLAYER2/self.C_PLAYER1/'='/'i'
 
-            C_PLAYER2/C_PLAYER1/'=' - winner is white/black or its a tie ('=')
+            self.C_PLAYER2/self.C_PLAYER1/'=' - winner is white/black or its a tie ('=')
             'i'         - illegal game position
         '''
         # Check for legality
@@ -244,22 +244,22 @@ class Hex:
         self.CHECK_BOARD = [False for _ in range(self.num_cells)] 
         for i in range(self.num_cols):
             pos = self.__pos_by_coord(0, i)
-            if self.BOARD[pos] == C_PLAYER1:
+            if self.BOARD[pos] == self.C_PLAYER1:
                 self.CHECK_BOARD[pos] = True
-                self.__check_connections(self.__cell_connections(pos), C_PLAYER1)
+                self.__check_connections(self.__cell_connections(pos), self.C_PLAYER1)
                 if self.done:
                     self.done = False
-                    return C_PLAYER1
+                    return self.C_PLAYER1
         # checking for white
         self.CHECK_BOARD = [False for _ in range(self.num_cells)]
         for i in range(self.num_rows):
             pos = self.__pos_by_coord(i, 0)
-            if self.BOARD[pos] == C_PLAYER2:
+            if self.BOARD[pos] == self.C_PLAYER2:
                 self.CHECK_BOARD[pos] = True
-                self.__check_connections(self.__cell_connections(pos), C_PLAYER2)
+                self.__check_connections(self.__cell_connections(pos), self.C_PLAYER2)
                 if self.done:
                     self.done = False
-                    return C_PLAYER2
+                    return self.C_PLAYER2
         return '=' 
 
     def __check_connections(self, connections, color):
@@ -281,17 +281,17 @@ class Hex:
 
     def check_legal(self):
         # number of the stones are illegal
-        bNum = self.BOARD.count(C_PLAYER1)
-        wNum = self.BOARD.count(C_PLAYER2)
+        bNum = self.BOARD.count(self.C_PLAYER1)
+        wNum = self.BOARD.count(self.C_PLAYER2)
         if (self.h + bNum + wNum > self.num_cells) or \
            (bNum - (wNum + self.h) > 1 or (wNum + self.h) > bNum):
             return False
         
         # white wins with removing a white stone
-        if self.w_early_w and self.check_early_win(C_PLAYER2):
+        if self.w_early_w and self.check_early_win(self.C_PLAYER2):
             return False
         # black wins with removing a black stone
-        if self.b_early_w and self.check_early_win(C_PLAYER1):
+        if self.b_early_w and self.check_early_win(self.C_PLAYER1):
             return False
 
         return True
@@ -312,14 +312,14 @@ def customBoard_print(board, num_cols, num_rows):
     Method for printing the board in a nice format.
     '''
     num_cells = num_cols * num_rows
-    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(C_PLAYER1) * num_cols + colors.ENDC)
+    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(self.C_PLAYER1) * num_cols + colors.ENDC)
     print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC)
     for cell in range(num_cells):
         if cell % num_cols == 0: # first col
             print(colors.BOLD + colors.C_PLAYER2 + 'W\ ' + colors.ENDC, end= '')
-        if board[cell] == C_PLAYER1:
+        if board[cell] == self.C_PLAYER1:
             clr = colors.C_PLAYER1
-        elif board[cell] == C_PLAYER2:
+        elif board[cell] == self.C_PLAYER2:
             clr = colors.C_PLAYER2
         else:
             clr = colors.NEUTRAL
@@ -327,4 +327,4 @@ def customBoard_print(board, num_cols, num_rows):
         if cell % num_cols == num_cols-1: # last col
             print(colors.BOLD + colors.C_PLAYER2 + '\W\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
     print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
-    print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(C_PLAYER1) * num_cols + colors.ENDC)
+    print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(self.C_PLAYER1) * num_cols + colors.ENDC)

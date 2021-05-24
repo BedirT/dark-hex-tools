@@ -2,11 +2,7 @@ from copy import deepcopy
 
 from Projects.base.game.hex import Hex
 
-C_PLAYER1 = 'B'
-C_PLAYER2 = 'W'
-
 class DarkHex(Hex):
-
     def __init__(self, BOARD_SIZE=[3, 3], verbose=True,
                        custom_board_C_PLAYER1=[],
                        custom_board_C_PLAYER2=[]):
@@ -18,15 +14,15 @@ class DarkHex(Hex):
         '''
         super().__init__(BOARD_SIZE=BOARD_SIZE, verbose=verbose)
 
-        self.rev_color = {C_PLAYER2: C_PLAYER1, C_PLAYER1: C_PLAYER2}
+        self.rev_color = {self.C_PLAYER2: self.C_PLAYER1, self.C_PLAYER1: self.C_PLAYER2}
 
-        self.BOARDS = {C_PLAYER2: deepcopy(self.BOARD), C_PLAYER1: deepcopy(self.BOARD)}
+        self.BOARDS = {self.C_PLAYER2: deepcopy(self.BOARD), self.C_PLAYER1: deepcopy(self.BOARD)}
 
         self.set_board(custom_board_C_PLAYER1, custom_board_C_PLAYER2)
-        self.num_moves = {C_PLAYER2: 0, C_PLAYER1: 0}
-        self.num_opp_known = {C_PLAYER2: 0, C_PLAYER1: 0}
+        self.num_moves = {self.C_PLAYER2: 0, self.C_PLAYER1: 0}
+        self.num_opp_known = {self.C_PLAYER2: 0, self.C_PLAYER1: 0}
 
-        self.valid_moves_colors = {C_PLAYER2: deepcopy(self.valid_moves), C_PLAYER1: deepcopy(self.valid_moves)}
+        self.valid_moves_colors = {self.C_PLAYER2: deepcopy(self.valid_moves), self.C_PLAYER1: deepcopy(self.valid_moves)}
 
     def rewind(self, action):
         '''
@@ -39,24 +35,24 @@ class DarkHex(Hex):
         self.BOARD[action] = '.'
         self.valid_moves.append(action)
 
-        self.BOARDS[C_PLAYER1][action] = '.'
-        self.valid_moves_colors[C_PLAYER1].append(action)
+        self.BOARDS[self.C_PLAYER1][action] = '.'
+        self.valid_moves_colors[self.C_PLAYER1].append(action)
 
-        self.BOARDS[C_PLAYER2][action] = '.'
-        self.valid_moves_colors[C_PLAYER2].append(action)
+        self.BOARDS[self.C_PLAYER2][action] = '.'
+        self.valid_moves_colors[self.C_PLAYER2].append(action)
 
     def set_board(self, custom_board_C_PLAYER1, custom_board_C_PLAYER2):
         if custom_board_C_PLAYER1:
-            self.BOARDS[C_PLAYER1] = [*custom_board_C_PLAYER1]
+            self.BOARDS[self.C_PLAYER1] = [*custom_board_C_PLAYER1]
         if custom_board_C_PLAYER2:
-            self.BOARDS[C_PLAYER2] = [*custom_board_C_PLAYER2]
-        for i, (c1, c2) in enumerate(zip(self.BOARDS[C_PLAYER1], self.BOARDS[C_PLAYER2])):
+            self.BOARDS[self.C_PLAYER2] = [*custom_board_C_PLAYER2]
+        for i, (c1, c2) in enumerate(zip(self.BOARDS[self.C_PLAYER1], self.BOARDS[self.C_PLAYER2])):
             if c1 != c2 and not (c1 == '.' or c2 == '.'):
                 # print('Invalid custom board sequence.')
                 return False
-            if c1 == C_PLAYER1:
+            if c1 == self.C_PLAYER1:
                 self.BOARD[i] = c1
-            if c2 == C_PLAYER2:
+            if c2 == self.C_PLAYER2:
                 self.BOARD[i] = c2
         return True #success
             
@@ -78,7 +74,7 @@ class DarkHex(Hex):
         '''
         Method for printing the players visible board in a nice format.
         '''
-        print('  ' + '{0: <3}'.format(C_PLAYER1) * self.num_cols)
+        print('  ' + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols)
         print(' ' + '-' * (self.num_cols * 3 +1))
         for cell in range(self.num_cells):
             if cell % self.num_cols == 0: # first col
@@ -87,7 +83,7 @@ class DarkHex(Hex):
             if cell % self.num_cols == self.num_cols-1: # last col
                 print('\W\n' + (' ' * (cell//self.num_cols)), end = ' ')
         print('  ' + '-' * (self.num_cols * 3 +1))        
-        print(' ' * (self.num_rows+4) + '{0: <3}'.format(C_PLAYER1) * self.num_cols)
+        print(' ' * (self.num_rows+4) + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols)
 
     def step(self, color, action):
         '''

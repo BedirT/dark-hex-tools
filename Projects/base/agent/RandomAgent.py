@@ -1,4 +1,4 @@
-from agent.Agent import Agent
+from Projects.base.agent.Agent import Agent
 
 from numpy import random
 
