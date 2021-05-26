@@ -11,10 +11,14 @@ def heat_map(in_file):
     results = dct['results']
     num_cols = dct['num_cols']
     num_rows = dct['num_rows']
+    num_cells = num_rows * num_cols
     all_total = 0; new_data_b = []; new_data_tot = []
-    y_size=range(num_rows)
-    x_size=range(num_cols)
-    round_tot_b_h = [0] * num_cols
+    e_size = num_cells + 1
+    h_size = num_cells//2 + 1
+
+    y_size=range(e_size)
+    x_size=range(h_size)
+    round_tot_b_h = [0] * h_size
     for e in y_size:
         round_tot_b = 0
         for h in x_size:
@@ -27,10 +31,10 @@ def heat_map(in_file):
     round_tot_b_h.append(all_total)
     new_data_b.extend(round_tot_b_h)
 
-    df = pd.DataFrame(np.array(new_data_b).reshape(num_rows+1, num_cols+1),
+    df = pd.DataFrame(np.array(new_data_b).reshape(e_size+1, h_size+1),
                     index=[*y_size, 'TOT'], columns=[*x_size, 'TOT'])
 
-    mask = np.zeros((num_rows+1, num_cols+1))
+    mask = np.zeros((e_size+1, h_size+1))
     mask[:,-1] = True
     mask[-1,:] = True
 
@@ -38,4 +42,5 @@ def heat_map(in_file):
     sns.heatmap(df, alpha=0, cbar=False, annot=True, cmap='Blues', 
                     fmt='g', annot_kws={"size": 12, "color":"g"})
 
+    plt.savefig('Visual/test.png')
     plt.show()

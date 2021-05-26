@@ -14,5 +14,5 @@ nc = num_cols*num_rows
 for e in range(nc):
     for h in range(nc//2):
         for x in results[e][h]:
-            if results[e][h][x] == 'W':
-                print(x)
+            if results[e][h][x] == 'W' and h != 0:
+                print(x, h)

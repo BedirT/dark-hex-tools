@@ -1,6 +1,6 @@
 # Just to see what we have as definite win moves
 import pickle
-from Projects.base.util.colors import colors
+from Projects.base.util.colors import colors, pieces
 from Projects.base.util.print_tools import wrap_it
 from Projects.base.game.hex import customBoard_print
 from Projects.base.util.drive import missing_in_file
@@ -35,8 +35,8 @@ def glance(in_file=None, board_type=None):
             for e in range(num_of_moves):
                 for h in range(num_of_moves//2):
                     for res in results[e][h]:
-                        if results[e][h][res] == 'B':
-                            print(colors.UNDERLINE + str(game_id) + colors.ENDC)
+                        if results[e][h][res] in [pieces.C_PLAYER1, pieces.C_PLAYER2]:
+                            print(colors.UNDERLINE + str(game_id) + ' | Winner: ' + results[e][h][res] + colors.ENDC)
                             customBoard_print(res, num_cols, num_rows)
                             game_id+=1
                             new_results.append(res)

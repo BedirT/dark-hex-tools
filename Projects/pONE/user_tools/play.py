@@ -152,7 +152,7 @@ def play_vs_pONE(results, num_rows, num_cols):
     Player 2 (B) is you, please make a move according\n\
     to the given table indexes. For 3x4 board here\n\
     are the board indexes;\n')
-    print_init_board(game.num_cols, game.num_rows, game.C_PLAYER1, game.C_PLAYER2)
+    print_init_board(game.num_cols, game.num_rows)
 
     while result == '=':
         if i % 2 == 0:

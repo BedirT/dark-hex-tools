@@ -13,3 +13,4 @@ class colors:
 class pieces:
     C_PLAYER1 = 'B'
     C_PLAYER2 = 'W'
+    NEUTRAL = '.'

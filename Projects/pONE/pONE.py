@@ -17,10 +17,11 @@ from Projects.base.util.pit import pit
 from Projects.base.util.colors import pieces
 
 CHECK = True
-TO_CHECK_STATE = ('B','.','W',
+TO_CHECK_STATE = ('B','B','B',
                     'B','W','.',
-                      'W','.','B')
-TO_CHECK_H = 0
+                      'W','W','.')
+TO_CHECK_H = 1
+TO_CHECK_E = 1
 
 def RES_CHECK(s, h):
     if CHECK and TO_CHECK_STATE == s and TO_CHECK_H == h:
@@ -28,19 +29,20 @@ def RES_CHECK(s, h):
     return False
 
 class pONE:
-    # Colors for the players
-    C_PLAYER1 = pieces.C_PLAYER1
-    C_PLAYER2 = pieces.C_PLAYER2
-
     def __init__(self, board_size, player_to_run=1):
+        '''
+        player_to_run - 1: Run for the first player
+                      - 2: Run for the second player
+        '''
         self.num_rows = board_size[0]
         self.num_cols = board_size[1]
         self.num_cells = self.num_rows * self.num_cols
 
-        self.color = self.C_PLAYER1 # manually set
-        self.opp_color = self.C_PLAYER1 if self.color == self.C_PLAYER2 else self.C_PLAYER2
+        self.color1 = pieces.C_PLAYER1
+        self.color2 = pieces.C_PLAYER2
+        self.neutral = pieces.NEUTRAL
 
-        self.state_results = [[{} for _ in range(self.num_cells//2+1)] for _ in range(self.num_cells)]
+        self.state_results = [[{} for _ in range(self.num_cells//2+1)] for _ in range(self.num_cells+1)]
         self.prob1_wins = []
         self.find_positions()
     
@@ -61,30 +63,27 @@ class pONE:
         except:
             print("ERROR: Couldn't find the state in state_results[{}][{}]:\n\t{}"\
                   .format(e, h, state)); exit()
-        if status == self.color:
-            return True
-        elif status == self.opp_color:
-            return False 
+        if status in [self.color1, self.color2]:
+            return status
         else: # status == '='
-            if self.turn_info(state, h) != self.color:
-                if self.check_state(state, e-1, h+1): # white made a move, if not illegal
-                    # h += 1 # white plays
-                    if self.pONE_search(state, e-1, h+1):
-                        return True
-                return False # There is no next move
+            if self.turn_info(state, h) != self.color1:
+                if self.check_state(state, e-1, h+1): # hidden player makes a move, if not illegal
+                    if self.pONE_search(state, e-1, h+1) == self.color1:
+                        return self.color1
+                    return self.neutral
             else:
                 vm = [i for i, x in enumerate(state) if x == '.']
                 for v in vm:
                     if h == 0:
-                        n_state_b = self.update_state(state, v, self.color, e-1, h) # black moves
-                        if n_state_b == self.color:
-                            return True
+                        n_state_b = self.update_state(state, v, self.color1, e-1, h) # black moves
+                        if n_state_b == self.color1:
+                            return self.color1
                     elif h > 0:
-                        n_state_w = self.update_state(state, v, self.opp_color, e, h-1) # hit the hidden stone
-                        n_state_b  = self.update_state(state, v, self.color, e-1, h) # black plays
-                        if n_state_b == self.color and n_state_w == self.color:
-                            return True
-        return False
+                        n_state_w = self.update_state(state, v, self.color2, e, h-1) # hit the hidden stone
+                        n_state_b = self.update_state(state, v, self.color1, e-1, h) # black plays
+                        if n_state_b == self.color1 and n_state_w == self.color1:
+                            return self.color1
+        return self.neutral
 
     def update_state(self, state: tuple, loc: int, color: str, e: int, h: int) -> list:
         '''
@@ -120,7 +119,7 @@ class pONE:
         '''
         if state in self.state_results[e][h]:
             return self.state_results[e][h][state]
-        return ()
+        return False
 
     def turn_info(self, state: tuple, h: int) -> str:
         '''
@@ -133,12 +132,12 @@ class pONE:
         Returns:
             - C_PLAYER1/C_PLAYER2   Player whose turn it is.
         '''
-        count_b = state.count(self.C_PLAYER1)
-        count_w = state.count(self.C_PLAYER2) + h
+        count_b = state.count(self.color1)
+        count_w = state.count(self.color2) + h
         if count_b <= count_w:
-            return self.C_PLAYER1
+            return self.color1
         else:
-            return self.C_PLAYER2
+            return self.color2
 
     def find_positions(self) -> None:
         '''
@@ -149,8 +148,8 @@ class pONE:
         tot = 0; tot1 = 0
         time1 = time()
         print('Finding all legal states...')
-        for e in pit(range(self.num_cells), color='purple'): # empty cells
-            for h in pit(range(self.num_cells//2), color='grey'): # hidden cells
+        for e in pit(range(self.num_cells+1), color='purple'): # empty cells
+            for h in pit(range(self.num_cells//2+1), color='grey'): # hidden cells
                 if e+h >= self.num_cells:
                     continue
                 states = self.all_states(e + h)
@@ -162,13 +161,12 @@ class pONE:
         time1_end = time()
 
         print('Finding winning moves...')
-        for e in pit(range(self.num_cells), color='red'): # empty cells
-            for h in pit(range(self.num_cells//2), color='green'): # hidden cells
+        for e in pit(range(self.num_cells+1), color='red'): # empty cells
+            for h in pit(range(self.num_cells//2+1), color='green'): # hidden cells
                 if e+h >= self.num_cells:
                     continue
                 for state in pit(self.state_results[e][h], color='blue'):
-                    if self.pONE_search(state, e, h):
-                        self.state_results[e][h][state] = self.color
+                    self.state_results[e][h][state] = self.pONE_search(state, e, h)
         time2_end = time()
 
         # reporting the timing for part1 and 2
@@ -204,13 +202,13 @@ class pONE:
             # k = 2n
             game.w_early_w = True # check for early White win set
             gs = game.game_status()
-            if gs not in [self.C_PLAYER1,'i'] and info_sets:
+            if gs not in [self.color1,'i'] and info_sets:
                 return gs
         else:
             # k = 2n + 1
             gs = game.game_status()
             game.b_early_w = True # check for early Black win set
-            if gs not in [self.C_PLAYER2,'i'] and info_sets:
+            if gs not in [self.color2,'i'] and info_sets:
                 return gs
         return False
 
@@ -227,7 +225,7 @@ class pONE:
         comb = combinations(indexes_empty, h)
         for c in comb:
             # place the stones on chosen indexes
-            p = [x if i not in c else self.C_PLAYER2 for i, x in enumerate(state)]
+            p = [x if i not in c else self.color2 for i, x in enumerate(state)]
             # check if legal
             if self.is_legal(p, e, 0):
                 return True
@@ -248,14 +246,14 @@ class pONE:
             - ls:   List of all possible states for e.
         '''
         ls = []
-        for num_w in range(self.num_cells//2 + 1):
-            num_b = (self.num_cells - e - num_w) 
-            if num_w <= num_b and num_b <= math.ceil(self.num_cells/2) and \
-                not (e + num_b + num_w > self.num_cells):
-                for pos_b in combinations(range(self.num_cells), num_b):
-                    for pos_w in combinations(set(range(self.num_cells))-set(pos_b), num_w):
-                        seq = np.array(['.'] * self.num_cells)
-                        seq[list(pos_b)] = self.color
-                        seq[list(pos_w)] = self.opp_color
+        for num_2nd in range(self.num_cells//2 + 1):
+            num_1st = (self.num_cells - e - num_2nd) 
+            if num_2nd <= num_1st and num_1st <= math.ceil(self.num_cells/2) and \
+                not (e + num_1st + num_2nd > self.num_cells):
+                for pos_b in combinations(range(self.num_cells), num_1st):
+                    for pos_w in combinations(set(range(self.num_cells))-set(pos_b), num_2nd):
+                        seq = np.array([self.neutral] * self.num_cells)
+                        seq[list(pos_b)] = self.color1
+                        seq[list(pos_w)] = self.color2
                         ls.append(tuple(seq))
         return ls
