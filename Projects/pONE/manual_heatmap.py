@@ -21,21 +21,21 @@ board_sizes = ['4x3', '3x3', '3x4']
 for board_size in board_sizes:
     for p_name, k in zip(p_names, ks):
         args.in_file = 'Exp_Results/pONE/'+ board_size + '/'+ p_name +'Player.pkl'
-        args.out_file = board_size + '-'+ p_name +'_player_no-terminal' 
+        args.out_file = p_name +'_player_no-terminal' 
         args.targets =  [k + 'x']
         args.title = board_size + ' '+ p_name +' Player Without Terminal pONE Win States'
 
         cPlot.heat_map(args.in_file, args.out_file, args.targets, args.title)
 
         args.in_file = 'Exp_Results/pONE/'+ board_size + '/'+ p_name +'Player.pkl'
-        args.out_file = board_size + '-'+ p_name +'_player_terminal' 
+        args.out_file = p_name +'_player_terminal' 
         args.targets =  [k + 't']
         args.title = board_size + ' '+ p_name +' Player only Terminal pONE Win States'
 
         cPlot.heat_map(args.in_file, args.out_file, args.targets, args.title)
 
         args.in_file = 'Exp_Results/pONE/'+ board_size + '/'+ p_name +'Player.pkl'
-        args.out_file = board_size + '-'+ p_name +'_player_all' 
+        args.out_file = p_name +'_player_all' 
         args.targets =  [k + 'x', k + 't']
         args.title = board_size + ' '+ p_name +' Player All pONE Win States'
 

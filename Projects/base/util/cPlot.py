@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import font_manager as fm
 import seaborn as sns
 import pickle
+from pathlib import Path
 
 def heat_map(in_file, out_file, targets, title=None):
     with open(in_file, 'rb') as f:
@@ -50,12 +51,23 @@ def heat_map(in_file, out_file, targets, title=None):
                     fmt='g', annot_kws={"size": 10, "color":"xkcd:kelly green", "animated":True, "fontweight":"bold"}, ax = ax)
     title_prop = fm.FontProperties(fname="fonts/open-sans/OpenSans-Bold.ttf")
     subtext_prop = fm.FontProperties(fname="fonts/open-sans/OpenSans-Regular.ttf")
-    # ax.set_title('lalala', fontproperties=prop)
 
     if not title:
-        title = 'For board size ' + str(num_rows) + 'x' + str(num_cols) + ' number of ' + target + "'s"
+        title = 'For board size ' + str(num_rows) + 'x' + str(num_cols) + ' number of ' + str(targets) + "'s"
     plt.title(title, fontproperties=title_prop)
     plt.xlabel('Number of Hidden Stones', fontproperties=subtext_prop)
     plt.ylabel('Number of Empty cells', fontproperties=subtext_prop)
-    plt.savefig('Visual/'+ out_file + '.png')
+    
+    find_piece = out_file.rfind('/')
+    if find_piece != -1:
+        folder_name = 'Visual/pONE/{}x{}/{}'.format(num_rows, 
+            num_cols, out_file[:find_piece])
+        file_name = out_file[out_file.rfind('/')+1:]
+    else:
+        folder_name = 'Visual/pONE/{}x{}'.format(num_rows, num_cols)
+        file_name = out_file
+    Path(folder_name).mkdir(parents=True, exist_ok=True)
+    
+    plt.savefig('{}/{}.png'.format(folder_name, file_name))
+    
     plt.clf()
