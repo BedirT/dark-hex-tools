@@ -74,6 +74,7 @@ class pONE:
                 if self.check_state(state, e-1, h+1): # hidden player makes a move, if not illegal
                     res = self.pONE_search(state, e-1, h+1)
                     if res in [self.color1, self.color2]:
+                        self.distance += self.find_distance(state, e-1, h+1) + 1
                         return res
                     return False
             else:
@@ -82,11 +83,14 @@ class pONE:
                     if h == 0:
                         n_state_b = self.update_state(state, v, self.vis_p, e-1, h) # black moves
                         if n_state_b == self.vis_p:
+                            self.distance += self.find_distance(state, e-1, h) + 1
                             return self.vis_p
                     elif h > 0:
                         n_state_w = self.update_state(state, v, self.hid_p, e, h-1) # hit the hidden stone
                         n_state_b = self.update_state(state, v, self.vis_p, e-1, h) # black plays
                         if n_state_b == self.vis_p and n_state_w == self.vis_p:
+                            self.distance += min(self.find_distance(state, e, h-1),\
+                                                 self.find_distance(state, e-1, h)) + 1
                             return self.vis_p
         return False
 
@@ -150,6 +154,9 @@ class pONE:
         else:
             return self.color2
 
+    def find_distance(self, state: tuple, e: int, h: int) -> int:
+        return int(self.state_results[e][h][state][2:])
+
     def find_positions(self) -> None:
         '''
         Find all the legal positions, examine every position
@@ -172,19 +179,18 @@ class pONE:
         time1_end = time()
 
         print('Finding winning moves...')
-        ct = 0
-        ct2= 0
         for e in pit(range(self.num_cells+1), color='red'): # empty cells
             for h in pit(range(self.num_cells//2+1), color='green'): # hidden cells
                 if e+h >= self.num_cells:
                     continue
                 for state in pit(self.state_results[e][h], color='blue'):
+                    self.distance = 0
                     res = self.pONE_search(state, e, h)
                     if res:
                         if self.is_terminal(state):
-                            self.state_results[e][h][state] = res + 't'
+                            self.state_results[e][h][state] = res + 't' + str(self.distance)
                         else:    
-                            self.state_results[e][h][state] = res + 'x'
+                            self.state_results[e][h][state] = res + 'x' + str(self.distance)
         time2_end = time()
 
         # reporting the timing for part1 and 2
@@ -193,7 +199,6 @@ class pONE:
         print(tot1/tot, '\t' ,(tot - tot1)/tot)
         print(tot1, '\t' ,tot - tot1)
         print('Total time:', tot)
-        print(ct, ct2)
         
     def is_terminal(self, state):
         game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], 

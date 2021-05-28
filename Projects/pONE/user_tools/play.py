@@ -150,10 +150,10 @@ def play_vs_pONE(results, num_rows, num_cols):
     i = 0
     print('Player 1 (B) is played by the pONE agent\n\
     Player 2 (B) is you, please make a move according\n\
-    to the given table indexes. For 3x4 board here\n\
+    to the given table indexes. Here\n\
     are the board indexes;\n')
     print_init_board(game.num_cols, game.num_rows)
-
+    move_order = []
     while result == '=':
         if i % 2 == 0:
             result = 'f'
@@ -161,12 +161,29 @@ def play_vs_pONE(results, num_rows, num_cols):
                 action = player_play(e, game.totalHidden_for_player(C_PLAYER1), 
                                      results, game.BOARDS[C_PLAYER1])
                 _, _, result, _ = game.step(C_PLAYER1, action)
+                move_order.append(action)
         else:
             result = 'f'
             while result == 'f':
                 try:
-                    action = int(input('move: ').strip())
+                    action = int(input('move (-1 to rewind): ').strip())
+                    if action == -1:
+                        if len(move_order) == 0:
+                            print('No stones placed yet.')
+                        if len(move_order) == 1:
+                            r = move_order.pop()
+                            print(colors.WARNING + 'Rewinding the move: {}'.format(r) + colors.ENDC)
+                            game.rewind(r)
+                        else:
+                            r = move_order.pop()
+                            print(colors.WARNING + 'Rewinding the move: {}'.format(r) + colors.ENDC)
+                            game.rewind(r)
+                            r = move_order.pop()
+                            print(colors.WARNING + 'Rewinding the move: {}'.format(r) + colors.ENDC)
+                            game.rewind(r)
+                        continue
                     _, _, result, _ = game.step(C_PLAYER2, action)
+                    move_order.append(action)
                 except KeyboardInterrupt:
                     exit()
                 except:
@@ -174,6 +191,7 @@ def play_vs_pONE(results, num_rows, num_cols):
                     print_init_board(game.num_cols, game.num_rows, game.C_PLAYER1, game.C_PLAYER2)
                     continue
             game.print_information_set(C_PLAYER1)
+        
         if TEST_MODE:
             game.printBoard()
         e -= 1; i += 1
