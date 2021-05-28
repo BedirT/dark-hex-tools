@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import font_manager as fm
 import seaborn as sns
 import pickle
 
-def heat_map(in_file):
+def heat_map(in_file, out_file, targets, title=None):
     with open(in_file, 'rb') as f:
         dct = pickle.load(f)
 
@@ -22,10 +23,15 @@ def heat_map(in_file):
     for e in y_size:
         round_tot_b = 0
         for h in x_size:
-            new_data_b.append(len([x for x in results[e][h] if results[e][h][x] != '=']))
-            new_data_tot.append(len(results[e][h]))
-            round_tot_b += new_data_b[-1]
-            round_tot_b_h[h] += new_data_tot[-1]
+            tot_b = 0
+            for x in results[e][h]:
+                if results[e][h][x] in targets:
+                    tot_b += 1
+            tot = len([x for x in results[e][h]])
+            new_data_b.append(tot_b)
+            new_data_tot.append(tot)
+            round_tot_b += tot_b
+            round_tot_b_h[h] += tot_b
         new_data_b.append(round_tot_b)
         all_total += round_tot_b
     round_tot_b_h.append(all_total)
@@ -37,10 +43,19 @@ def heat_map(in_file):
     mask = np.zeros((e_size+1, h_size+1))
     mask[:,-1] = True
     mask[-1,:] = True
-
-    sns.heatmap(df, mask=mask, cmap='Blues')
+    plt.rc('axes', titlesize=15, labelsize=12)     # fontsize of the axes title
+    
+    ax = sns.heatmap(df, mask=mask, cmap='Blues')
     sns.heatmap(df, alpha=0, cbar=False, annot=True, cmap='Blues', 
-                    fmt='g', annot_kws={"size": 12, "color":"g"})
+                    fmt='g', annot_kws={"size": 10, "color":"xkcd:kelly green", "animated":True, "fontweight":"bold"}, ax = ax)
+    title_prop = fm.FontProperties(fname="fonts/open-sans/OpenSans-Bold.ttf")
+    subtext_prop = fm.FontProperties(fname="fonts/open-sans/OpenSans-Regular.ttf")
+    # ax.set_title('lalala', fontproperties=prop)
 
-    plt.savefig('Visual/test.png')
-    plt.show()
+    if not title:
+        title = 'For board size ' + str(num_rows) + 'x' + str(num_cols) + ' number of ' + target + "'s"
+    plt.title(title, fontproperties=title_prop)
+    plt.xlabel('Number of Hidden Stones', fontproperties=subtext_prop)
+    plt.ylabel('Number of Empty cells', fontproperties=subtext_prop)
+    plt.savefig('Visual/'+ out_file + '.png')
+    plt.clf()

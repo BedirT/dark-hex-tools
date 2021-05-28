@@ -13,6 +13,7 @@ from Projects.base.util.colors import colors, pieces
 class Hex:
     C_PLAYER1 = pieces.C_PLAYER1
     C_PLAYER2 = pieces.C_PLAYER2
+    NEUTRAL = pieces.NEUTRAL
 
     '''
     valid_moves     - All the valid moves in the current board. Essentially
@@ -25,7 +26,8 @@ class Hex:
 
     def __init__(self, BOARD_SIZE=[3, 3], BOARD=None, 
                  verbose=True, legality_check=False,
-                 b_early_w=False, w_early_w=False, h=0):
+                 early_w_p1=False, early_w_p2=False, h=0,
+                 h_player=None):
         '''
         Initializing a board. 
 
@@ -38,7 +40,7 @@ class Hex:
         self.num_cells = self.num_rows * self.num_cols
 
         # to print game as a history
-        self.game_history = ['.'] * self.num_cells
+        self.game_history = [self.NEUTRAL] * self.num_cells
         self.cur_move_num = 1
 
         if BOARD:
@@ -47,14 +49,17 @@ class Hex:
             # change valid moves to empty cells
             self.valid_moves = list(range(self.num_cells))
         else:
-            self.BOARD = ['.'] * self.num_cells
+            self.BOARD = [self.NEUTRAL] * self.num_cells
             self.valid_moves = list(range(self.num_cells))
         self.done = False
         self.verbose = verbose
+
         self.legality_check = legality_check
-        self.b_early_w = b_early_w
-        self.w_early_w = w_early_w
+        self.early_w_p1 = early_w_p1
+        self.early_w_p2 = early_w_p2
         self.h = h
+        self.h_player = h_player
+
         self.CHECK = False
  
     def step(self, color, action):
@@ -102,7 +107,7 @@ class Hex:
         args:
             action    - The position to empty. In the format [row, column]
         '''
-        self.BOARD[action] = '.'
+        self.BOARD[action] = self.NEUTRAL
         self.valid_moves.append(action)
 
     def printBoard(self):
@@ -112,9 +117,9 @@ class Hex:
         if not self.verbose:
             print("Verbose is off, output is not shown.")
             return
-        if self.game_history.count('.') != self.BOARD.count('.'):
+        if self.game_history.count(self.NEUTRAL) != self.BOARD.count(self.NEUTRAL):
             for x in range(len(self.game_history)):
-                self.game_history[x] = self.BOARD[x] + '0' if self.BOARD[x] != '.' else '.'
+                self.game_history[x] = self.BOARD[x] + '0' if self.BOARD[x] != self.NEUTRAL else self.NEUTRAL
         print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols + colors.ENDC)
         print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)
         for cell in range(self.num_cells):
@@ -177,7 +182,7 @@ class Hex:
         returns:
             True if the action was valid, and false otherwise.
         '''
-        if self.BOARD[cell] != '.':
+        if self.BOARD[cell] != self.NEUTRAL:
             if self.verbose:
                 print('Invalid Action Attempted')
             return False
@@ -279,22 +284,32 @@ class Hex:
 
     def check_legal(self):
         # number of the stones are illegal
-        bNum = self.BOARD.count(self.C_PLAYER1)
-        wNum = self.BOARD.count(self.C_PLAYER2)
-        if (self.h + bNum + wNum > self.num_cells) or \
-           (bNum - (wNum + self.h) > 1 or (wNum + self.h) > bNum):
+        first_Num = self.BOARD.count(self.C_PLAYER1)
+        second_Num = self.BOARD.count(self.C_PLAYER2)
+        if self.h_player == self.C_PLAYER1:
+            first_Num += self.h
+        else:
+            second_Num += self.h
+        if (first_Num + second_Num > self.num_cells) or \
+           (first_Num - second_Num > 1 or second_Num > first_Num):
             return False
         
         # white wins with removing a white stone
-        if self.w_early_w and self.check_early_win(self.C_PLAYER2):
+        if self.early_w_p2 and self.check_early_win(self.C_PLAYER2):
             return False
         # black wins with removing a black stone
-        if self.b_early_w and self.check_early_win(self.C_PLAYER1):
+        if self.early_w_p1 and self.check_early_win(self.C_PLAYER1):
             return False
 
         return True
             
     def check_early_win(self, color):
+        '''
+        Returns false if any of the moves is not resulting with a win.
+
+        The game should be win for any stone removed in color, to be
+        a definite early win
+        '''
         for c in range(len(self.BOARD)):
             if self.BOARD[c] != color:
                 continue
@@ -302,9 +317,9 @@ class Hex:
             self.BOARD[c] = '.'; self.legality_check = False
             res = self.game_status()
             self.BOARD[c] = temp; self.legality_check = True
-            if res == color:
-                return True   
-        return False  
+            if res != color:
+                return False
+        return True  
 
 def customBoard_print(board, num_cols, num_rows):
     '''
