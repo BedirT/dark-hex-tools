@@ -47,7 +47,7 @@ class pONE:
         self.hid_p = self.color1 if self.vis_p == self.color2 else self.color2
         
         self.state_results = [[{} for _ in range(self.num_cells//2+1)] for _ in range(self.num_cells+1)]
-        self.prob1_wins = []
+        self.prob1_wins = [[{} for _ in range(self.num_cells//2+1)] for _ in range(self.num_cells+1)]
         self.find_positions()
     
     def pONE_search(self, state: tuple, e: int, h: int) -> bool:
@@ -81,16 +81,16 @@ class pONE:
                 vm = [i for i, x in enumerate(state) if x == self.neutral]
                 for v in vm:
                     if h == 0:
-                        n_state_b = self.update_state(state, v, self.vis_p, e-1, h) # black moves
+                        n_state_b, new_state = self.update_state(state, v, self.vis_p, e-1, h) # black moves
                         if n_state_b == self.vis_p:
-                            self.distance += self.find_distance(state, e-1, h) + 1
+                            self.distance += self.find_distance(new_state, e-1, h) + 1
                             return self.vis_p
                     elif h > 0:
-                        n_state_w = self.update_state(state, v, self.hid_p, e, h-1) # hit the hidden stone
-                        n_state_b = self.update_state(state, v, self.vis_p, e-1, h) # black plays
+                        n_state_w, new_state_w = self.update_state(state, v, self.hid_p, e, h-1) # hit the hidden stone
+                        n_state_b, new_state_b = self.update_state(state, v, self.vis_p, e-1, h) # black plays
                         if n_state_b == self.vis_p and n_state_w == self.vis_p:
-                            self.distance += min(self.find_distance(state, e, h-1),\
-                                                 self.find_distance(state, e-1, h)) + 1
+                            self.distance += min(self.find_distance(new_state_w, e, h-1),\
+                                                 self.find_distance(new_state_b, e-1, h)) + 1
                             return self.vis_p
         return False
 
@@ -111,7 +111,7 @@ class pONE:
         new_state = list(copy.deepcopy(state))
         new_state[loc] = color
         new_state = tuple(new_state)
-        return self.check_state(new_state, e, h)
+        return self.check_state(new_state, e, h), new_state
     
     def check_state(self, state: tuple, e: int, h: int) -> str:
         '''
@@ -296,3 +296,10 @@ class pONE:
                         seq[list(pos_w)] = self.color2
                         ls.append(tuple(seq))
         return ls
+
+    def keep_non_neutrals(self):
+        for e in range(self.num_cells+1):
+            for h in range((self.num_cells+1)//2):
+                for res in self.state_results[e][h]:
+                    if self.state_results[e][h][res][0] != '=':
+                        self.prob1_wins[e][h][res] = self.state_results[e][h][res]

@@ -4,9 +4,7 @@ import numpy as np
 import seaborn as sns; sns.set()
 import os, matplotlib
 
-
 matplotlib.use('Agg')
-
 
 IT = 6000
 RESULTS_DIR = os.path.join('results', 'liar-die-fsicfr')

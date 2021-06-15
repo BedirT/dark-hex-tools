@@ -1,28 +1,14 @@
-import pickle
-import random
+from time import sleep
+from Projects.pONE.pONE import tup_to_str
 from copy import copy
+import curses
 
 from Projects.pONE.user_tools.glance import glance
 from Projects.base.game.hex import customBoard_print, print_init_board
-from Projects.base.game.darkHex import DarkHex
-from Projects.base.util.drive import missing_in_file
-from Projects.base.util.print_tools import wrap_it, question_cont
 from Projects.base.util.colors import colors, pieces
+from Projects.base.util.curses_func import *
 
-preset_boards = [
-    [('.','W','.','W','.','.','.','.','B','B','.','.'), 
-     ('.','W','.','W','.','.','.','.','B','B','.','.')],
-    [('W','.','.','W','.','.','.','.','B','B','.','.'), 
-     ('W','.','.','W','.','.','.','.','B','B','.','.')],
-    [('.','.','.','.','.','W','W','B','.','.','.','B'), 
-     ('.','.','.','.','.','W','W','B','.','.','.','B')],
-    [('.','.','.','.','.','.','W','B','W','.','B','.'), 
-     ('.','.','.','.','.','.','W','B','W','.','B','.')],
-    [('.','W','.','.','.','.','W','B','.','.','B','.'), 
-     ('.','W','.','.','.','.','W','B','.','.','B','.')],
-    [('.','.','.','.','W','.','B','.','.','B','W','.'), 
-     ('.','.','.','.','W','.','B','.','.','B','W','.')],
-]
+from Projects.pONE.ui.menus import data_menu, customBoard_menu
 
 TEST_MODE = True
 
@@ -34,125 +20,21 @@ def player_play(e, h, results, game_board):
     for mv in range(len(game_board)):
         if game_board[mv] == '.':
             res[mv] = C_PLAYER1
-            if tuple(res) in results[e-1][h] and results[e-1][h][tuple(res)] == C_PLAYER1:
-                print('Sure win move exists for current game')
+            if tuple(res) in results[e-1][h] and \
+                results[e-1][h][tuple(res)][0] == C_PLAYER1:
                 return mv 
             res[mv] = '.'
 
-def set_custom_boards(game):
-    while True:
-        wrap_it('\t1) Enter your own boards', colors.QUESTIONS)
-        wrap_it('\t2) Choose from prewritten (Win moves)', colors.QUESTIONS)
-        wrap_it('\t3) Choose by glancing', colors.QUESTIONS)
-        ans = input().strip()
-        if ans == '1':
-            while True:
-                warning_text = 'The input should be in a string format without any spaces, dot ({}) specifies an empty cell, {} for player 1 and {} for player 2 stones. Do not use any other character. Entered board size (number of cells) should match the size of the string entered.'.format("'.'", C_PLAYER1, C_PLAYER2)
-                wrap_it(warning_text, colors.QUESTIONS)
-                # BOARD 1
-                wrap_it('Enter board for player 1: ', colors.QUESTIONS)
-                board1 = input().strip()
-                if len(board1) != game.num_rows * game.num_cols:
-                    wrap_it('Please enter a valid board, the string size doesnt match.', colors.WARNING)
-                    continue
-                ct = board1.count('.') + board1.count(C_PLAYER1) + board1.count(C_PLAYER2)
-                if ct != game.num_rows * game.num_cols:
-                    wrap_it('Please enter a valid board, there is an invalid char.', colors.WARNING)
-                    continue
-                # BOARD 2
-                wrap_it('Enter board for player 1: ', colors.QUESTIONS)
-                board2 = input().strip()
-                if len(board2) != game.num_rows * game.num_cols:
-                    wrap_it('Please enter a valid board, the string size doesnt match.', colors.WARNING)
-                    continue
-                ct = board2.count('.') + board2.count(C_PLAYER1) + board2.count(C_PLAYER2)
-                if ct != game.num_rows * game.num_cols:
-                    wrap_it('Please enter a valid board, there is an invalid char.', colors.WARNING)
-                    continue
-                # check if the boards are matching
-                suc = game.set_board([*board1], [*board2])
-                if not suc:
-                    wrap_it('Entered boards doesnt match. Please re-enter.', colors.WARNING)
-                    continue
-                wrap_it('Custom boards successfully set!', colors.SUCCESS)
-                break
-            break
-        elif ans == '2':
-            wrap_it('Please pick from the list of provided board positions.:', colors.MIDTEXT)
-            while True:
-                for i, board_pos in enumerate(preset_boards):
-                    print(colors.MIDTEXT + colors.BOLD + '{})'.format(i) + colors.ENDC)
-                    print(colors.C_PLAYER1 + colors.BOLD + 'Board for player 1' + colors.ENDC)
-                    customBoard_print(board_pos[0], game.num_cols, game.num_rows)
-                    print(colors.C_PLAYER2 + colors.BOLD + 'Board for player 2' + colors.ENDC)
-                    customBoard_print(board_pos[1], game.num_cols, game.num_rows)
-                choice = question_cont('Enter your choice:', int)
-                if choice < 0 or choice >= len(preset_boards):
-                    wrap_it('Invalid input please try again.', colors.WARNING)
-                    continue
-                board1 = preset_boards[choice][0]
-                board2 = preset_boards[choice][1]
-                suc = game.set_board([*board1], [*board2])
-                break
-            break
-        elif ans == '3':
-            ch = 0
-            if game.num_rows == 4 and game.num_cols == 3:
-                ch = 2
-            elif game.num_rows == 3 and game.num_cols == 3:
-                ch = 1
-            new_res, h = glance(board_type=ch)
-            while True:
-                try:
-                    choice = question_cont('Enter your choice:', int)
-                    board2 = new_res[choice]
-                    board1 = calc_new_board(board2, C_PLAYER1, h)
-                    suc = game.set_board([*board1], [*board2])
-                    break
-                except KeyboardInterrupt:
-                    exit()
-                except:
-                    wrap_it('Invalid value. Try again.', colors.WARNING)
-            break
-        else:
-            wrap_it('Please enter a valid value.', colors.WARNING)
-    return game
-
-def calc_new_board(board, clr, h):
-    tmp = copy.copy(board)
-    for _ in range(h):
-        while True:
-            idx = random.randint(0, len(board)-1)
-            if tmp[idx] == '.':
-                tmp[idx] = clr
-                break
-    return tmp
-
-def play_vs_pONE(results, num_rows, num_cols):
-    game = DarkHex(BOARD_SIZE=[num_rows,num_cols])
-    
-    while True:
-        wrap_it('Do you want to start from a custom board?', colors.QUESTIONS) 
-        wrap_it('\t1) Yes', colors.QUESTIONS)
-        wrap_it('\t2) No', colors.QUESTIONS)
-        ans = input().strip()
-        if ans == '1':
-            game = set_custom_boards(game)
-            break
-        elif ans == '2':
-            break
-        else:
-            wrap_it('Please enter a valid value.', colors.WARNING)
+def play_vs_pONE(stdscr, results, num_rows, num_cols):
+    game = curses.wrapper(customBoard_menu, num_rows, num_cols)
     
     e = game.BOARD.count('.')
     result = '='
 
     i = 0
-    print('Player 1 (B) is played by the pONE agent\n\
-    Player 2 (B) is you, please make a move according\n\
-    to the given table indexes. Here\n\
-    are the board indexes;\n')
-    print_init_board(game.num_cols, game.num_rows)
+    
+    print_init_board_middle(stdscr, game.num_cols, game.num_rows)
+    sleep(2)
     move_order = []
     while result == '=':
         if i % 2 == 0:
@@ -160,51 +42,44 @@ def play_vs_pONE(results, num_rows, num_cols):
             while result == 'f':
                 action = player_play(e, game.totalHidden_for_player(C_PLAYER1), 
                                      results, game.BOARDS[C_PLAYER1])
+                print_center(stdscr, action)
+                sleep(5)
                 _, _, result, _ = game.step(C_PLAYER1, action)
                 move_order.append(action)
         else:
             result = 'f'
             while result == 'f':
-                try:
-                    action = int(input('move (-1 to rewind): ').strip())
-                    if action == -1:
-                        if len(move_order) == 0:
-                            print('No stones placed yet.')
-                        if len(move_order) == 1:
-                            r = move_order.pop()
-                            print(colors.WARNING + 'Rewinding the move: {}'.format(r) + colors.ENDC)
-                            game.rewind(r)
-                        else:
-                            r = move_order.pop()
-                            print(colors.WARNING + 'Rewinding the move: {}'.format(r) + colors.ENDC)
-                            game.rewind(r)
-                            r = move_order.pop()
-                            print(colors.WARNING + 'Rewinding the move: {}'.format(r) + colors.ENDC)
-                            game.rewind(r)
-                        continue
-                    _, _, result, _ = game.step(C_PLAYER2, action)
-                    move_order.append(action)
-                except KeyboardInterrupt:
-                    exit()
-                except:
-                    print("Please enter a valid input, the format should be an int. i.e. 3. Valid indexes shown as in the board below;")
-                    print_init_board(game.num_cols, game.num_rows, game.C_PLAYER1, game.C_PLAYER2)
+                action = print_board_middle(stdscr, game.BOARD, game.num_cols, game.num_rows)
+                if action == -1:
+                    if len(move_order) == 0:
+                        warning = 'No stones placed yet.'
+                    if len(move_order) == 1:
+                        r = move_order.pop()
+                        warning = 'Rewinding the move: {}'.format(r)
+                        game.rewind(r)
+                    else:
+                        r = move_order.pop()
+                        warning = 'Rewinding the move: {}'.format(r)
+                        game.rewind(r)
+                        r = move_order.pop()
+                        warning += ' & Rewinding the move: {}'.format(r)
+                        game.rewind(r)
                     continue
-            game.print_information_set(C_PLAYER1)
+                _, _, result, _ = game.step(C_PLAYER2, action)
+                move_order.append(action)
+            # game.print_information_set(C_PLAYER1)
         
-        if TEST_MODE:
-            game.printBoard()
+        # if TEST_MODE:
+        #     game.printBoard()
         e -= 1; i += 1
 
-def play_pONE(in_file=None):
-    if not in_file:
-        in_file = missing_in_file()
-            
-    with open(in_file, 'rb') as f:
-        dct = pickle.load(f)
+    print_center(stdscr, 'Winner is ' + result.upper())
+
+def play_pONE(stdscr):
+    dct = curses.wrapper(data_menu)
 
     results = dct['results']
     num_cols = dct['num_cols']
     num_rows = dct['num_rows']
 
-    play_vs_pONE(results, num_rows, num_cols)
+    play_vs_pONE(stdscr, results, num_rows, num_cols)

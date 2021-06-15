@@ -1,58 +1,42 @@
 # Just to see what we have as definite win moves
-import pickle
 from Projects.base.util.colors import colors, pieces
-from Projects.base.util.print_tools import wrap_it
 from Projects.base.game.hex import customBoard_print
-from Projects.base.util.drive import missing_in_file
+from Projects.pONE.ui.menus import data_menu
 
-def glance(in_file=None, board_type=None):
-    if board_type:
-        in_file = missing_in_file(choice=board_type)
-    else:
-        if not in_file:
-            in_file = missing_in_file()
+from Projects.base.util.curses_func import *
+import curses
 
-    with open(in_file, 'rb') as f:
-        dct = pickle.load(f)
+def glance(stdscr):
+    dct = data_menu(stdscr)
 
     results = dct['results']
     num_cols = dct['num_cols'] 
     num_rows = dct['num_rows']
+    visible_player = dct['visible_player']
+    hidden_player = dct['hidden_player']
     num_of_moves = num_cols * num_rows
 
-    while True:
-        wrap_it('Printing the results given e and h. You can enter ctrl+d to get out at any time. Please enter e and h with a space in between (will print all results if -1 -1): ', colors.MIDTEXT, end=' ')
-        try:
-            e, h = map(int, input().strip().split(' '))
-        except KeyboardInterrupt:
-            exit()
-        except:
-            wrap_it('Invalid input please try again.', colors.WARNING)
-            continue
-        game_id = 0
-        new_results = []
-        if e == -1 and h == -1:
-            for e in range(num_of_moves):
-                for h in range(num_of_moves//2):
-                    for res in results[e][h]:
-                        if results[e][h][res] in [pieces.C_PLAYER1, pieces.C_PLAYER2]:
-                            print(colors.UNDERLINE + str(game_id) + ' | Winner: ' + results[e][h][res] + colors.ENDC)
-                            customBoard_print(res, num_cols, num_rows)
-                            game_id+=1
-                            new_results.append(res)
-            break
-        else:
-            try:
+    input_item = text_box(stdscr, "Please enter number of empty cells (e)", 10,
+                            extra_notes= "Please type 'all' to include all possible e and h values.")
+    e = input_item.strip()
+    if e.lower() == 'all':
+        e = -1
+        h = -1
+    else:
+        e = int(e)
+        input_item = text_box(stdscr, "Please enter number of hidden cells (h)", 10)                        
+        h = int(input_item.strip())
+
+    if e == -1 and h == -1:
+        for e in range(num_of_moves):
+            for h in range(num_of_moves//2):
                 for res in results[e][h]:
-                    if results[e][h][res] == 'B':
-                        print(colors.UNDERLINE + str(game_id) + colors.ENDC)
-                        customBoard_print(res, num_cols, num_rows)
-                        game_id+=1
-                        new_results.append(res)
-                break
-            except:
-                print(colors.WARNING + 'Wrong e or h value entered. Try again.' + colors.ENDC)
-    return new_results, h
+                    if results[e][h][res][0] in [visible_player, hidden_player]:
+                        customBoard_print_curses(stdscr, res, num_cols, num_rows)
+    else:
+        for res in results[e][h]:
+            if results[e][h][res][0] == visible_player:
+                customBoard_print_curses(stdscr, res, num_cols, num_rows)
         
 
     

@@ -16,4 +16,13 @@ parser.add_argument("--out_file", "-f", default="default_file", type=str,
                     here is an example usage:\n\t'filepath/filename'")  
 args = parser.parse_args()
 
-train_pONE(args.out_file, args.num_of_rows, args.num_of_cols, args.run_for_player)
+cs = [3]
+rs = [3]
+for c in cs:
+    for r in rs:
+        if c == 4 and r == 4:
+            break
+        train_pONE('firstPlayer', r, c, 'B')
+        train_pONE('secondPlayer', r, c, 'W')
+
+# train_pONE(args.out_file, args.num_of_rows, args.num_of_cols, args.run_for_player)
