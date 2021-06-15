@@ -20,12 +20,13 @@ class DarkHex(Hex):
         self.BOARDS = {self.C_PLAYER2: deepcopy(self.BOARD), self.C_PLAYER1: deepcopy(self.BOARD)}
 
         self.set_board(custom_board_C_PLAYER1, custom_board_C_PLAYER2)
-        self.num_moves = {self.C_PLAYER2: 0, self.C_PLAYER1: 0}
+        self.num_stones = {self.C_PLAYER2: 0, self.C_PLAYER1: 0}
         self.num_opp_known = {self.C_PLAYER2: 0, self.C_PLAYER1: 0}
 
         self.valid_moves_colors = {self.C_PLAYER2: deepcopy(self.valid_moves), self.C_PLAYER1: deepcopy(self.valid_moves)}
+        self.move_history = {self.C_PLAYER1: [], self.C_PLAYER2: []}
 
-    def rewind(self, action):
+    def rewind(self):
         '''
         Rewinding the action given; removing the move made on the given position
         and adding the new empty position to the valid_moves.
@@ -33,14 +34,31 @@ class DarkHex(Hex):
         args:
             action    - The position to empty. In the format [row, column]
         '''
-        self.BOARD[action] = '.'
-        self.valid_moves.append(action)
-
-        self.BOARDS[self.C_PLAYER1][action] = '.'
-        self.valid_moves_colors[self.C_PLAYER1].append(action)
-
-        self.BOARDS[self.C_PLAYER2][action] = '.'
-        self.valid_moves_colors[self.C_PLAYER2].append(action)
+        last_move = None
+        if self.turn_info() == self.C_PLAYER2:
+            last_move = self.move_history[self.C_PLAYER1].pop()
+            if self.BOARDS[self.C_PLAYER1][last_move] == self.C_PLAYER1: # move was a success
+                self.num_stones[self.C_PLAYER1] -= 1
+                self.BOARD[last_move] = '.'
+                self.game_history[last_move] =  '.'
+                self.valid_moves.add(last_move)
+                self.cur_move_num -= 1
+            else:
+                self.num_opp_known[self.C_PLAYER1] -= 1
+            self.BOARDS[self.C_PLAYER1][last_move] = '.'
+            self.valid_moves_colors[self.C_PLAYER1].add(last_move)
+        else:
+            last_move = self.move_history[self.C_PLAYER2].pop()
+            if self.BOARDS[self.C_PLAYER2][last_move] == self.C_PLAYER2: # move was a success
+                self.num_stones[self.C_PLAYER2] -= 1
+                self.BOARD[last_move] = '.'
+                self.game_history[last_move] =  '.'
+                self.valid_moves.add(last_move)
+                self.cur_move_num -= 1
+            else:
+                self.num_opp_known[self.C_PLAYER2] -= 1
+            self.BOARDS[self.C_PLAYER2][last_move] = '.'
+            self.valid_moves_colors[self.C_PLAYER2].add(last_move)
 
     def set_board(self, custom_board_C_PLAYER1, custom_board_C_PLAYER2):
         if custom_board_C_PLAYER1:
@@ -57,7 +75,6 @@ class DarkHex(Hex):
                 self.BOARD[i] = c2
         return True #success
             
-
     def print_information_set(self, player):
         if not self.verbose:
             print("Verbose is off, output is not shown.")
@@ -68,7 +85,7 @@ class DarkHex(Hex):
                        self.totalHidden_for_player(player)))
 
     def totalHidden_for_player(self, player):
-        return self.num_moves[self.rev_color[player]] \
+        return self.num_stones[self.rev_color[player]] \
                - self.num_opp_known[player]
     
     def printBoard_for_player(self, player):
@@ -153,6 +170,7 @@ class DarkHex(Hex):
             self.BOARDS[color][cell] = self.rev_color[color]
             self.valid_moves_colors[color].remove(cell)
             self.num_opp_known[color] += 1
+            self.move_history[color].append(cell)
             if self.verbose:
                 print('This cell is taken.')
                 print('Valid moves are:', self.valid_moves_colors[color])
@@ -163,8 +181,28 @@ class DarkHex(Hex):
         self.BOARDS[color][cell] = color
         self.valid_moves_colors[color].remove(cell)
 
-        self.num_moves[color] += 1
+        self.move_history[color].append(cell)
+        print(self.move_history)
+        self.num_stones[color] += 1
 
         self.game_history[cell] = color + str(self.cur_move_num)
         self.cur_move_num += 1
         return True
+
+    def turn_info(self):
+        '''
+        Checks which players turn is it given the state and
+        the number of hidden stones.
+        
+        Args:
+            - state:    State to check the legality.
+            - h:        Number of hidden stones.
+        Returns:
+            - C_PLAYER1/C_PLAYER2   Player whose turn it is.
+        '''
+        count_1 = self.BOARD.count(self.C_PLAYER1)
+        count_2 = self.BOARD.count(self.C_PLAYER2)
+        if count_1 <= count_2:
+            return self.C_PLAYER1
+        else:
+            return self.C_PLAYER2

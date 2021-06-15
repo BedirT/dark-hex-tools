@@ -47,10 +47,10 @@ class Hex:
             self.BOARD = BOARD
             # add check board_size
             # change valid moves to empty cells
-            self.valid_moves = list(range(self.num_cells))
+            self.valid_moves = set(range(self.num_cells))
         else:
             self.BOARD = [self.NEUTRAL] * self.num_cells
-            self.valid_moves = list(range(self.num_cells))
+            self.valid_moves = set(range(self.num_cells))
         self.done = False
         self.verbose = verbose
 
