@@ -20,13 +20,11 @@ class DarkHex(Hex):
         self.BOARDS = {self.C_PLAYER2: deepcopy(self.BOARD), self.C_PLAYER1: deepcopy(self.BOARD)}
 
         self.set_board(custom_board_C_PLAYER1, custom_board_C_PLAYER2)
-        self.num_stones = {self.C_PLAYER2: 0, self.C_PLAYER1: 0}
-        self.num_opp_known = {self.C_PLAYER2: 0, self.C_PLAYER1: 0}
 
         self.valid_moves_colors = {self.C_PLAYER2: deepcopy(self.valid_moves), self.C_PLAYER1: deepcopy(self.valid_moves)}
         self.move_history = {self.C_PLAYER1: [], self.C_PLAYER2: []}
 
-    def rewind(self):
+    def rewind(self, passive=False):
         '''
         Rewinding the action given; removing the move made on the given position
         and adding the new empty position to the valid_moves.
@@ -35,30 +33,24 @@ class DarkHex(Hex):
             action    - The position to empty. In the format [row, column]
         '''
         last_move = None
-        if self.turn_info() == self.C_PLAYER2:
-            last_move = self.move_history[self.C_PLAYER1].pop()
-            if self.BOARDS[self.C_PLAYER1][last_move] == self.C_PLAYER1: # move was a success
-                self.num_stones[self.C_PLAYER1] -= 1
-                self.BOARD[last_move] = '.'
-                self.game_history[last_move] =  '.'
-                self.valid_moves.add(last_move)
-                self.cur_move_num -= 1
-            else:
-                self.num_opp_known[self.C_PLAYER1] -= 1
-            self.BOARDS[self.C_PLAYER1][last_move] = '.'
-            self.valid_moves_colors[self.C_PLAYER1].add(last_move)
+        if passive:
+            player = self.turn_info()
         else:
-            last_move = self.move_history[self.C_PLAYER2].pop()
-            if self.BOARDS[self.C_PLAYER2][last_move] == self.C_PLAYER2: # move was a success
-                self.num_stones[self.C_PLAYER2] -= 1
-                self.BOARD[last_move] = '.'
-                self.game_history[last_move] =  '.'
-                self.valid_moves.add(last_move)
-                self.cur_move_num -= 1
-            else:
-                self.num_opp_known[self.C_PLAYER2] -= 1
-            self.BOARDS[self.C_PLAYER2][last_move] = '.'
-            self.valid_moves_colors[self.C_PLAYER2].add(last_move)
+            player = self.rev_color[self.turn_info()]
+        if not self.move_history[player]:
+            return
+        last_move = self.move_history[player].pop()
+        if self.BOARDS[player][last_move] == player: # move was a success
+            # fnuctional
+            self.BOARD[last_move] = '.'
+            self.valid_moves.add(last_move)
+            
+            # printing func
+            self.cur_move_num -= 1
+            self.game_history[last_move] =  '.'
+
+        self.BOARDS[player][last_move] = '.'
+        self.valid_moves_colors[player].add(last_move)
 
     def set_board(self, custom_board_C_PLAYER1, custom_board_C_PLAYER2):
         if custom_board_C_PLAYER1:
@@ -85,8 +77,8 @@ class DarkHex(Hex):
                        self.totalHidden_for_player(player)))
 
     def totalHidden_for_player(self, player):
-        return self.num_stones[self.rev_color[player]] \
-               - self.num_opp_known[player]
+        return self.BOARD.count(self.rev_color[player]) -\
+               self.BOARDS[player].count(self.rev_color[player])
     
     def printBoard_for_player(self, player):
         '''
@@ -169,7 +161,6 @@ class DarkHex(Hex):
         if self.BOARD[cell] != '.':
             self.BOARDS[color][cell] = self.rev_color[color]
             self.valid_moves_colors[color].remove(cell)
-            self.num_opp_known[color] += 1
             self.move_history[color].append(cell)
             if self.verbose:
                 print('This cell is taken.')
@@ -182,8 +173,6 @@ class DarkHex(Hex):
         self.valid_moves_colors[color].remove(cell)
 
         self.move_history[color].append(cell)
-        print(self.move_history)
-        self.num_stones[color] += 1
 
         self.game_history[cell] = color + str(self.cur_move_num)
         self.cur_move_num += 1

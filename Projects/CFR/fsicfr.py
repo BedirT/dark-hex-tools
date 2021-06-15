@@ -2,22 +2,23 @@ import numpy as np
 from Projects.base.util.print_tools import seq_to_str
 from Projects.base.game.darkHex import DarkHex
 from tqdm import tqdm
-from copy import deepcopy
+from copy import deepcopy, copy
 from Projects.base.util.colors import pieces
 
 class Node:
-    def __init__(self, board1, board2, player, num_actions) -> None:
+    def __init__(self, board, move_history, player, h) -> None:
         # FIX: Player is 0/1 - Might need B/W instead
         self.player = player
-        self.num_actions = num_actions
-        self.board1 = board1
-        self.board2 = board2
+        self.num_actions = len(board)
+        self.move_history = move_history
+        self.board = board
+        self.h = h
 
-        self.board = self.board1 if self.player == 0 else self.board2
+        self.infoSet = self.player + '-' + seq_to_str(self.move_history) + '-' +  seq_to_str(self.board) +'-' +  str(h)
 
-        self.strategy = np.zeros(num_actions)
-        self.regretSum = np.zeros(num_actions)
-        self.strategySum = np.zeros(num_actions)
+        self.strategy = np.zeros(self.num_actions)
+        self.regretSum = np.zeros(self.num_actions)
+        self.strategySum = np.zeros(self.num_actions)
 
         self.T = 0
         self.u = 0
@@ -76,15 +77,16 @@ class FSICFR:
         for it in num_of_iterations:
             for node in self.nodes: # top-sorted nodes
                 strategy = node.getStrategy()
-                game = DarkHex(BOARD_SIZE=[self.num_rows, self.num_cols], 
-                               custom_board_C_PLAYER1=node.board1,
-                               custom_board_C_PLAYER2=node.board2,
-                               verbose=False)
+                
                 for a in range(self.num_of_actions): # for each possible move
                     # take action a
+                    game = DarkHex(BOARD_SIZE=[self.num_rows, self.num_cols], 
+                                   custom_board_C_PLAYER1=node.board,
+                                   custom_board_C_PLAYER2=node.board2,
+                                   verbose=False)
                     _, _, res, _ = game.step(node.player, a)
                     if res == 'f':
-                        game.rewind()
+                        game.rewind(True)
                         continue
                     infoset_c = self.find_infoset(self.game)
                     game.rewind()
@@ -114,7 +116,7 @@ class FSICFR:
                     for a in node.pos_actions:
                         _, _, res, _ = self.game.step(node.player, a)
                         if res == 'f':
-                            game.rewind()
+                            game.rewind(True)
                             continue
                         infoset_c = self.find_infoset(game)
                         game.rewind()
@@ -142,13 +144,38 @@ class FSICFR:
                         node.strategySum[a] = 0
                         
     def __init_board_topSorted(self) -> list:
-        # ls = []
-        game = DarkHex([2, 2], True)
-        for a in game.valid_moves_colors[pieces.C_PLAYER1]:
-            game.step(pieces.C_PLAYER1, a)
-            game.print_information_set(pieces.C_PLAYER1)
-            game.print_information_set(pieces.C_PLAYER2)
+        ls = []
+        game = DarkHex([3, 3], False)
+        self.__topSort_play(game, 0, ls)
+
+        for i in range(len(ls)):
+            print(ls[i].infoSet)
+        print(len(ls))
+        return ls
+
+    def __topSort_play(self, game, turn, stack) -> None:
+        if game.game_status() != '=':
+            return
+        player = pieces.C_PLAYER1 if turn % 2 == 0 else pieces.C_PLAYER2
+        valid_moves = copy(game.valid_moves_colors[player])
+        for a in valid_moves:
+            _, _, res, _ = game.step(player, a)
+            if res == 'f':
+                self.__topSort_play(game, turn, stack)
+                game.rewind(True)
+                continue
+            # ! Create the node here instead of infoset
+            # * CREATING THE NODE
+            r_p = game.rev_color[player]
+            node = Node(board=game.BOARDS[r_p], 
+                        move_history=game.move_history[r_p],
+                        player=r_p, 
+                        h=game.totalHidden_for_player(r_p))
+            stack.append(node)
+            # *******************
+            self.__topSort_play(game, turn+1, stack)
+            
             game.rewind()
-        # return ls
+            pass
 
 cfr = FSICFR()
