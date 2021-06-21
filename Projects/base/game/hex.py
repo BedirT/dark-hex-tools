@@ -321,6 +321,24 @@ class Hex:
                 return False
         return True  
 
+    def turn_info(self):
+        '''
+        Checks which players turn is it given the state and
+        the number of hidden stones.
+        
+        Args:
+            - state:    State to check the legality.
+            - h:        Number of hidden stones.
+        Returns:
+            - C_PLAYER1/C_PLAYER2   Player whose turn it is.
+        '''
+        count_1 = self.BOARD.count(self.C_PLAYER1)
+        count_2 = self.BOARD.count(self.C_PLAYER2)
+        if count_1 <= count_2:
+            return self.C_PLAYER1
+        else:
+            return self.C_PLAYER2
+
 def customBoard_print(board, num_cols, num_rows):
     '''
     Method for printing the board in a nice format.
