@@ -6,6 +6,9 @@ class pairs:
     C_PLAYER1 = 3
     C_PLAYER2 = 4
     NEUTRAL = 5
+    C_PLAYER1_selected = 6
+    C_PLAYER2_selected = 7
+    NEUTRAL_selected = 8
 
 def print_menu(stdscr, selected_row_idx, menu, 
                ignore_items=None, colors_for_ignored=None):
@@ -102,7 +105,9 @@ def print_init_board_middle(stdscr, num_cols, num_rows):
 
     stdscr.refresh()
 
-def print_board_middle(stdscr, board, num_cols, num_rows, warning=None):
+def print_board(stdscr, cur_row, cur_col, board, warning=None):
+    num_rows = len(board)
+    num_cols = len(board[0])
     num_cells = num_cols * num_rows
 
     stdscr.clear()
@@ -123,6 +128,13 @@ def print_board_middle(stdscr, board, num_cols, num_rows, warning=None):
             elif col == num_cols-1: # last col
                 stdscr.addstr(y+2+row, x+(col+1)*3+2+spaces, '\\' + pieces.C_PLAYER2)
             else:
+                if row-1 == cur_row and col-1 == cur_col:
+                    if board[cell] == pieces.C_PLAYER1:
+                        clr = pairs.C_PLAYER1_selected # player1
+                    elif board[cell] == pieces.C_PLAYER2:
+                        clr = pairs.C_PLAYER2_selected # player2
+                    else:
+                        clr = pairs.NEUTRAL_selected # neutral
                 if board[cell] == pieces.C_PLAYER1:
                     clr = pairs.C_PLAYER1 # player1
                 elif board[cell] == pieces.C_PLAYER2:
@@ -134,32 +146,15 @@ def print_board_middle(stdscr, board, num_cols, num_rows, warning=None):
                 stdscr.attron(curses.color_pair(clr))
             cell += 1
     y+=row
-    
+
     stdscr.addstr(y+3, x+spaces+2, '-' * (num_cols * 3 +1))
     stdscr.addstr(y+4, x, ' ' * (num_rows+4) + '{0: <3}'.format(pieces.C_PLAYER1) * num_cols)
 
-    y += 6
-    box_size = 10
-    editwin = curses.newwin(1, box_size, y-1, w//2-(box_size//2))
-    rectangle(stdscr, y-2 , w//2-(box_size//2)-3, y, w//2+(box_size//2)+3)
-
-    tx = 'Ctrl-H: Del  |  Ctrl-F: R  |  Ctrl-B: L'
-    x = w//2 - len(tx)//2
-    stdscr.addstr(y + 2, x, tx)
-    x = w//2 - len(warning)//2
-    if warning:
-        stdscr.attron(curses.color_pair(2))  
-        stdscr.addstr(y + 3, x, warning)
-        stdscr.attron(curses.color_pair(2))  
+    # if warning:
+    #     stdscr.attron(curses.color_pair(2))  
+    #     stdscr.addstr(y + 3, x, warning)
+    #     stdscr.attron(curses.color_pair(2))  
     stdscr.refresh()
-
-    box = Textbox(editwin)
-
-    # Let the user edit until Ctrl-G is struck.
-    box.edit()
-
-    # Get resulting contents
-    return box.gather()
 
 def text_box(stdscr, input_text, box_size, extra_notes=None):
     stdscr.clear()

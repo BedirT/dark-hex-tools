@@ -6,6 +6,8 @@ from Projects.pONE.pONE import pONE
 def train_pONE(out_file, rows, cols, visible_player):
     p = pONE([rows, cols], visible_player)
     p.keep_non_neutrals()
+    print(len(p.prob1_wins[8][0]))
+    exit()
     
     dct = {
             'results': p.prob1_wins,

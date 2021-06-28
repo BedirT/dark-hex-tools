@@ -33,7 +33,8 @@ def data_menu(stdscr):
                 in_file = 'Exp_Results/pONE/3x3/firstPlayer.pkl'
                 my_file = Path(in_file)
                 if not my_file.is_file():
-                    download_file_from_google_drive('1lYwM-hztNPJU4n04is0__iw2B7ofiJQf', in_file)
+                    exit()
+                #     download_file_from_google_drive('1lYwM-hztNPJU4n04is0__iw2B7ofiJQf', in_file)
                 with open(in_file, 'rb') as f:
                     dct = pickle.load(f)
                 return dct
@@ -42,7 +43,8 @@ def data_menu(stdscr):
                 in_file = 'Exp_Results/pONE/3x3/secondPlayer.pkl'
                 my_file = Path(in_file)
                 if not my_file.is_file():
-                    download_file_from_google_drive('1gkcSdUXI2W960eOmjNHBkxLo1D7M-eYn', in_file)
+                    exit()
+                #     download_file_from_google_drive('1gkcSdUXI2W960eOmjNHBkxLo1D7M-eYn', in_file)
                 with open(in_file, 'rb') as f:
                     dct = pickle.load(f)
                 return dct

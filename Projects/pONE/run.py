@@ -4,7 +4,6 @@ import Projects.pONE.ui.main_menu as mm
 from Projects.base.util.curses_func import *
 
 def main_menu(stdscr):
-    mm.play(stdscr)
     main_menu = ['{:^{}}'.format('pONE', 25), '{:^{}}'.format('@BedirT', 25), 
         'Train with pONE', 'Play against pONE', 'Have a glance at the data',
         'Plot heatmaps', 'Exit']
@@ -16,9 +15,13 @@ def main_menu(stdscr):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE) 
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_RED)
 
-    curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLUE) # c1
-    curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_CYAN)   # c2
-    curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_WHITE) # neut
+    curses.init_pair(pairs.C_PLAYER1, curses.COLOR_WHITE, curses.COLOR_BLUE) # c1
+    curses.init_pair(pairs.C_PLAYER2, curses.COLOR_BLACK, curses.COLOR_CYAN) # c2
+    curses.init_pair(pairs.NEUTRAL, curses.COLOR_BLACK, curses.COLOR_WHITE) # neut
+
+    curses.init_pair(pairs.C_PLAYER1_selected, curses.COLOR_BLUE, curses.COLOR_WHITE) # c1
+    curses.init_pair(pairs.C_PLAYER2_selected, curses.COLOR_CYAN, curses.COLOR_BLACK)   # c2
+    curses.init_pair(pairs.NEUTRAL_selected, curses.COLOR_WHITE, curses.COLOR_BLACK) # neut
 
     # specify the current selected row
     current_row = 2

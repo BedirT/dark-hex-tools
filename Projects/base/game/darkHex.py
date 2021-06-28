@@ -177,3 +177,22 @@ class DarkHex(Hex):
         self.game_history[cell] = color + str(self.cur_move_num)
         self.cur_move_num += 1
         return True
+
+    def turn_info(self):
+        '''
+        Checks which players turn is it given the state and
+        the number of hidden stones.
+        
+        Args:
+            - state:    State to check the legality.
+            - h:        Number of hidden stones.
+        Returns:
+            - C_PLAYER1/C_PLAYER2   Player whose turn it is.
+        '''
+        count_1 = self.BOARD.count(self.C_PLAYER1)
+        count_2 = self.BOARD.count(self.C_PLAYER2)
+
+        if count_1 <= count_2:
+            return self.C_PLAYER1
+        else:
+            return self.C_PLAYER2

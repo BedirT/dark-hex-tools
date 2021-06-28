@@ -334,6 +334,11 @@ class Hex:
         '''
         count_1 = self.BOARD.count(self.C_PLAYER1)
         count_2 = self.BOARD.count(self.C_PLAYER2)
+        if self.h_player == self.C_PLAYER1:
+            count_1 += self.h
+        elif self.h_player == self.C_PLAYER2:
+            count_2 += self.h
+
         if count_1 <= count_2:
             return self.C_PLAYER1
         else:
