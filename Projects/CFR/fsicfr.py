@@ -6,6 +6,7 @@ from tqdm import tqdm
 from copy import deepcopy, copy
 from Projects.base.util.colors import pieces
 from collections import defaultdict
+import pickle
 
 class Node:
     def __init__(self, board, move_history, player, h) -> None:
@@ -79,7 +80,8 @@ class FSICFR:
 
     def train(self, num_of_iterations) -> None:
         regret = [[0.0, 0.0] for _ in range(self.num_actions)]
-        for it in range(num_of_iterations):
+        for it in tqdm(range(num_of_iterations)):
+        # for it in range(num_of_iterations):
             for node in self.nodes: # top-sorted nodes
                 if node.is_terminal:
                     continue
@@ -92,15 +94,18 @@ class FSICFR:
                     # * board state to the -children- to traverse later
                     if node.h > 0:
                         new_board = self.__add_stone(node.board, a, rev_player)
-                        if self.__is_board_legal(new_board, rev_player, node.player):
+                        if self.__is_board_legal_wTerminal(new_board, rev_player, node.player, node.h-1):
                             children.append(get_infoset(node.player, new_board, node.h-1))
                     new_board = self.__add_stone(node.board, a, node.player)
-                    if self.__is_board_legal(new_board, rev_player, node.player):
+                    if self.__is_board_legal_wTerminal(new_board, rev_player, node.player, node.h):
                         children.append(get_infoset(node.player, new_board, node.h))
                     for infoset_c in children:
                         # update visits
                         # if infoset_c not in self.nodes_dict:
                         #     continue
+                        # if self.nodes_dict[infoset_c].board == ['B', 'W', '.', 'B'] and self.nodes_dict[infoset_c].player == 'W':
+                        #     print('here')
+                        #     pass
                         self.nodes_dict[infoset_c].visits += node.visits
                         # update the rweights
                         # print(strategy[a], node.pSum1, node.pSum2)
@@ -126,11 +131,11 @@ class FSICFR:
                         # * update the board with action a and add the new
                         # * board state to the -children- to traverse later
                         new_board = self.__add_stone(node.board, a, node.player)
-                        if self.__is_board_legal(new_board, rev_player, node.player):
+                        if self.__is_board_legal_wTerminal(new_board, rev_player, node.player, node.h):
                             children.append(get_infoset(node.player, new_board, node.h))
                         if node.h > 0:
                             new_board = self.__add_stone(node.board, a, rev_player)
-                            if self.__is_board_legal(new_board, rev_player, node.player):
+                            if self.__is_board_legal_wTerminal(new_board, rev_player, node.player, node.h-1):
                                 children.append(get_infoset(node.player, new_board, node.h-1))
                         for i, infoset_c in enumerate(children):
                             if self.nodes_dict[infoset_c].player == node.player:
@@ -159,7 +164,8 @@ class FSICFR:
                         node.strategySum[a] = 0
 
         for node in self.nodes:
-            print(node.infoSet, node.getAverageStrategy())
+            if not node.is_terminal:
+                print(node.infoSet, node.getAverageStrategy())
                         
     def __init_board_topSorted(self) -> list:
         # ! Remove more states using pONE
@@ -169,73 +175,100 @@ class FSICFR:
         nodes = {}
         visited = defaultdict(lambda: False)
         game = DarkHex([self.num_rows, self.num_cols], False)
-        self.__topSort_play(game, 0, ls, visited)
+        self.__topSort_play(game, ls, visited)
 
         for i in range(len(ls)-1, -1, -1):
             nodes[ls[i].infoSet] = ls[i]
-        # print(len(nodes))
+        print("Phase 1 has ended...")
+        print("{} number of unique states".format(len(nodes)))
         return ls, nodes
 
-    def __topSort_play(self, game, turn, stack, visited) -> None:
-        player = pieces.C_PLAYER1 if turn % 2 == 0 else pieces.C_PLAYER2
-        rev_player = pieces.C_PLAYER1 if player == pieces.C_PLAYER2 else pieces.C_PLAYER1
-        # if not self.__is_board_legal(game.BOARD, rev_player, player):
-        #     return
+    def __topSort_play(self, game, stack, visited) -> None:
+        player = game.turn_info()
+        rev_player = pieces.C_PLAYER1 if player == pieces.C_PLAYER2 else pieces.C_PLAYER2
         valid_moves = copy(game.valid_moves_colors[player])
         for a in valid_moves:
-            if game.BOARDS[player][a] != '.':
-                print('Fail', valid_moves, a, game.BOARDS[player])
-                exit()
             _, _, res, _ = game.step(player, a)
             if res == 'f':
                 node = Node(board=game.BOARDS[player], 
                             move_history=game.move_history[player],
                             player=player, 
                             h=game.totalHidden_for_player(player))
-                if visited[node.infoSet]:
+                ext_infoSet = tuple([*game.BOARDS[game.C_PLAYER1], *game.BOARDS[game.C_PLAYER2]])
+                if not self.__is_board_legal(game.BOARDS[player], rev_player, player, node.h):
+                    game.rewind()
+                    continue
+                # if visited[node.infoSet]:
+                if visited[ext_infoSet]:
                     game.rewind(True)
                     continue
                 else:
-                    visited[node.infoSet] = True
-                    self.__topSort_play(game, turn, stack, visited)
+                    # visited[node.infoSet] = True
+                    visited[ext_infoSet] = True
+                    self.__topSort_play(game, stack, visited)
                     stack.append(node)
                     game.rewind(True)
                 continue
             # * CREATING THE NODE
-            new_h = game.totalHidden_for_player(player)+1
-            is_terminal = False
             if game.game_status() != '=':
-                new_h -= 1
+                new_h = game.totalHidden_for_player(player)
                 is_terminal = True
+            else:
+                new_h = game.totalHidden_for_player(player)+1
+                is_terminal = False
             node = Node(board=game.BOARDS[player], 
                         move_history=game.move_history[player],
                         player=player, 
-                        h=new_h)
+                        h=new_h)                     
             node.is_terminal = is_terminal
             # *******************
-            if visited[node.infoSet]:
+            ext_infoSet = tuple([*game.BOARDS[game.C_PLAYER1], *game.BOARDS[game.C_PLAYER2]])
+            if not self.__is_board_legal(game.BOARDS[player], rev_player, player, new_h):
+                # * There is a special case here. We are checking one step ahead to see if the 
+                # * board is legal. This means two moves for general game, one move for the player
+                # * other players move might be legal even if current players is not.
+                if not self.__is_board_legal(game.BOARDS[rev_player], player, rev_player, game.totalHidden_for_player(rev_player)):
+                    game.rewind()
+                    continue
+            if visited[ext_infoSet]:
+            # if visited[node.infoSet]:
                 game.rewind()
-                continue
             else:
-                visited[node.infoSet] = True
+                # visited[node.infoSet] = True
+                visited[ext_infoSet] = True
                 if not node.is_terminal:
-                    self.__topSort_play(game, turn+1, stack, visited)
+                    self.__topSort_play(game, stack, visited)
                 stack.append(node)
                 game.rewind()
-                pass
 
     def __add_stone(self, board, action, player):
         new_board = deepcopy(board)
         new_board[action] = player
         return new_board
 
-    def __is_board_legal(self, board, rev_player, player_turn):
+    def __is_board_legal(self, board, rev_player, player_turn, h):
         # player is the player which owns the turn
         game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], BOARD=board,
-                   legality_check=True, h_player=rev_player, early_w_p1=True,
-                   early_w_p2=True)
+                   legality_check=True, h_player=rev_player, h=h)
         res = game.game_status()
-        if res != '=' or game.turn_info() != player_turn:
+        
+        ct = game.BOARD.count('.')
+        if res == 'i' or game.turn_info() != player_turn or\
+            ct <= h:
+            # illegal game
+            return False        
+        return True
+
+    def __is_board_legal_wTerminal(self, board, rev_player, player_turn, h):
+        # player is the player which owns the turn
+        game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], BOARD=board,
+                   legality_check=True, h_player=rev_player, h=h)
+        res = game.game_status()
+        
+        ct = game.BOARD.count('.')
+        if res in ['i', rev_player] or\
+            game.turn_info() != player_turn or\
+            ct <= h:
             # illegal game
             return False        
         return True
@@ -244,5 +277,30 @@ class FSICFR:
 def get_infoset(player, board, h) -> tuple:
     return tuple([player, *board, h])
 
-cfr = FSICFR(num_cols=2, num_rows=2)
-cfr.train(1000)
+def get_infoset_extended(board1, board2) -> tuple:
+    return tuple([*board1, *board2])
+
+num_cols = 3
+num_rows = 3
+
+# UNCOMMENT - PHASE 1
+cfr = FSICFR(num_cols=num_cols, num_rows=num_rows)
+
+with open('ph1-cfr-{}x{}.pkl'.format(num_cols, num_rows), 'wb') as f:
+    pickle.dump(cfr, f)
+
+
+# # UNCOMMENT - PHASE 2
+num_it = 100
+with open('ph1-cfr-{}x{}.pkl'.format(num_cols, num_rows), 'rb') as f:
+    cfr = pickle.load(f)
+
+cfr.train(num_it)
+
+dct = {
+    'nodes': cfr.nodes,
+    'nodes_dict': cfr.nodes_dict
+}
+
+with open('results-{}x{}-{}it.pkl'.format(num_cols, num_rows, num_it), 'wb') as f:
+    pickle.dump(dct, f)
