@@ -82,8 +82,8 @@ class FSICFR:
     def train(self, num_of_iterations) -> None:
         # -> Starting with 
         regret = [0.0 for _ in range(self.num_actions)]
-        for it in tqdm(range(num_of_iterations)):
-        # for it in range(num_of_iterations):
+        # for it in tqdm(range(num_of_iterations)):
+        for it in range(num_of_iterations):
             for node in self.nodes: # top-sorted nodes
                 # if node.is_terminal:
                 #     continue
@@ -138,7 +138,7 @@ class FSICFR:
                                 childUtil = self.nodes_dict[infoset_c].u
                             else:
                                 childUtil = - self.nodes_dict[infoset_c].u
-                            regret[a] = childUtil
+                            regret[a] += childUtil
                             node.u += strategy[a] * childUtil
                     cfp = node.pSum2 if node.player == pieces.C_PLAYER1 else node.pSum1
                     for a in node.pos_actions:
@@ -169,72 +169,70 @@ class FSICFR:
         nodes_dict = {}
         visited = defaultdict(lambda: False)
         game = DarkHex([self.num_rows, self.num_cols], False)
-        self.__topSort_play(game, stack, visited, nodes_dict)
+        self.__topSort_play(game, '=', stack, visited, nodes_dict)
         print("Phase 1 has ended...")
         print("{} number of unique states".format(len(nodes_dict)))
         return stack[-1::-1], nodes_dict
 
-    def __topSort_play(self, game, stack, visited, nodes_dict) -> None:
+    def __topSort_play(self, game, res, stack, visited, nodes_dict) -> None:
         player = game.turn_info()
         rev_player = pieces.C_PLAYER1 if player == pieces.C_PLAYER2 else pieces.C_PLAYER2
-        valid_moves = copy(game.valid_moves_colors[player])
-        for a in valid_moves:
-            _, _, res, _ = game.step(player, a)
-            if res == 'f':
-                node = Node(board=game.BOARDS[player], 
-                            move_history=game.move_history[player],
-                            player=player, 
-                            h=game.totalHidden_for_player(player))
-                ext_infoSet = tuple([*game.BOARDS[game.C_PLAYER1], *game.BOARDS[game.C_PLAYER2]])
-                if not self.__is_board_legal(game.BOARDS[player], rev_player, player, node.h):
-                    game.rewind()
-                    continue
-                # if visited[node.infoSet]:
-                if visited[ext_infoSet]:
-                    game.rewind(True)
-                    continue
-                else:
-                    # visited[node.infoSet] = True
-                    visited[ext_infoSet] = True
-                    self.__topSort_play(game, stack, visited, nodes_dict)
-                    if node.infoSet not in nodes_dict:
-                        nodes_dict[node.infoSet] = node
-                        stack.append(node)
-                    game.rewind(True)
-                continue
-            # * CREATING THE NODE
-            if game.game_status() != '=':
-                new_h = game.totalHidden_for_player(player)
-                is_terminal = True
+        # * Given a game, return the top-sorted full states 
+        # -------------------------------------------------
+        # -> Create the node for the current game&player
+        # -> Player plays every possible action
+        # -> Call the next game
+        # -> Save the infoSet + node
+        ext_infoSet = tuple([*game.BOARDS[game.C_PLAYER1], *game.BOARDS[game.C_PLAYER2]])
+        if res == 'f':
+            node = Node(board=game.BOARDS[player], 
+                        move_history=game.move_history[player],
+                        player=player, 
+                        h=game.totalHidden_for_player(player))
+            if not self.__is_board_legal(game.BOARDS[player], rev_player, player, node.h):
+                game.rewind()
+                return True
+            if visited[ext_infoSet]:
+                game.rewind(True)
+                return True
             else:
-                new_h = game.totalHidden_for_player(player)+1
-                is_terminal = False
+                visited[ext_infoSet] = True
+        else:
+            # * CREATING THE NODE
+            new_h = game.totalHidden_for_player(player)
             node = Node(board=game.BOARDS[player], 
                         move_history=game.move_history[player],
                         player=player, 
                         h=new_h)                     
-            node.is_terminal = is_terminal
+            node.is_terminal = res != '='
             # *******************
-            ext_infoSet = tuple([*game.BOARDS[game.C_PLAYER1], *game.BOARDS[game.C_PLAYER2]])
             if not self.__is_board_legal(game.BOARDS[player], rev_player, player, new_h):
                 # * There is a special case here. We are checking one step ahead to see if the 
                 # * board is legal. This means two moves for general game, one move for the player
                 # * other players move might be legal even if current players is not.
                 if not self.__is_board_legal(game.BOARDS[rev_player], player, rev_player, game.totalHidden_for_player(rev_player)):
                     game.rewind()
-                    continue
+                    return True
             if visited[ext_infoSet]:
-            # if visited[node.infoSet]:
                 game.rewind()
+                return True
             else:
-                # visited[node.infoSet] = True
                 visited[ext_infoSet] = True
-                if not node.is_terminal:
-                    self.__topSort_play(game, stack, visited, nodes_dict)
-                if node.infoSet not in nodes_dict:
-                    nodes_dict[node.infoSet] = node
-                    stack.append(node)
-                game.rewind()
+                
+        valid_moves = copy(game.valid_moves_colors[player])
+        for a in valid_moves:
+            rewinded = False
+            _, _, res, _ = game.step(player, a)
+            if not node.is_terminal:
+                rewinded = self.__topSort_play(game, res, stack, visited, nodes_dict)
+            if node.infoSet not in nodes_dict:
+                nodes_dict[node.infoSet] = node
+                stack.append(node)
+            if not rewinded:
+                game.rewind(res == 'f')
+
+        return False
+
 
     def __add_stone(self, board, action, player):
         new_board = deepcopy(board)
