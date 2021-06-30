@@ -35,20 +35,20 @@ class Node:
 
     def getStrategy(self): 
         normalizingSum = 0
-        for a in self.pos_actions:
+        for a in range(len(self.strategy)):
             self.strategy[a] = max(self.regretSum[a], 0)
             # * regret matching algorithm here.
             # * just use the positive regrets.
             normalizingSum += self.strategy[a]
             # Add all the positive regrets -> normSum
-        for a in self.pos_actions:
+        for a in range(len(self.strategy)):
             if normalizingSum > 0:
                 # if normalizing sum was positive all the action probs will
                 # be devided by normSum
                 self.strategy[a] /= normalizingSum
             else:
                 # otherwise all actions are equaprobable (random)
-                self.strategy[a] = 1 / len(self.pos_actions)
+                self.strategy[a] = 1.0 / len(self.strategy)
             self.strategySum[a] += self.strategy[a] * (self.pSum1 if \
                     self.player == pieces.C_PLAYER1 else self.pSum2)
             # * summing up all the action probabilities
@@ -95,19 +95,18 @@ class FSICFR:
                     # * update the board with action a and add the new
                     # * board state to the -children- to traverse later
                     new_board = self.__add_stone(node.board, a, node.player)
-                    if self.__is_board_legal_wTerminal(new_board, rev_player, node.player, node.h):
-                        children.append(get_infoset([node.player, *new_board, node.h]))
+                    children.append(get_infoset([node.player, *new_board, node.h]))
                     if node.h > 0:
                         new_board = self.__add_stone(node.board, a, rev_player)
-                        if self.__is_board_legal_wTerminal(new_board, rev_player, node.player, node.h-1):
-                            children.append(get_infoset([node.player, *new_board, node.h-1]))
+                        children.append(get_infoset([node.player, *new_board, node.h-1]))
                     for infoset_c in children:
-                        # update visits
-                        c = self.nodes_dict[infoset_c]
-                        c.visits += node.visits
-                        # update the rweights
-                        c.pSum1 += (strategy[a] * node.pSum1 if node.player == pieces.C_PLAYER1 else node.pSum1)
-                        c.pSum2 += (strategy[a] * node.pSum2 if node.player == pieces.C_PLAYER2 else node.pSum2)
+                        if infoset_c in self.nodes_dict:
+                            # update visits
+                            c = self.nodes_dict[infoset_c]
+                            c.visits += node.visits
+                            # update the rweights
+                            c.pSum1 += (strategy[a] * node.pSum1 if node.player == pieces.C_PLAYER1 else node.pSum1)
+                            c.pSum2 += (strategy[a] * node.pSum2 if node.player == pieces.C_PLAYER2 else node.pSum2)
                 # endfor - pos_actions
             # endfor - nodes
             for node in self.nodes[::-1]:
@@ -127,19 +126,20 @@ class FSICFR:
                         new_board = self.__add_stone(node.board, a, node.player)
                         if not new_board:
                             continue
-                        if self.__is_board_legal_wTerminal(new_board, rev_player, node.player, node.h):
-                            children.append(get_infoset([node.player, *new_board, node.h]))
+                        children.append(get_infoset([node.player, *new_board, node.h]))
                         if node.h > 0:
                             new_board = self.__add_stone(node.board, a, rev_player)
-                            if self.__is_board_legal_wTerminal(new_board, rev_player, node.player, node.h-1):
-                                children.append(get_infoset([node.player, *new_board, node.h-1]))
-                        for i, infoset_c in enumerate(children):
-                            if self.nodes_dict[infoset_c].player == node.player:
-                                childUtil = self.nodes_dict[infoset_c].u
-                            else:
-                                childUtil = - self.nodes_dict[infoset_c].u
-                            regret[a] += childUtil
-                            node.u += strategy[a] * childUtil
+                            if not new_board:
+                                continue
+                            children.append(get_infoset([node.player, *new_board, node.h-1]))
+                        for _, infoset_c in enumerate(children):
+                            if infoset_c in self.nodes_dict:
+                                if self.nodes_dict[infoset_c].player == node.player:
+                                    childUtil = self.nodes_dict[infoset_c].u
+                                else:
+                                    childUtil = - self.nodes_dict[infoset_c].u
+                                regret[a] += childUtil
+                                node.u += strategy[a] * childUtil
                     cfp = node.pSum2 if node.player == pieces.C_PLAYER1 else node.pSum1
                     for a in node.pos_actions:
                         nomin = (node.T * node.regretSum[a] + node.visits * cfp * (regret[a] - node.u))
@@ -176,7 +176,7 @@ class FSICFR:
 
     def __topSort_play(self, game, res, stack, visited, nodes_dict) -> None:
         player = game.turn_info()
-        rev_player = pieces.C_PLAYER1 if player == pieces.C_PLAYER2 else pieces.C_PLAYER2
+        rev_player = reverse_player(player)
         # * Given a game, return the top-sorted full states 
         # -------------------------------------------------
         # -> Create the node for the current game&player
@@ -190,15 +190,16 @@ class FSICFR:
                         player=player, 
                         h=game.totalHidden_for_player(player))
             if not self.__is_board_legal(game.BOARDS[player], rev_player, player, node.h):
-                game.rewind()
-                return True
+                return
             if visited[ext_infoSet]:
-                game.rewind(True)
-                return True
+                return 
             else:
                 visited[ext_infoSet] = True
         else:
             # * CREATING THE NODE
+            if res != '=':
+                player = res
+                rev_player = reverse_player(player)
             new_h = game.totalHidden_for_player(player)
             node = Node(board=game.BOARDS[player], 
                         move_history=game.move_history[player],
@@ -211,28 +212,27 @@ class FSICFR:
                 # * board is legal. This means two moves for general game, one move for the player
                 # * other players move might be legal even if current players is not.
                 if not self.__is_board_legal(game.BOARDS[rev_player], player, rev_player, game.totalHidden_for_player(rev_player)):
-                    game.rewind()
-                    return True
+                    return
             if visited[ext_infoSet]:
-                game.rewind()
-                return True
+                return
             else:
                 visited[ext_infoSet] = True
-                
-        valid_moves = copy(game.valid_moves_colors[player])
-        for a in valid_moves:
-            rewinded = False
-            _, _, res, _ = game.step(player, a)
-            if not node.is_terminal:
-                rewinded = self.__topSort_play(game, res, stack, visited, nodes_dict)
+
+        if node.is_terminal:
             if node.infoSet not in nodes_dict:
                 nodes_dict[node.infoSet] = node
                 stack.append(node)
-            if not rewinded:
-                game.rewind(res == 'f')
-
-        return False
-
+            return
+             
+        valid_moves = copy(game.valid_moves_colors[player])
+        for a in valid_moves:
+            _, _, res, _ = game.step(player, a)
+            self.__topSort_play(game, res, stack, visited, nodes_dict)
+            game.rewind(res == 'f')
+        if node.infoSet not in nodes_dict:
+            nodes_dict[node.infoSet] = node
+            stack.append(node)
+        return
 
     def __add_stone(self, board, action, player):
         new_board = deepcopy(board)
@@ -254,20 +254,9 @@ class FSICFR:
             return False        
         return True
 
-    def __is_board_legal_wTerminal(self, board, rev_player, player_turn, h):
-        # player is the player which owns the turn
-        game = Hex(BOARD_SIZE=[self.num_rows, self.num_cols], BOARD=board,
-                   legality_check=True, h_player=rev_player, h=h)
-        res = game.game_status()
-        
-        ct = game.BOARD.count('.')
-        if res in ['i', rev_player] or\
-            game.turn_info() != player_turn or\
-            ct <= h:
-            # illegal game
-            return False        
-        return True
 
+def reverse_player(p):
+    return pieces.C_PLAYER1 if p == pieces.C_PLAYER2 else pieces.C_PLAYER2
 
 def get_infoset(args) -> tuple:
     return tuple([*args])
@@ -283,7 +272,7 @@ with open('ph1-cfr-{}x{}.pkl'.format(num_cols, num_rows), 'wb') as f:
 
 
 # # UNCOMMENT - PHASE 2
-num_it = 200
+num_it = 100
 with open('ph1-cfr-{}x{}.pkl'.format(num_cols, num_rows), 'rb') as f:
     cfr = pickle.load(f)
 
