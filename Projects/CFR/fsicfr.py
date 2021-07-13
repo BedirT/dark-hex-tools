@@ -69,7 +69,7 @@ class Node:
         return self.strategySum
 
     def __str__(self):
-        return "{}:\t{}".format(self.infoset, seq_to_str(self.getAverageStrategy(), spacing=' '))
+        return "{}:\t{}".format(self.infoSet, seq_to_str(self.getAverageStrategy(), spacing=' '))
 
 
 class FSICFR:
@@ -242,7 +242,7 @@ with open('ph1-cfr-{}x{}.pkl'.format(num_cols, num_rows), 'wb') as f:
     pickle.dump(cfr, f)
 
 # # UNCOMMENT - PHASE 2
-num_it = 10000
+num_it = int(input('Number of iterations to run: '))
 with open('ph1-cfr-{}x{}.pkl'.format(num_cols, num_rows), 'rb') as f:
     cfr = pickle.load(f)
 
