@@ -14,3 +14,14 @@ class pieces:
     C_PLAYER1 = 'B'
     C_PLAYER2 = 'W'
     NEUTRAL = '.'
+
+    # open_spiel states.
+    kEmpty = '.'
+    kWhite = 'o'
+    kWhiteWin = 'O'
+    kBlack = 'x'
+    kBlackWin = 'X'
+    kWhiteWest = 'p'
+    kWhiteEast = 'q'
+    kBlackNorth = 'y'
+    kBlackSouth = 'z'
