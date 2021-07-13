@@ -6,6 +6,7 @@ from tqdm import tqdm
 from copy import deepcopy, copy
 from Projects.base.util.colors import pieces
 from collections import defaultdict
+from Projects.CFR.os_board import convert_to_open_spiel
 import pickle
 
 class Node:
@@ -16,7 +17,7 @@ class Node:
         self.board = deepcopy(board)
         self.h = h
 
-        self.infoSet = get_infoset([self.player, *self.board, self.h])
+        self.infoSet = get_infoset(self.player, self.board, self.h)
 
         self.strategy = np.zeros(self.num_actions)
         self.regretSum = np.zeros(self.num_actions)
@@ -68,6 +69,9 @@ class Node:
                 self.strategySum[a] = 1 / len(self.pos_actions)
         return self.strategySum
 
+    def update_infoset(self):
+        self.infoSet = get_infoset(self.player, self.board, self.h)
+
     def __str__(self):
         return "{}:\t{}".format(self.infoSet, seq_to_str(self.getAverageStrategy(), spacing=' '))
 
@@ -95,10 +99,10 @@ class FSICFR:
                     # * update the board with action a and add the new
                     # * board state to the -children- to traverse later
                     new_board = self.__add_stone(node.board, a, node.player)
-                    children.append(get_infoset([node.player, *new_board, node.h]))
+                    children.append(get_infoset(node.player, new_board, node.h))
                     if node.h > 0:
                         new_board = self.__add_stone(node.board, a, rev_player)
-                        children.append(get_infoset([node.player, *new_board, node.h-1]))
+                        children.append(get_infoset(node.player, new_board, node.h-1))
                     for infoset_c in children:
                         if infoset_c in self.nodes_dict:
                             # update visits
@@ -127,12 +131,12 @@ class FSICFR:
                         new_board = self.__add_stone(node.board, a, node.player)
                         if not new_board:
                             continue
-                        children.append(get_infoset([node.player, *new_board, node.h]))
+                        children.append(get_infoset(node.player, new_board, node.h))
                         if node.h > 0:
                             new_board = self.__add_stone(node.board, a, rev_player)
                             if not new_board:
                                 continue
-                            children.append(get_infoset([node.player, *new_board, node.h-1]))
+                            children.append(get_infoset(node.player, new_board, node.h-1))
                         for _, infoset_c in enumerate(children):
                             if infoset_c in self.nodes_dict:
                                 if self.nodes_dict[infoset_c].player == node.player:
@@ -229,11 +233,13 @@ class FSICFR:
         return new_board
 
 
-def get_infoset(args) -> tuple:
-    return tuple([*args])
+def get_infoset(player, board, h) -> tuple:
+    player = '0' if player == pieces.C_PLAYER1 else '1'
+    return ''.join([player, *board, str(h)])
 
-num_cols = 3
-num_rows = 3
+num_cols = 2
+num_rows = 2
+num_it = 10000
 
 # UNCOMMENT - PHASE 1
 cfr = FSICFR(num_cols=num_cols, num_rows=num_rows)
@@ -242,16 +248,30 @@ with open('ph1-cfr-{}x{}.pkl'.format(num_cols, num_rows), 'wb') as f:
     pickle.dump(cfr, f)
 
 # # UNCOMMENT - PHASE 2
-num_it = int(input('Number of iterations to run: '))
 with open('ph1-cfr-{}x{}.pkl'.format(num_cols, num_rows), 'rb') as f:
     cfr = pickle.load(f)
 
 cfr.train(num_it)
 
+nodes_no_terminal = {}
+for infoset, node in cfr.nodes_dict.items():
+    # if not node.is_terminal:
+    if infoset != node.infoSet:
+        print('Error different infosets: {}, {}'.format(infoset, node.infoSet))
+        exit()
+    node.board = convert_to_open_spiel(list(node.board), num_rows, num_cols)
+    node.update_infoset()
+    nodes_no_terminal[node.infoSet] = node
+
 dct = {
     'nodes': cfr.nodes,
-    'nodes_dict': cfr.nodes_dict
+    'nodes_dict': cfr.nodes_dict,
+    'nodes_os': nodes_no_terminal
 }
 
 with open('results-{}x{}-{}it.pkl'.format(num_cols, num_rows, num_it), 'wb') as f:
     pickle.dump(dct, f)
+
+
+
+print(len(dct['nodes_os'].keys()), len(dct['nodes_dict'].keys()))
