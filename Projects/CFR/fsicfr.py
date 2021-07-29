@@ -10,12 +10,13 @@ from Projects.CFR.os_board import convert_to_open_spiel
 import pickle
 
 class Node:
-    def __init__(self, board, move_history, player, h) -> None:
+    def __init__(self, board, move_history, player, h, turn_num) -> None:
         self.player = player
         self.num_actions = len(board)
         self.move_history = move_history
         self.board = deepcopy(board)
         self.h = h
+        self.turn_num = turn_num
 
         self.infoSet = get_infoset(self.player, self.board, self.h)
 
@@ -188,7 +189,8 @@ class FSICFR:
             node = Node(board=game.BOARDS[player], 
                         move_history=game.move_history[player],
                         player=player, 
-                        h=game.totalHidden_for_player(player))
+                        h=game.totalHidden_for_player(player),
+                        turn_num=game.number_of_turns())
             if visited[ext_infoSet]:
                 return 
             else:
@@ -201,7 +203,8 @@ class FSICFR:
             node = Node(board=game.BOARDS[player], 
                         move_history=game.move_history[player],
                         player=player, 
-                        h=new_h)                     
+                        h=new_h,
+                        turn_num=game.number_of_turns())                     
             node.is_terminal = res != '='
             # *******************************
             if visited[ext_infoSet]:
@@ -255,13 +258,14 @@ cfr.train(num_it)
 
 nodes_no_terminal = {}
 for infoset, node in cfr.nodes_dict.items():
-    # if not node.is_terminal:
-    if infoset != node.infoSet:
-        print('Error different infosets: {}, {}'.format(infoset, node.infoSet))
-        exit()
-    node.board = convert_to_open_spiel(list(node.board), num_rows, num_cols)
-    node.update_infoset()
-    nodes_no_terminal[node.infoSet] = node
+    if not node.is_terminal:
+        if infoset != node.infoSet:
+            print('Error different infosets: {}, {}'.format(infoset, node.infoSet))
+            exit()
+        node.board = convert_to_open_spiel(list(node.board), num_rows, num_cols)
+        node.update_infoset()
+        # print("'" + node.infoSet + "',")
+        nodes_no_terminal[node.infoSet] = node
 
 dct = {
     'nodes': cfr.nodes,
@@ -271,7 +275,6 @@ dct = {
 
 with open('results-{}x{}-{}it.pkl'.format(num_cols, num_rows, num_it), 'wb') as f:
     pickle.dump(dct, f)
-
 
 
 print(len(dct['nodes_os'].keys()), len(dct['nodes_dict'].keys()))

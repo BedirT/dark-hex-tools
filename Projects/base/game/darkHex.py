@@ -24,6 +24,8 @@ class DarkHex(Hex):
         self.valid_moves_colors = {self.C_PLAYER2: deepcopy(self.valid_moves), self.C_PLAYER1: deepcopy(self.valid_moves)}
         self.move_history = {self.C_PLAYER1: [], self.C_PLAYER2: []}
 
+        self.turn_number = 0
+
     def rewind(self, passive=False):
         '''
         Rewinding the action given; removing the move made on the given position
@@ -39,6 +41,7 @@ class DarkHex(Hex):
             player = self.rev_color[self.turn_info()]
         if not self.move_history[player]:
             return
+        self.turn_number -= 1
         last_move = self.move_history[player].pop()
         if self.BOARDS[player][last_move] == player: # move was a success
             # fnuctional
@@ -80,6 +83,10 @@ class DarkHex(Hex):
         return self.BOARD.count(self.rev_color[player]) -\
                self.BOARDS[player].count(self.rev_color[player])
     
+    def number_of_turns(self):
+        # returns the number of moves made in the game
+        return len(self.move_history[self.C_PLAYER1]) + len(self.move_history[self.C_PLAYER2])
+
     def printBoard_for_player(self, player):
         '''
         Method for printing the board in a nice format.
@@ -158,6 +165,7 @@ class DarkHex(Hex):
                 print('Invalid Move.')
                 print('Valid moves are:', self.valid_moves_colors[color])
             return False
+        self.turn_number += 1
         if self.BOARD[cell] != '.':
             self.BOARDS[color][cell] = self.rev_color[color]
             self.valid_moves_colors[color].remove(cell)
