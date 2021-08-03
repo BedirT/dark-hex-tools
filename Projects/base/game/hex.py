@@ -8,13 +8,27 @@
 #     6 7 8    te
 
 #  EMPTY BOARD SIZE OF BOARD_SIZE
-from Projects.base.util.colors import colors, pieces
+
+from Projects.base.util.colors import colors
+from collections import Counter
+
+class pieces:
+    # open_spiel states being used.
+    kEmpty = '.'
+    kWhite = 'o'
+    kWhiteWin = 'O'
+    kBlack = 'x'
+    kBlackWin = 'X'
+    kWhiteWest = 'p'
+    kWhiteEast = 'q'
+    kBlackNorth = 'y'
+    kBlackSouth = 'z'
+    # Additions
+    kDraw = '='
+    kFail = 'f'
+    kIllegal = 'i'
 
 class Hex:
-    C_PLAYER1 = pieces.C_PLAYER1
-    C_PLAYER2 = pieces.C_PLAYER2
-    NEUTRAL = pieces.NEUTRAL
-
     '''
     valid_moves     - All the valid moves in the current board. Essentially
                     the list of empty cells.
@@ -38,77 +52,99 @@ class Hex:
         self.num_rows = BOARD_SIZE[0]
         self.num_cols = BOARD_SIZE[1]
         self.num_cells = self.num_rows * self.num_cols
+        self.rev_color = {pieces.kWhite: pieces.kBlack, pieces.kBlack: pieces.kWhite}
 
         # to print game as a history
-        self.game_history = [self.NEUTRAL] * self.num_cells
+        self.game_history_str = [pieces.kEmpty] * self.num_cells
         self.cur_move_num = 1
 
         if BOARD:
             self.BOARD = BOARD
-            # add check board_size
-            # change valid moves to empty cells
-            self.valid_moves = set(range(self.num_cells))
+            self.__init_custom_board()
         else:
-            self.BOARD = [self.NEUTRAL] * self.num_cells
+            self.BOARD = [pieces.kEmpty] * self.num_cells
             self.valid_moves = set(range(self.num_cells))
-        self.done = False
+            self.turn_info = pieces.kBlack
+            self.game_length = 0
+
+        # keep everything quiet/not
         self.verbose = verbose
 
+        # check if the board is legal
+        # if asked to do so. For some research questions we do
+        # not want to check the validity of the board, therefor
+        # we set the legality_check to false.
+        #### Mostly used for pONE algorithm.
         self.legality_check = legality_check
         self.early_w_p1 = early_w_p1
         self.early_w_p2 = early_w_p2
-        self.h = h
-        self.h_player = h_player
+        self.h = h; self.h_player = h_player
 
-        self.CHECK = False
- 
+    def __init_custom_board(self):
+        '''
+        Initializing the custom board for the game.
+        '''
+        # update valid moves
+        self.valid_moves = set(range(self.num_cells))
+        # set the turn info
+        self.turn_info = self.__turn_info()  
+        # set the game length
+        self.game_length = self.num_cells - len(self.valid_moves)
+
     def step(self, color, action):
         '''
         Classic method to take a step, or make a move in the game. (Playing a stone
         on the board)
 
         args:
-            color   - The color of the stone for the move being made.
-            action  - The board position that the stone will be tried to place on.
+            color       - The color of the player making the move.
+            action      - The board position that the stone will be tried to place on. (int)
 
         returns:
-            Format >> [BOARD, done, result, reward]
+            Format >> [BOARD, result, reward]
 
-            BOARD   - The current board position, state.
-            done    - The truth value for if the game is over or not.
-            result  - The winner of the game. If there is no winner yet (tie) returns
-                    '=', otherwise returns the color that wins. The result returns 'f'
-                    if the input given is invalid (If the move specified is illegal,
-                    etc.).
-            reward  - For the given player (color) if the current result is win the
-                    reward is 1, if lose reward is -1 and 0 if it's a tie.
+            BOARD       - The new BOARD after the move is made.
+            result      - The result of the move. Either '=' for draw, 'W' for white win,
+                        'B' for black win, or 'i' for illegal state.
+            reward      - The reward for the move.
         '''
-        if self.__placeStone(action, color): 
-            result = self.game_status()
+        if self.legality_check:
+            if not self.check_legal():
+                return 0, pieces.kIllegal, 0
+        move = self.__placeStone(action, color)
+        if  move == pieces.kBlackWin:
+            result = pieces.kBlack
+        elif move == pieces.kWhiteWin:
+            result = pieces.kWhite
+        elif move: 
+            result = pieces.kDraw
         else:
             if self.verbose:
                 print('Valid moves are:', self.valid_moves)
-            return 0, 0, 'f', 0
+            return 0, pieces.kFail, 0
         
         if result == color:
             reward = 1
-        elif result == '=':
+        elif result == pieces.kDraw:
             reward = 0
         else:
             reward = -1
         
-        return self.BOARD, self.done, result, reward
+        return self.BOARD, result, reward
 
-    def rewind(self, action):
+    def rewind(self, cell=None):
         '''
-        Rewinding the action given; removing the move made on the given position
-        and adding the new empty position to the valid_moves.
-
-        args:
-            action    - The position to empty. In the format [row, column]
+        Rewinds the game board to the previous state. If a cell is specified,
+        rewinds that cell to the previous state (empty).
         '''
-        self.BOARD[action] = self.NEUTRAL
-        self.valid_moves.append(action)
+        self.game_length -= 1
+        self.turn_info = self.rev_color[self.turn_info]
+        if cell:
+            self.BOARD[cell] = pieces.kEmpty
+            self.valid_moves.append(cell)
+        else:
+            # ! implement rewind the last move
+            Exception('Must specify a cell to rewind. This functionality is not implemented yet.')
 
     def printBoard(self):
         '''
@@ -117,45 +153,25 @@ class Hex:
         if not self.verbose:
             print("Verbose is off, output is not shown.")
             return
-        if self.game_history.count(self.NEUTRAL) != self.BOARD.count(self.NEUTRAL):
-            for x in range(len(self.game_history)):
-                self.game_history[x] = self.BOARD[x] + '0' if self.BOARD[x] != self.NEUTRAL else self.NEUTRAL
-        print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols + colors.ENDC)
+        if self.game_history_str.count(pieces.kEmpty) != self.BOARD.count(pieces.kEmpty):
+            for x in range(len(self.game_history_str)):
+                self.game_history_str[x] = self.BOARD[x] + '0' if self.BOARD[x] != pieces.kEmpty else pieces.kEmpty
+        print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.kBlack) * self.num_cols + colors.ENDC)
         print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)
         for cell in range(self.num_cells):
             if cell % self.num_cols == 0: # first col
-                print(colors.BOLD + colors.C_PLAYER2 + self.C_PLAYER2 + '\\ ' + colors.ENDC, end= '')
-            if self.game_history[cell][0] == self.C_PLAYER1:
+                print(colors.BOLD + colors.C_PLAYER2 + pieces.kWhite + '\\ ' + colors.ENDC, end= '')
+            if self.game_history_str[cell][0] in [pieces.kBlack, pieces.kBlackWin, pieces.kBlackNorth, pieces.kBlackSouth]:
                 clr = colors.C_PLAYER1
-            elif self.game_history[cell][0] == self.C_PLAYER2:
+            elif self.game_history_str[cell][0] in [pieces.kWhite, pieces.kWhiteEast, pieces.kWhiteWest, pieces.kWhiteWin]:
                 clr = colors.C_PLAYER2
             else:
                 clr = colors.NEUTRAL
-            print(clr + '{0: <3}'.format(self.game_history[cell]) + colors.ENDC, end='') 
+            print(clr + '{0: <3}'.format(self.game_history_str[cell]) + colors.ENDC, end='') 
             if cell % self.num_cols == self.num_cols-1: # last col
-                print(colors.BOLD + colors.C_PLAYER2 + '\\' + self.C_PLAYER2 + '\n' + (' ' * (cell//self.num_cols)) + colors.ENDC, end = ' ')
+                print(colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.kWhite + '\n' + (' ' * (cell//self.num_cols)) + colors.ENDC, end = ' ')
         print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)        
-        print(colors.BOLD + colors.C_PLAYER1 + ' ' * (self.num_rows+4) + '{0: <3}'.format(self.C_PLAYER1) * self.num_cols + colors.ENDC)
-
-    def __checkEdge(self, color, node):
-        '''
-        Checks if the given node is the edge node for the given color.
-
-        args:
-            color   - The color of the player to check the edge for.
-            node    - The location on the board we check if its the edge
-                    for the given player or not.
-        
-        returns:
-            format >> True/False
-
-            True/False  - True if end of the board for given color 
-                        False if not
-        '''
-        if (color == self.C_PLAYER2 and self.__find_col(node) == self.num_cols-1) or \
-           (color == self.C_PLAYER1 and self.__find_row(node) == self.num_rows-1):
-            return True
-        return False
+        print(colors.BOLD + colors.C_PLAYER1 + ' ' * (self.num_rows+4) + '{0: <3}'.format(pieces.kBlack) * self.num_cols + colors.ENDC)
 
     def __find_row(self, node):
         return node // self.num_cols
@@ -163,12 +179,8 @@ class Hex:
     def __find_col(self, node):
         return node % self.num_cols
 
-    def testConnections(self, cellToCheck):
-        '''
-        Testing the connections for a given cell.
-        '''
-        if self.verbose:
-            print(str(cellToCheck), 'connections are', self.__cell_connections(cellToCheck))
+    def __pos_by_coord(self, r, c):
+        return self.num_cols * r + c
 
     def __placeStone(self, cell, color):
         '''
@@ -176,23 +188,82 @@ class Hex:
 
         args:
             cell    - The location on the board to place the stone.
-                    In the format [row, column]
+                    In the format (int)
             color   - The color of the stone.
         
         returns:
             True if the action was valid, and false otherwise.
         '''
-        if self.BOARD[cell] != self.NEUTRAL:
+        if self.BOARD[cell] != pieces.kEmpty:
             if self.verbose:
                 print('Invalid Action Attempted')
             return False
-        self.BOARD[cell] = color
+        if color == pieces.kBlack:
+            north_connected = False
+            south_connected = False 
+            if cell < self.num_cols: # First row
+                north_connected = True
+            elif cell >= self.num_cols * (self.num_rows - 1): # Last row
+                south_connected = True
+            for neighbour in self._cell_connections(cell):
+                if self.BOARD[neighbour] == pieces.kBlackNorth:
+                    north_connected = True
+                elif self.BOARD[neighbour] == pieces.kBlackSouth:
+                    south_connected = True
+            if north_connected and south_connected:
+                self.BOARD[cell] = pieces.kBlackWin
+            elif north_connected:
+                self.BOARD[cell] = pieces.kBlackNorth
+            elif south_connected:
+                self.BOARD[cell] = pieces.kBlackSouth
+            else:
+                self.BOARD[cell] = pieces.kBlack
+        elif color == pieces.kWhite:
+            east_connected = False
+            west_connected = False
+            if cell % self.num_cols == 0: # First column
+                west_connected = True
+            elif cell % self.num_cols == self.num_cols - 1: # Last column
+                east_connected = True
+            for neighbour in self._cell_connections(cell):
+                if self.BOARD[neighbour] == pieces.kWhiteWest:
+                    west_connected = True
+                elif self.BOARD[neighbour] == pieces.kWhiteEast:
+                    east_connected = True
+            if east_connected and west_connected:
+                self.BOARD[cell] = pieces.kWhiteWin
+            elif east_connected:
+                self.BOARD[cell] = pieces.kWhiteEast
+            elif west_connected:
+                self.BOARD[cell] = pieces.kWhiteWest
+            else:
+                self.BOARD[cell] = pieces.kWhite
         self.valid_moves.remove(cell)
-        self.game_history[cell] = color + str(self.cur_move_num)                                
+        self.game_length += 1
+        self.turn_info = self.rev_color[color]
+        if self.BOARD[cell] in [pieces.kBlackWin, pieces.kWhiteWin]:
+            return self.BOARD[cell]
+        elif self.BOARD[cell] not in [pieces.kBlack, pieces.kWhite]:
+            # The cell is connected to an edge but not a win position.
+            # We need to use flood-fill to find the connected edges.
+            flood_stack = [cell]
+            latest_cell = 0
+            while len(flood_stack) != 0:
+                latest_cell = flood_stack.pop()
+                for neighbour in self._cell_connections(latest_cell):
+                    if self.BOARD[neighbour] == color:
+                        self.BOARD[neighbour] = self.BOARD[cell]
+                        flood_stack.append(neighbour)
+            # Flood-fill is complete.
+        # ! Decide if u wanna change this
+        self.game_history_str[cell] = color + str(self.cur_move_num)
         self.cur_move_num += 1
         return True
 
-    def __cell_connections(self, cell):
+    # define function cell_connections(cell) protected
+
+    
+    def _cell_connections(self, cell):
         '''
         Returns the neighbours of the given cell.
 
@@ -223,86 +294,31 @@ class Hex:
             if col + 1 < self.num_cols:
                 positions.append(self.__pos_by_coord(row - 1, col + 1))
         return positions
-    
-    def __pos_by_coord(self, r, c):
-        return self.num_cols * r + c
-
-    def game_status(self):
-        '''
-        Checks the game status by looking at the board and determining the winning player if any, returning
-        the winner, or '=' if there is no winner.
-
-        returns:
-            format >> self.C_PLAYER2/self.C_PLAYER1/'='/'i'
-
-            self.C_PLAYER2/self.C_PLAYER1/'=' - winner is white/black or its a tie ('=')
-            'i'         - illegal game position
-        '''
-        # Check for legality
-        if self.legality_check:
-            if not self.check_legal():
-                return 'i'
-
-        # checking for black
-        self.CHECK_BOARD = [False for _ in range(self.num_cells)] 
-        for i in range(self.num_cols):
-            pos = self.__pos_by_coord(0, i)
-            if self.BOARD[pos] == self.C_PLAYER1:
-                self.CHECK_BOARD[pos] = True
-                self.__check_connections(self.__cell_connections(pos), self.C_PLAYER1)
-                if self.done:
-                    self.done = False
-                    return self.C_PLAYER1
-        # checking for white
-        self.CHECK_BOARD = [False for _ in range(self.num_cells)]
-        for i in range(self.num_rows):
-            pos = self.__pos_by_coord(i, 0)
-            if self.BOARD[pos] == self.C_PLAYER2:
-                self.CHECK_BOARD[pos] = True
-                self.__check_connections(self.__cell_connections(pos), self.C_PLAYER2)
-                if self.done:
-                    self.done = False
-                    return self.C_PLAYER2
-        return '=' 
-
-    def __check_connections(self, connections, color):
-        '''
-        Checking and following all the given connections for the given color, and changes the done status
-        to the winner if finds a connection to the edge of the board.
-
-        args:
-            connections - The connections to follow for searching the end edge.
-            color       - The color to check the connections for
-        '''
-        for c in connections:
-            if self.BOARD[c] == color and not self.CHECK_BOARD[c]:
-                if self.__checkEdge(color, c):
-                    self.done = True
-                    return
-                self.CHECK_BOARD[c] = True
-                self.__check_connections(self.__cell_connections(c), color)
 
     def check_legal(self):
         # number of the stones are illegal
-        first_Num = self.BOARD.count(self.C_PLAYER1)
-        second_Num = self.BOARD.count(self.C_PLAYER2)
-        if self.h_player == self.C_PLAYER1:
-            first_Num += self.h
+        ct = Counter(self.BOARD)
+        # get the white pieces from ct counter using pieces
+        count_white = ct[pieces.kWhite] + ct[pieces.kWhiteEast] + ct[pieces.kWhiteWin] + ct[pieces.kWhiteWest]
+        # get the black pieces from ct counter using pieces
+        count_black = ct[pieces.kBlack] + ct[pieces.kBlackNorth] + ct[pieces.kBlackWin] + ct[pieces.kBlackSouth]
+        if self.h_player == pieces.kBlack:
+            count_black += self.h
         else:
-            second_Num += self.h
-        if (first_Num + second_Num > self.num_cells) or \
-           (first_Num - second_Num > 1 or second_Num > first_Num):
+            count_white += self.h
+        if (count_black + count_white > self.num_cells) or \
+           (count_black - count_white > 1 or count_white > count_black):
             return False
         
         # white wins with removing a white stone
-        if self.early_w_p2 and self.check_early_win(self.C_PLAYER2):
+        if self.early_w_p2 and self.check_early_win(pieces.kWhite):
             return False
         # black wins with removing a black stone
-        if self.early_w_p1 and self.check_early_win(self.C_PLAYER1):
+        if self.early_w_p1 and self.check_early_win(pieces.kBlack):
             return False
 
         return True
-            
+        
     def check_early_win(self, color):
         '''
         Returns false if any of the moves is not resulting with a win.
@@ -310,74 +326,75 @@ class Hex:
         The game should be win for any stone removed in color, to be
         a definite early win
         '''
+        if color == pieces.kBlack:
+            color_set = [pieces.kBlack, pieces.kBlackNorth, pieces.kBlackWin, pieces.kBlackSouth]
+        else:
+            color_set = [pieces.kWhite, pieces.kWhiteEast, pieces.kWhiteWin, pieces.kWhiteWest]
         for c in range(len(self.BOARD)):
-            if self.BOARD[c] != color:
+            if self.BOARD[c] not in color_set:
                 continue
             temp = self.BOARD[c]
-            self.BOARD[c] = '.'; self.legality_check = False
+            self.BOARD[c] = pieces.kEmpty; self.legality_check = False
+            self.__placeStone(c, color)
             res = self.game_status()
             self.BOARD[c] = temp; self.legality_check = True
             if res != color:
                 return False
         return True  
 
-    def turn_info(self):
+    def __turn_info(self):
         '''
-        Checks which players turn is it given the state and
-        the number of hidden stones.
-        
-        Args:
-            - state:    State to check the legality.
-            - h:        Number of hidden stones.
-        Returns:
-            - C_PLAYER1/C_PLAYER2   Player whose turn it is.
-        '''
-        count_1 = self.BOARD.count(self.C_PLAYER1)
-        count_2 = self.BOARD.count(self.C_PLAYER2)
-        if self.h_player == self.C_PLAYER1:
-            count_1 += self.h
-        elif self.h_player == self.C_PLAYER2:
-            count_2 += self.h
+        Only used for custom boards.
+        Initializes the board turn information, save it to the
+        turn_info variable. Do not use this function exterally.
 
-        if count_1 <= count_2:
-            return self.C_PLAYER1
+        Returns:
+            - Player whose turn it is using pieces.
+        '''
+        ct = Counter(self.BOARD)
+        # get the white pieces from ct counter using pieces
+        count_white = ct[pieces.kWhite] + ct[pieces.kWhiteEast] + ct[pieces.kWhiteWin] + ct[pieces.kWhiteWest]
+        # get the black pieces from ct counter using pieces
+        count_black = ct[pieces.kBlack] + ct[pieces.kBlackNorth] + ct[pieces.kBlackWin] + ct[pieces.kBlackSouth]
+        if count_black <= count_white:
+            return pieces.kBlack
         else:
-            return self.C_PLAYER2
+            return pieces.kWhite
 
 def customBoard_print(board, num_cols, num_rows):
     '''
     Method for printing the board in a nice format.
     '''
     num_cells = num_cols * num_rows
-    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.C_PLAYER1) * num_cols + colors.ENDC)
+    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)
     print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC)
     for cell in range(num_cells):
         if cell % num_cols == 0: # first col
-            print(colors.BOLD + colors.C_PLAYER2 + pieces.C_PLAYER2 + '\ ' + colors.ENDC, end= '')
-        if board[cell] == pieces.C_PLAYER1:
+            print(colors.BOLD + colors.C_PLAYER2 + pieces.kWhite + '\ ' + colors.ENDC, end= '')
+        if board[cell] == pieces.kBlack:
             clr = colors.C_PLAYER1
-        elif board[cell] == pieces.C_PLAYER2:
+        elif board[cell] == pieces.kWhite:
             clr = colors.C_PLAYER2
         else:
             clr = colors.NEUTRAL
         print(clr + '{0: <3}'.format(board[cell]) + colors.ENDC, end='') 
         if cell % num_cols == num_cols-1: # last col
-            print(colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.C_PLAYER2 + '\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
+            print(colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.kWhite + '\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
     print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
-    print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(pieces.C_PLAYER1) * num_cols + colors.ENDC)
+    print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)
 
 def print_init_board(num_cols, num_rows):
     '''
     Print the board numbers
     '''
     num_cells = num_cols * num_rows
-    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.C_PLAYER1) * num_cols + colors.ENDC)
+    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)
     print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC)
     for cell in range(num_cells):
         if cell % num_cols == 0: # first col
-            print(colors.BOLD + colors.C_PLAYER2 + pieces.C_PLAYER2 + '\ ' + colors.ENDC, end= '')
+            print(colors.BOLD + colors.C_PLAYER2 + pieces.kWhite + '\ ' + colors.ENDC, end= '')
         print(colors.NEUTRAL + '{0: <3}'.format(cell) + colors.ENDC, end='') 
         if cell % num_cols == num_cols-1: # last col
-            print(colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.C_PLAYER2 + '\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
+            print(colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.kWhite + '\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
     print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
-    print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(pieces.C_PLAYER1) * num_cols + colors.ENDC)
+    print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)

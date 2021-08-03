@@ -11,11 +11,7 @@ class colors:
     WARNING = '\033[31m'
 
 class pieces:
-    C_PLAYER1 = 'B'
-    C_PLAYER2 = 'W'
-    NEUTRAL = '.'
-
-    # open_spiel states.
+    # open_spiel states being used.
     kEmpty = '.'
     kWhite = 'o'
     kWhiteWin = 'O'

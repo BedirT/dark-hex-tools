@@ -1,56 +1,42 @@
 from Projects.base.game.darkHex import DarkHex
-from Projects.base.game.hex import print_init_board
+from Projects.base.game.hex import print_init_board, pieces
 from Projects.base.agent.RandomAgent import RandomAgent
-from Projects.base.agent.SetPolicyAgent import FixedPolicyAgent_wTree
 import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--verbose_player", "-vp", action="store_true", 
                     help="Turn on outputs for the Fixed Policy player.", default=False)
 args = parser.parse_args()
+actor1 = RandomAgent(pieces.kBlack)
+actor2 = RandomAgent(pieces.kWhite)
+# print('Player 1 (W) is played by the FixedPolicyAgent\n\
+# Player 2 (B) is you, please make a move according\n\
+# to the given table indexes. For 3x4 board here\n\
+# is the board indexes;\n')
+# print_init_board(num_cols=game.num_cols, num_rows=game.num_rows)
 
-game = DarkHex(BOARD_SIZE=[3,4])
-result = '='
-
-actor1 = FixedPolicyAgent_wTree(game.C_PLAYER2, game.valid_moves)
-actor2 = RandomAgent(game.C_PLAYER1)
-
-i = 0
-print('Player 1 (W) is played by the FixedPolicyAgent\n\
-Player 2 (B) is you, please make a move according\n\
-to the given table indexes. For 3x4 board here\n\
-is the board indexes;\n')
-print_init_board(num_cols=game.num_cols, num_rows=game.num_rows)
-
-while result == '=':
-    s = True
-    if i % 2 == 0:
-        result = 'f'
-        if not args.verbose_player:
-            game.verbose = False
-        while result == 'f':
-            action = actor1.step(observation=game.BOARDS[game.C_PLAYER2], success=s)
-            board, done, result, reward = game.step(game.C_PLAYER2, action)
-            s = False
-        if args.verbose_player:    
-            game.print_information_set(game.C_PLAYER2)
-    else:
-        result = 'f'
-        game.verbose = True
-        while result == 'f':
-            try:
-                action = int(input('move: ').strip())
-                board, done, result, reward = game.step(game.C_PLAYER1, action)
-            except KeyboardInterrupt:
-                exit()
-            except:
-                print("Please enter a valid input, the format should be an int. i.e. 3. Valid indexes shown as in the board below;")
-                print_init_board(num_cols=game.num_cols, num_rows=game.num_rows,
-                                 p1=game.C_PLAYER1, p2=game.C_PLAYER2)
-                continue
-        game.print_information_set(game.C_PLAYER1)
-    i+=1
-game.verbose = True
-print('\nGame is over, the winner is:', game.game_status())
-print('Here is the end game referee board:')
-game.printBoard()
+# count winners
+counter = {pieces.kBlack: 0, pieces.kWhite: 0}
+num_iterations = 100000
+for i in range(num_iterations):
+    game = DarkHex(BOARD_SIZE=[3,4], verbose=False)
+    result = pieces.kDraw
+    i = 0
+    while result == pieces.kDraw:
+        result = pieces.kFail
+        if i % 2 == 0:
+            while result == pieces.kFail:
+                action = actor1.step(game.BOARDS[pieces.kWhite])
+                board, result, reward = game.step(pieces.kWhite, action)
+        else:
+            while result == pieces.kFail:
+                action = actor2.step(game.BOARDS[pieces.kBlack])
+                board, result, reward = game.step(pieces.kBlack, action)
+        i+=1
+    if result == pieces.kBlack:
+        counter[pieces.kBlack] += 1
+    elif result == pieces.kWhite:
+        counter[pieces.kWhite] += 1
+# report winners
+print(f'Player 1 (W) wins: {counter[pieces.kBlack]}')
+print(f'Player 2 (B) wins: {counter[pieces.kWhite]}')
