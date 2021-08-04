@@ -1,3 +1,4 @@
+from collections import Counter
 from copy import deepcopy
 
 from Projects.base.game.hex import Hex, pieces
@@ -21,7 +22,7 @@ class DarkHex(Hex):
         self.move_history = {pieces.kBlack: [], pieces.kWhite: []}
         self.hidden_stones = {pieces.kBlack: 0, pieces.kWhite: 0}
 
-        self.__set_board(custom_board_p1, custom_board_p2)
+        # self.__set_board(custom_board_p1, custom_board_p2)
 
     def step(self, color, action):
         '''
@@ -61,25 +62,26 @@ class DarkHex(Hex):
         
         return self.BOARD, result, reward
 
-    def rewind(self):
+    def rewind(self, collusion_last=False):
         '''
         Rewinds the game to the previous state.
         '''
-        if self.collusion_last:
+        if collusion_last:
             # If the last move was a collusion, then we need to rewind keeping
             # the previous player to move.
-            player = self.turn_info
+            player = self.turn_information_func()
         else:
-            player = self.rev_color[self.turn_info]
+            player = self.rev_color[self.turn_information_func()]
         if not self.move_history[player]:
             # If the player didn't make any move, then we need to rewind to the
             # rewind fails, no action is required.
             return
         last_move = self.move_history[player].pop()
-        if not self.collusion_last: # move was a success
-            # empty the board and update valid moves
+        if self.get_player(self.BOARDS[player][last_move]) == player: # move was a success
+            # empty the cell and update valid moves
             self.BOARD[last_move] = pieces.kEmpty
             self.valid_moves.add(last_move)
+            # self.turn_info = self.rev_color[player]
             
             # printing func
             self.cur_move_num -= 1
@@ -90,6 +92,30 @@ class DarkHex(Hex):
         self.game_length -= 1
         self.BOARDS[player][last_move] = pieces.kEmpty
         self.valid_moves_colors[player].add(last_move)
+
+    def get_player(self, piece):
+        '''
+        Returns the player that the piece belongs to.
+        '''
+        if piece in pieces.black_pieces:
+            return pieces.kBlack
+        elif piece in pieces.white_pieces:
+            return pieces.kWhite
+        else:
+            return None
+
+    def turn_information_func(self):
+        '''
+        Returns which player has the next move.
+        '''
+        ctboard = Counter(self.BOARD)
+        # black pieces
+        ct_black = ctboard[pieces.kBlack] + ctboard[pieces.kBlackNorth] + ctboard[pieces.kBlackWin] + \
+                   ctboard[pieces.kBlackSouth]
+        # white pieces
+        ct_white = ctboard[pieces.kWhite] + ctboard[pieces.kWhiteEast] + ctboard[pieces.kWhiteWin] + \
+                   ctboard[pieces.kWhiteWest]
+        return  (pieces.kBlack if ct_black <= ct_white else pieces.kWhite)
 
     def __set_board(self, custom_board_p1, custom_board_p2):
         '''
@@ -116,6 +142,24 @@ class DarkHex(Hex):
         self.hidden_stones[pieces.kWhite] = self.BOARD.count(pieces.kBlack) \
                                             - self.BOARDS[pieces.kWhite].count(
                                                   self.rev_color[pieces.kBlack])
+
+    # ! USE A VARIABLE INSTEAD
+    # Cant seem to fix
+    def hidden_stones_count(self, player):
+        ctboard = Counter(self.BOARD)
+        if player == pieces.kBlack:
+            ctboard_p = Counter(self.BOARDS[player])
+            boardcount = ctboard[pieces.kWhite] + ctboard[pieces.kWhiteEast] + ctboard[pieces.kWhiteWin] + \
+                   ctboard[pieces.kWhiteWest] 
+            boardcount_p = ctboard_p[pieces.kWhite] + ctboard_p[pieces.kWhiteEast] + ctboard_p[pieces.kWhiteWin] + \
+                   ctboard_p[pieces.kWhiteWest]
+        else:
+            ctboard_p = Counter(self.BOARDS[player])
+            boardcount = ctboard[pieces.kBlack] + ctboard[pieces.kBlackNorth] + ctboard[pieces.kBlackWin] + \
+                   ctboard[pieces.kBlackSouth]
+            boardcount_p = ctboard_p[pieces.kBlack] + ctboard_p[pieces.kBlackNorth] + ctboard_p[pieces.kBlackWin] + \
+                   ctboard_p[pieces.kBlackSouth]
+        return boardcount - boardcount_p
           
     def print_information_set(self, player):
         if not self.verbose:
@@ -171,11 +215,11 @@ class DarkHex(Hex):
                 print('Valid moves are:', self.valid_moves_colors[color])
             return False
         self.game_length += 1
+        self.move_history[color].append(cell)
         # Check if the cell is already occupied
         if self.BOARD[cell] != pieces.kEmpty:
             self.BOARDS[color][cell] = self.rev_color[color]
             self.valid_moves_colors[color].remove(cell)
-            self.move_history[color].append(cell)
             if self.verbose:
                 print('This cell is taken.')
                 print('Valid moves are:', self.valid_moves_colors[color])
@@ -184,7 +228,10 @@ class DarkHex(Hex):
         if color == pieces.kBlack:
             north_connected = False
             south_connected = False 
-            if cell < self.num_cols: # First row
+            if self.num_rows == 1: # There is only one row so first & last row
+                north_connected = True
+                south_connected = True
+            elif cell < self.num_cols: # First row
                 north_connected = True
             elif cell >= self.num_cols * (self.num_rows - 1): # Last row
                 south_connected = True
@@ -204,7 +251,10 @@ class DarkHex(Hex):
         elif color == pieces.kWhite:
             east_connected = False
             west_connected = False
-            if cell % self.num_cols == 0: # First column
+            if self.num_cols == 1: # There is only one col so first & last col
+                east_connected = True
+                west_connected = True
+            elif cell % self.num_cols == 0: # First column
                 west_connected = True
             elif cell % self.num_cols == self.num_cols - 1: # Last column
                 east_connected = True
@@ -238,9 +288,8 @@ class DarkHex(Hex):
                         flood_stack.append(neighbour)
             # Flood-fill is complete.
         self.valid_moves.remove(cell)
+        # self.turn_info = self.rev_color[color]
         self.valid_moves_colors[color].remove(cell)
-
-        self.move_history[color].append(cell)
 
         self.game_history_str[cell] = color + str(self.cur_move_num)
         self.cur_move_num += 1

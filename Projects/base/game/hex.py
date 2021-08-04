@@ -27,6 +27,9 @@ class pieces:
     kDraw = '='
     kFail = 'f'
     kIllegal = 'i'
+    # Piece sets
+    black_pieces = [kBlack, kBlackWin,kBlackNorth, kBlackSouth]
+    white_pieces = [kWhite, kWhiteWin, kWhiteWest, kWhiteEast]
 
 class Hex:
     '''
@@ -260,9 +263,24 @@ class Hex:
         self.cur_move_num += 1
         return True
 
-    # define function cell_connections(cell) protected
+    def _game_status(self):
+        '''
+        Checks the current game status and returns the appropriete
+        string. Checks if the board has a kBlackWin or kWhiteWin.
 
-    
+        Return:
+            kBlackWin  - Black wins
+            kWhiteWin  - White wins
+            kDraw      - Draw 
+        '''
+        ct = Counter(self.BOARD)
+        if ct[pieces.kBlackWin] > 0:
+            return pieces.kBlackWin
+        elif ct[pieces.kWhiteWin] > 0:
+            return pieces.kWhiteWin
+        else:
+            return pieces.kDraw
+          
     def _cell_connections(self, cell):
         '''
         Returns the neighbours of the given cell.

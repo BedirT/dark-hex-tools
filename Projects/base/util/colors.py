@@ -9,15 +9,3 @@ class colors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     WARNING = '\033[31m'
-
-class pieces:
-    # open_spiel states being used.
-    kEmpty = '.'
-    kWhite = 'o'
-    kWhiteWin = 'O'
-    kBlack = 'x'
-    kBlackWin = 'X'
-    kWhiteWest = 'p'
-    kWhiteEast = 'q'
-    kBlackNorth = 'y'
-    kBlackSouth = 'z'
