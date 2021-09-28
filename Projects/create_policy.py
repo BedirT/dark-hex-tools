@@ -2,11 +2,11 @@ from collections import defaultdict
 from Projects.base.game.darkHex import DarkHex
 from Projects.base.game.hex import print_init_board, pieces
 
-def infoset(board, hidden_stones) -> str:
+def infoset(board, num_cols, hidden_stones, player) -> str:
     """
     Returns the infoset of the current board.
     """
-    s = ""
+    s = 'P' + str(player) + ' '
     for i in range(len(board)):
         s += str(board[i])
     s += str(hidden_stones)
@@ -38,6 +38,7 @@ if human_like:
 
 infoset_to_action = defaultdict(set)
 results = []
+playernum = 0
 while True:
     # if the game is over, invalid if chose to move
     if human_like:
@@ -46,7 +47,7 @@ while True:
     else:
         # take the next action from the input file
         p_action = moves.pop(0)
-    prev_infoset = infoset(game.BOARDS[pieces.kBlack], game.hidden_stones_count(pieces.kBlack))
+    prev_infoset = infoset(game.BOARDS[pieces.kBlack], 4, game.hidden_stones_count(pieces.kBlack), playernum)
     if p_action[0] == 'x':
         break
     elif p_action[0] == '-':
@@ -68,6 +69,7 @@ while True:
         game.printBoard()
         print(game.valid_moves_colors[pieces.kBlack])
         print(game.valid_moves_colors[pieces.kWhite])
+        playernum = (playernum + 1) % 2
         if human_like:
             game.verbose = False
             continue
@@ -99,7 +101,7 @@ with open("Projects/output.txt", "w") as f:
     for infoset, actions in infoset_to_action.items():
         # legal actions are from infoset
         # if infoset cell is '.' then its legal
-        legal_actions = [idx for idx,cell in enumerate(infoset) if cell == '.']
+        legal_actions = [idx-3 for idx,cell in enumerate(infoset) if cell == '.']
         f.write("\"{}\": [".format(infoset))
         for action in actions:
             f.write("({}, {}),".format(action, 1/len(actions)))
