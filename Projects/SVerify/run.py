@@ -18,6 +18,7 @@ Parameters:
 '''
 from Projects.base.game.darkHex import DarkHex
 from Projects.base.game.hex import pieces
+from strategy_data import strategies
 
 PROBS = {}
 incomplete = False
@@ -44,6 +45,7 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
             return False
         for action, prob in S[game.get_information_set(p_color)]:
             _, res, _ = game.step(p_color, action)
+            game.printBoard()
             if res == p_color:
                 # p wins
                 p_res += prob
@@ -65,6 +67,7 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
         pos_results = []
         for action in game.valid_moves:
             _, res, _ = game.step(o_color, action)
+            # game.printBoard()
             if res == o_color:
                 # o wins
                 game.rewind(res == pieces.kFail)
@@ -77,22 +80,13 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
         return min(pos_results)
 
 def main():
-    args = {
-        'player': 0,
-        'board_size': [2,2],
-        'strategy': {   '....0': [(1, 0.5), (2, 0.5)],
-                        '.y..1': [(2, 0.5), (3, 0.5)],
-                        '.yo.0': [(3, 1)],
-                        '.y.o0': [(2, 1)],
-                        '..z.1': [(0, 0.5), (1, 0.5)],
-                        'o.z.0': [(1, 1)],
-                        '.oz.0': [(0, 1)],},
-    }
-    game = DarkHex(BOARD_SIZE=args['board_size'],
-                    verbose=False)
-    p = args['player']
+    
+    strategy_dict = strategies.ryan_3x4_lb
+    game = DarkHex(BOARD_SIZE=strategy_dict['board_size'],
+                    verbose=True)
+    p = strategy_dict['player']
     # S is the strategy to evaluate
-    S = args['strategy']
+    S = strategy_dict['strategy'] 
     # player_turn is the player whose turn it is
     if p == 0:
         p_color = pieces.kBlack

@@ -2,8 +2,8 @@ from collections import defaultdict
 from Projects.base.game.darkHex import DarkHex
 from Projects.base.game.hex import print_init_board, pieces
 
-num_cols = 2
-num_rows = 2
+num_cols = 4
+num_rows = 3
 
 def infoset(board, hidden_stones, player) -> str:
     """
@@ -58,8 +58,8 @@ while True:
         game.rewind(result == pieces.kFail)
         if human_like:
             game.printBoard()
-            print(game.valid_moves_colors[pieces.kBlack], game.hidden_stones_count(pieces.kBlack), playernum)
-            print(game.valid_moves_colors[pieces.kWhite], game.hidden_stones_count(pieces.kWhite), playernum)
+            print(game.valid_moves_colors[pieces.kBlack], game.hidden_stones_count(pieces.kBlack), p_action[0])
+            print(game.valid_moves_colors[pieces.kWhite], game.hidden_stones_count(pieces.kWhite), p_action[0])
         continue
     elif p_action[0] == '0' and result in [pieces.kDraw, pieces.kFail]:
         player = pieces.kBlack
