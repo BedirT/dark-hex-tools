@@ -30,12 +30,12 @@ def RES_CHECK(s, h):
     return False
 
 class pONE:
-    def __init__(self, board_size):
+    def __init__(self, board_size, visible_player):
         self.num_rows = board_size[0]
         self.num_cols = board_size[1]
         self.num_cells = self.num_rows * self.num_cols
 
-        self.color = C_PLAYER1 # manually set
+        self.color = visible_player
         self.opp_color = C_PLAYER1 if self.color == C_PLAYER2 else C_PLAYER2
 
         self.state_results = [[{} for _ in range(self.num_cells//2+1)] for _ in range(self.num_cells)]
@@ -180,7 +180,7 @@ class pONE:
         '''
         Check the given state and determine the legality. If 
         the state is legal examine the immediate result of the
-        state (White/Black(W/B) wins or a tie-(=)).
+        state (White/Black(W/B) wins or a tie(=)).
 
         Args:
             - state:    State to check the legality.

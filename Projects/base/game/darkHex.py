@@ -193,6 +193,12 @@ class DarkHex(Hex):
         print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (self.num_cols * 3 +1) + colors.ENDC)        
         print(colors.BOLD + colors.C_PLAYER1 + ' ' * (self.num_rows+4) + '{0: <3}'.format(pieces.kBlack) * self.num_cols + colors.ENDC)
 
+    def get_information_set(self, player):
+        '''
+        Returns the information set of the player as a string.
+        '''
+        return ''.join(self.BOARDS[player]) + str(self.hidden_stones_count(player))
+
     def __placeStone(self, cell, color):
         '''
         Placing a stone on the given board location for the main board and 

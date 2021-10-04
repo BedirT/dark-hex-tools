@@ -2,7 +2,10 @@ from collections import defaultdict
 from Projects.base.game.darkHex import DarkHex
 from Projects.base.game.hex import print_init_board, pieces
 
-def infoset(board, num_cols, hidden_stones, player) -> str:
+num_cols = 2
+num_rows = 2
+
+def infoset(board, hidden_stones, player) -> str:
     """
     Returns the infoset of the current board.
     """
@@ -11,14 +14,14 @@ def infoset(board, num_cols, hidden_stones, player) -> str:
         s += str(board[i])
     s += str(hidden_stones)
     return s
-    
-game = DarkHex(BOARD_SIZE=[3,4])
+
+game = DarkHex(BOARD_SIZE=[num_rows, num_cols])
 result = pieces.kDraw
 
 # if human_like is True then the input will be given at each play
 # and the game will not be played from the input file
 # if human_like is False then the game will be played from the input file
-human_like = False
+human_like = True
 
 moves = []
 # read the input file if human_like is False
@@ -47,7 +50,7 @@ while True:
     else:
         # take the next action from the input file
         p_action = moves.pop(0)
-    prev_infoset = infoset(game.BOARDS[pieces.kBlack], 4, game.hidden_stones_count(pieces.kBlack), playernum)
+    prev_infoset = infoset(game.BOARDS[pieces.kBlack], game.hidden_stones_count(pieces.kBlack), playernum)
     if p_action[0] == 'x':
         break
     elif p_action[0] == '-':
@@ -55,8 +58,8 @@ while True:
         game.rewind(result == pieces.kFail)
         if human_like:
             game.printBoard()
-            print(game.valid_moves_colors[pieces.kBlack], game.hidden_stones_count(pieces.kBlack))
-            print(game.valid_moves_colors[pieces.kWhite], game.hidden_stones_count(pieces.kWhite))
+            print(game.valid_moves_colors[pieces.kBlack], game.hidden_stones_count(pieces.kBlack), playernum)
+            print(game.valid_moves_colors[pieces.kWhite], game.hidden_stones_count(pieces.kWhite), playernum)
         continue
     elif p_action[0] == '0' and result in [pieces.kDraw, pieces.kFail]:
         player = pieces.kBlack
@@ -84,8 +87,8 @@ while True:
     if human_like:
         # print the board
         game.printBoard()
-        print("Player 1 infoset:", infoset(game.BOARDS[pieces.kBlack], game.hidden_stones_count(pieces.kBlack)))
-        print("Player 2 infoset:", infoset(game.BOARDS[pieces.kWhite], game.hidden_stones_count(pieces.kWhite)))
+        print("Player 1 infoset:", infoset(game.BOARDS[pieces.kBlack], game.hidden_stones_count(pieces.kBlack), playernum))
+        print("Player 2 infoset:", infoset(game.BOARDS[pieces.kWhite], game.hidden_stones_count(pieces.kWhite), playernum))
     results.append(result)
 
 # print infosets in a file
