@@ -28,7 +28,7 @@ class pieces:
     kFail = 'f'
     kIllegal = 'i'
     # Piece sets
-    black_pieces = [kBlack, kBlackWin,kBlackNorth, kBlackSouth]
+    black_pieces = [kBlack, kBlackWin, kBlackNorth, kBlackSouth]
     white_pieces = [kWhite, kWhiteWin, kWhiteWest, kWhiteEast]
 
 class Hex:

@@ -5,16 +5,6 @@ from Projects.base.game.hex import print_init_board, pieces
 num_cols = 4
 num_rows = 3
 
-def infoset(board, hidden_stones, player) -> str:
-    """
-    Returns the infoset of the current board.
-    """
-    s = 'P' + str(player) + ' '
-    for i in range(len(board)):
-        s += str(board[i])
-    s += str(hidden_stones)
-    return s
-
 game = DarkHex(BOARD_SIZE=[num_rows, num_cols])
 result = pieces.kDraw
 
@@ -39,33 +29,30 @@ if not human_like:
 if human_like:
     print_init_board(num_cols=game.num_cols, num_rows=game.num_rows)
 
-infoset_to_action = defaultdict(set)
 infoset_to_action_p1 = defaultdict(set)
 infoset_to_action_p2 = defaultdict(set)
-results = []
-playernum = 0
+save_ls = []
 while True:
     # if the game is over, invalid if chose to move
     if human_like:
         p_action = input("Play 0-1 for indicating the player and then action/or just '-' for rewind/'x' to exit: ").strip().split(' ')
         moves.append(p_action)
+        save_ls.append(p_action)
     else:
         # take the next action from the input file
         p_action = moves.pop(0)
-    prev_infoset = infoset(game.BOARDS[pieces.kBlack], game.hidden_stones_count(pieces.kBlack), playernum)
     if p_action[0] == 'x':
         break
     elif p_action[0] == '-':
-        result = results.pop()
-        game.rewind(result == pieces.kFail)
+        game.rewind()
         if human_like:
             game.printBoard()
             print(game.valid_moves_colors[pieces.kBlack], game.hidden_stones_count(pieces.kBlack), p_action[0])
             print(game.valid_moves_colors[pieces.kWhite], game.hidden_stones_count(pieces.kWhite), p_action[0])
         continue
-    elif p_action[0] == '0' and result in [pieces.kDraw, pieces.kFail]:
+    elif p_action[0] == '1':
         player = pieces.kBlack
-    elif p_action[0] == '1' and result in [pieces.kDraw, pieces.kFail]:
+    elif p_action[0] == '0':
         player = pieces.kWhite
     else:
         # p_action is invalid
@@ -74,15 +61,15 @@ while True:
         game.printBoard()
         print(game.valid_moves_colors[pieces.kBlack])
         print(game.valid_moves_colors[pieces.kWhite])
-        playernum = (playernum + 1) % 2
         if human_like:
-            game.verbose = False
+            game.verbose = True
             continue
         print(moves)
         exit()
+    prev_infoset = game.get_information_set(player)
     action = int(p_action[1])
     # step the game
-    board, result, reward = game.step(player, int(action))
+    _, result, _ = game.step(player, action)
     if player == pieces.kBlack:
         infoset_to_action_p1[prev_infoset].add(action)
     if player == pieces.kWhite:
@@ -91,9 +78,9 @@ while True:
     if human_like:
         # print the board
         game.printBoard()
-        print("Player 1 infoset:", infoset(game.BOARDS[pieces.kBlack], game.hidden_stones_count(pieces.kBlack), 0))
-        print("Player 2 infoset:", infoset(game.BOARDS[pieces.kWhite], game.hidden_stones_count(pieces.kWhite), 1))
-    results.append(result)
+        print("Player B infoset:", game.get_information_set(pieces.kBlack))
+        print("Player W infoset:", game.get_information_set(pieces.kWhite))
+        print("BOARD:", game.BOARD)
 
 # print infosets in a file
 # seperate infosets by a new line get it in quatation marks
@@ -108,25 +95,27 @@ while True:
 # 0 for player1 and 1 for player2
 # if you want to save both players policies, put 0 and 1
 p_save = input("Which players policy to save? (0 or 1, 01 for both): ").strip()
-if p_save == '0':
-    infoset_to_action = infoset_to_action_p1
-elif p_save == '1':
-    infoset_to_action = infoset_to_action_p2
-elif p_save == '01':
-    infoset_to_action = {**infoset_to_action_p1, **infoset_to_action_p2}
-print(infoset_to_action)
-with open("Projects/output.txt", "w") as f:
-    for infoset, actions in infoset_to_action.items():
-        # legal actions are from infoset
-        # if infoset cell is '.' then its legal
-        legal_actions = [idx-3 for idx,cell in enumerate(infoset) if cell == '.']
-        f.write("\"{}\": [".format(infoset))
-        for action in actions:
-            f.write("({}, {}),".format(action, 1/len(actions)))
-        f.write("],")
-        f.write("\n")
+with open("Projects/SVerify/output.txt", "w") as f:
+    if '0' in p_save:
+        for infoset, actions in infoset_to_action_p1.items():
+            f.write("\"{}\": [".format(infoset))
+            for idx, action in enumerate(actions):
+                div = round(1/len(actions), 2)
+                if idx == len(actions)-1 and \
+                    round(1/len(actions),2)*len(actions) != 1/len(actions)*len(actions):
+                    # last action
+                    div = round(1 - (round(1/len(actions),2) * (len(actions)-1)),2)
+                f.write("({}, {}),".format(action, div))
+            f.write("],\n")
+    f.write("\n\n")
+    if '1' in p_save:
+        for infoset, actions in infoset_to_action_p2.items():
+            f.write("\"{}\": [".format(infoset))
+            for action in actions:
+                f.write("({}, {}),".format(action, 1/len(actions)))
+            f.write("],\n")
 
 # save the inputs given by the user in a file
-# with open("Projects/input.txt", "w") as f:
-#     for move in moves:
-#         f.write(" ".join(move) + "\n")
+with open("Projects/SVerify/input.txt", "w") as f:
+    for move in save_ls:
+        f.write(" ".join(move) + "\n")

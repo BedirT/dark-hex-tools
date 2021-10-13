@@ -20,6 +20,7 @@ class DarkHex(Hex):
         self.BOARDS = {pieces.kBlack: deepcopy(self.BOARD), pieces.kWhite: deepcopy(self.BOARD)}
         self.valid_moves_colors = {pieces.kBlack: deepcopy(self.valid_moves), pieces.kWhite: deepcopy(self.valid_moves)}
         self.move_history = {pieces.kBlack: [], pieces.kWhite: []}
+        self.all_move_history = []
         self.hidden_stones = {pieces.kBlack: 0, pieces.kWhite: 0}
 
         # self.__set_board(custom_board_p1, custom_board_p2)
@@ -62,21 +63,15 @@ class DarkHex(Hex):
         
         return self.BOARD, result, reward
 
-    def rewind(self, collusion_last=False):
+    def rewind(self):
         '''
         Rewinds the game to the previous state.
         '''
-        if collusion_last:
-            # If the last move was a collusion, then we need to rewind keeping
-            # the previous player to move.
-            player = self.turn_information_func()
-        else:
-            player = self.rev_color[self.turn_information_func()]
-        if not self.move_history[player]:
+        if not self.all_move_history:
             # If the player didn't make any move, then we need to rewind to the
             # rewind fails, no action is required.
             return
-        last_move = self.move_history[player].pop()
+        player, last_move = self.all_move_history.pop()
         if self.get_player(self.BOARDS[player][last_move]) == player: # move was a success
             # empty the cell and update valid moves
             self.BOARD[last_move] = pieces.kEmpty
@@ -92,7 +87,7 @@ class DarkHex(Hex):
         self.game_length -= 1
         self.BOARDS[player][last_move] = pieces.kEmpty
         self.valid_moves_colors[player].add(last_move)
-
+    
     def get_player(self, piece):
         '''
         Returns the player that the piece belongs to.
@@ -222,6 +217,7 @@ class DarkHex(Hex):
             return False
         self.game_length += 1
         self.move_history[color].append(cell)
+        self.all_move_history.append((color, cell))
         # Check if the cell is already occupied
         if self.BOARD[cell] != pieces.kEmpty:
             self.BOARDS[color][cell] = self.rev_color[color]

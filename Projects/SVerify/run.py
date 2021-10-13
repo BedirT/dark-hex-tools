@@ -50,7 +50,7 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
                 # p wins
                 p_res += prob
                 # rewind the game
-                game.rewind(res == pieces.kFail)
+                game.rewind()
             else:
                 # continue playing the game
                 if res == pieces.kFail:
@@ -58,7 +58,7 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
                 else:
                     p_res += prob * start_the_game(game, p, S, p_color, o_color, (player_turn + 1) % 2)
                 # rewind the game
-                game.rewind(res == pieces.kFail)
+                game.rewind()
         return p_res
     else:
         # o plays ALL legal moves for the current information set for o
@@ -70,13 +70,13 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
             # game.printBoard()
             if res == o_color:
                 # o wins
-                game.rewind(res == pieces.kFail)
+                game.rewind()
                 return 0
             else:
                 # continue playing the game
                 pos_results.append(start_the_game(game, p, S, p_color, o_color, (player_turn + 1) % 2))
                 # rewind the game
-                game.rewind(res == pieces.kFail)
+                game.rewind()
         return min(pos_results)
 
 def main():
@@ -87,7 +87,6 @@ def main():
     p = strategy_dict['player']
     # S is the strategy to evaluate
     S = strategy_dict['strategy'] 
-    # player_turn is the player whose turn it is
     if p == 0:
         p_color = pieces.kBlack
         o_color = pieces.kWhite
