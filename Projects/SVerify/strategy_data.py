@@ -14,7 +14,8 @@ class strategies:
     ryan_3x4_lower_bound = {
         'name': 'ryan_3x4_lower_bound',
         'description': 'ryan 3x4 lower bound strategy',
-        'board_size': (3, 4),
+        'num_rows': 3,
+        'num_cols': 4,
         'player': pieces.kBlack,
         'player_order': 1,
         'strategy': {
@@ -174,5 +175,69 @@ class strategies:
             "oo.yzz.yz.oo": [6],
             "oo.yzoyyz.oo": [9],
             "oo.yzzoyz.oo": [2],
+        }
+    }
+
+    test_2x2 = {
+        'name': 'test_2x2',
+        'description': 'test 2x2',
+        'num_rows': 2,
+        'num_cols': 2,
+        'player': pieces.kBlack,
+        'player_order': 0,
+        'strategy': {
+            "....": [1],
+            "..z.": [0, 3],
+            ".y..": [3, 0],
+            "o.z.": [1],
+            ".y.o": [2],
+            "..zo": [0],
+            "oy..": [3],
+            "..zz": [0],
+            "yy..": [3],
+            "o.zz": [1],
+            "yy.o": [2],
+        }
+    }
+
+    test_2x3_33p = {
+        'name': 'test_2x3',
+        'description': 'test 2x3',
+        'num_rows': 2,
+        'num_cols': 3,
+        'player': pieces.kBlack,
+        'player_order': 0,
+        'strategy': {
+            "......": [2],
+            "...z..": [0, 4, 5],
+            "..y...": [5, 1, 0],
+            "o..z..": [1],
+            "..y..o": [4],
+            "...zo.": [2],
+            ".oy...": [3],
+            "..yzo.": [5],
+            ".oyz..": [0],
+            "..yzoo": [0],
+            "ooyz..": [5],
+            "...zz.": [5],
+            ".yy...": [0],
+            "...zzo": [0],
+            "oyy...": [5],
+            "o..zzo": [1],
+            "oyy..o": [4],
+            "...zzz": [0],
+            "yyy...": [5],
+            "o..zzz": [1],
+            "yyy..o": [4],
+            "oo.zzz": [2],
+            "yyy.oo": [3],
+            "...z.o": [4],
+            "o.y...": [1],
+            "...z.z": [4],
+            "y.y...": [1],
+            "...zoz": [0],
+            "yoy...": [5],
+            "o..zoz": [1],
+            "yoy..o": [4],
         }
     }

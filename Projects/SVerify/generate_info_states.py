@@ -281,10 +281,10 @@ if __name__ == "__main__":
     '''
     # GAME SETUP
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    num_cols, num_rows = 4, 3                                                      # +
+    num_cols, num_rows = 3, 2                                                      # +
     player = pieces.kBlack                                                         # +
     opponent = pieces.kWhite                                                       # +
-    player_order = 1 # 0 for first player, 1 for second player                     # +                
+    player_order = 0 # 0 for first player, 1 for second player                     # +                
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     board_state = pieces.kEmpty * num_cols * num_rows # empty board
@@ -293,6 +293,15 @@ if __name__ == "__main__":
     # save info_states to file
     with open('info_states.txt', 'w') as f:
         for key, value in info_states.items():
-            f.write('"' + str(key) + '": ' + str(value) + ',\n')
+            # TODO: Temp - FIX THIS
+            s = ''
+            for c in key:
+                if player == pieces.kBlack and c in 'pq':
+                    s += 'o'
+                elif player == pieces.kWhite and c in 'yz':
+                    s += 'o'
+                else:
+                    s += c
+            f.write('"' + s + '": ' + str(value) + ',\n')
     # print info_states
     print(info_states)
