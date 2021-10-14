@@ -23,7 +23,7 @@ from strategy_data import strategies
 PROBS = {}
 incomplete = False
 
-def start_the_game(game, p, S, p_color, o_color, player_turn):
+def start_the_game(game, p_order, S, p_color, o_color, player_turn):
     '''
     Plays the game until all the S moves are exhausted
     recursively calls itself. If the game is tied, the strategy is incomplete.
@@ -34,7 +34,7 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
         return False
     p_res = 0 # probability of p winning for the current branch
     # p plays according to its order (0 or 1)
-    if player_turn == p:
+    if player_turn == p_order:
         # p plays ALL the next moves for the current
         # information set for p
         if game.get_information_set(p_color) not in S:
@@ -43,9 +43,10 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
             print('{}\n{}'.format(game.get_information_set(p_color), game.BOARD))
             incomplete = True
             return False
-        for action, prob in S[game.get_information_set(p_color)]:
+        for action in S[game.get_information_set(p_color)]:
+            prob = 1 / len(S[game.get_information_set(p_color)])
             _, res, _ = game.step(p_color, action)
-            game.printBoard()
+            # game.printBoard()
             if res == p_color:
                 # p wins
                 p_res += prob
@@ -54,9 +55,9 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
             else:
                 # continue playing the game
                 if res == pieces.kFail:
-                    p_res += prob * start_the_game(game, p, S, p_color, o_color, player_turn)
+                    p_res += prob * start_the_game(game, p_order, S, p_color, o_color, player_turn)
                 else:
-                    p_res += prob * start_the_game(game, p, S, p_color, o_color, (player_turn + 1) % 2)
+                    p_res += prob * start_the_game(game, p_order, S, p_color, o_color, (player_turn + 1) % 2)
                 # rewind the game
                 game.rewind()
         return p_res
@@ -67,40 +68,37 @@ def start_the_game(game, p, S, p_color, o_color, player_turn):
         pos_results = []
         for action in game.valid_moves:
             _, res, _ = game.step(o_color, action)
-            # game.printBoard()
             if res == o_color:
                 # o wins
                 game.rewind()
                 return 0
             else:
                 # continue playing the game
-                pos_results.append(start_the_game(game, p, S, p_color, o_color, (player_turn + 1) % 2))
+                pos_results.append(start_the_game(game, p_order, S, p_color, o_color, (player_turn + 1) % 2))
                 # rewind the game
                 game.rewind()
         return min(pos_results)
 
-def main():
-    
-    strategy_dict = strategies.ryan_3x4_lb
+def main(): 
+    strategy_dict = strategies.ryan_3x4_lower_bound
     game = DarkHex(BOARD_SIZE=strategy_dict['board_size'],
-                    verbose=True)
-    p = strategy_dict['player']
+                    verbose=False)
+    player = strategy_dict['player'] # player to evaluate
+    p_order = strategy_dict['player_order'] # the order of the player
     # S is the strategy to evaluate
-    S = strategy_dict['strategy'] 
-    if p == 0:
-        p_color = pieces.kBlack
-        o_color = pieces.kWhite
+    S = strategy_dict['strategy']
+    if player == pieces.kBlack:
+        opponent = pieces.kWhite
     else:
-        p_color = pieces.kWhite
-        o_color = pieces.kBlack
+        opponent = pieces.kBlack
 
-    win_p = start_the_game(game, p, S, p_color, o_color, 0)
+    win_p = start_the_game(game, p_order, S, player, opponent, 0)
 
     if incomplete:
         print('Strategy incomplete')
     else:
         # report win probability for player p using strategy S
-        print('Win probability for player {}: {}'.format(p, win_p))
+        print('Win probability for player {} (order {}): {}'.format(player, p_order, win_p))
 
 if __name__ == '__main__':
     main()

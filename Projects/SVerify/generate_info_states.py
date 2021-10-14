@@ -19,6 +19,7 @@ The game is Dark Hex on nxm board.
 from collections import Counter, defaultdict
 from Projects.base.game.hex import pieces
 from Projects.base.util.colors import colors
+from Projects.SVerify.isomorphic import isomorphic_single
 from copy import deepcopy
 
 def printBoard(board_state, num_cols, num_rows, move_sequence):
@@ -52,6 +53,18 @@ def printBoard(board_state, num_cols, num_rows, move_sequence):
             print(colors.C_PLAYER2 + '{}'.format(mv[0]) + colors.ENDC, end=' ')
     print(colors.BOLD + colors.QUESTIONS + '\n' + colors.ENDC)
 
+def save_input(input_list):
+    '''
+    Save the input to a file. If the file already exists,
+    append the input to the file.
+
+    - input_list: The input to save.
+    '''
+    with open('input_new.txt', 'a') as f:
+        for i in input_list:
+            f.write(str(i) + ' ')
+        f.write('\n')
+
 def get_moves(board_state, num_cols, num_rows, move_sequence):
     '''
     Get moves for the current board state from the user.
@@ -61,7 +74,12 @@ def get_moves(board_state, num_cols, num_rows, move_sequence):
     '''
     # Print the board state to the user.
     printBoard(board_state, num_cols, num_rows, move_sequence)
-    ins = list(map(int, input('Enter moves for board state (space between each move): ').strip().split(' ')))
+    the_input = input('Enter moves for board state (space between each move): ').strip().split(' ')
+    if the_input[0] == 'exit':
+        exit()
+    ins = list(map(int, the_input))
+    save_input(ins)
+    
     return ins
     
 def is_collusion_possible(board_state, player, opponent, player_order):
@@ -84,7 +102,7 @@ def is_collusion_possible(board_state, player, opponent, player_order):
     if player_order == 0:
         return opponent_pieces < player_pieces
     else:
-        return opponent_pieces <= player_pieces + 1
+        return opponent_pieces <= player_pieces
 
 def pos_by_coord(num_cols, r, c):
     return num_cols * r + c
@@ -238,6 +256,9 @@ def generate_info_states(board_state, info_states, player, opponent, player_orde
             moves_and_boards[str(move)+player] = new_board_2
     # Update info_states with the moves.
     info_states[board_state] = moves
+    # Also update the isomorphic states.
+    iso_state, iso_moves = isomorphic_single(board_state, moves)
+    info_states[iso_state] = iso_moves
     # If a collusion is possible
     collusion_possible = is_collusion_possible(board_state, player, opponent, player_order)
     # For each move, recursively call the generate_info_states function.
@@ -260,10 +281,10 @@ if __name__ == "__main__":
     '''
     # GAME SETUP
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    num_cols, num_rows = 3, 3                                                      # +
+    num_cols, num_rows = 4, 3                                                      # +
     player = pieces.kBlack                                                         # +
     opponent = pieces.kWhite                                                       # +
-    player_order = 0 # 0 for first player, 1 for second player                     # +                
+    player_order = 1 # 0 for first player, 1 for second player                     # +                
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     board_state = pieces.kEmpty * num_cols * num_rows # empty board

@@ -192,7 +192,7 @@ class DarkHex(Hex):
         '''
         Returns the information set of the player as a string.
         '''
-        return ''.join(self.BOARDS[player]) + str(self.hidden_stones_count(player))
+        return ''.join(self.BOARDS[player])# + str(self.hidden_stones_count(player))
 
     def __placeStone(self, cell, color):
         '''
