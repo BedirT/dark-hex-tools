@@ -281,13 +281,14 @@ if __name__ == "__main__":
     '''
     # GAME SETUP
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    num_cols, num_rows = 3, 2                                                      # +
+    num_cols, num_rows = 4, 3                                                      # +
     player = pieces.kBlack                                                         # +
     opponent = pieces.kWhite                                                       # +
-    player_order = 0 # 0 for first player, 1 for second player                     # +                
+    player_order = 1 # 0 for first player, 1 for second player                     # +                
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     board_state = pieces.kEmpty * num_cols * num_rows # empty board
+    board_state = 'pp.yzp..z.o.'
     info_states = defaultdict(lambda: list())
     generate_info_states(board_state, info_states, player, opponent, player_order, num_cols, num_rows, [])
     # save info_states to file
@@ -299,7 +300,7 @@ if __name__ == "__main__":
                 if player == pieces.kBlack and c in 'pq':
                     s += 'o'
                 elif player == pieces.kWhite and c in 'yz':
-                    s += 'o'
+                    s += 'x'
                 else:
                     s += c
             f.write('"' + s + '": ' + str(value) + ',\n')
