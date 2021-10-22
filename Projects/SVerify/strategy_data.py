@@ -18,6 +18,7 @@ class strategies:
         'num_cols': 4,
         'player': pieces.kBlack,
         'player_order': 1,
+        'first_player': pieces.kWhite,
         'strategy': {
             "............": [3, 8],
             "........o...": [3],
@@ -203,6 +204,7 @@ class strategies:
         'num_cols': 2,
         'player': pieces.kBlack,
         'player_order': 0,
+        'first_player': pieces.kBlack,
         'strategy': {
             "....": [1],
             "..x.": [0, 3],
@@ -210,11 +212,11 @@ class strategies:
             "o.x.": [1],
             ".x.o": [2],
             "..xo": [0],
-            "oy..": [3],
+            "ox..": [3],
             "..xx": [0],
-            "yy..": [3],
+            "xx..": [3],
             "o.xx": [1],
-            "yy.o": [2],
+            "xx.o": [2],
         }
     }
 
@@ -225,6 +227,7 @@ class strategies:
         'num_cols': 3,
         'player': pieces.kBlack,
         'player_order': 0,
+        'first_player': pieces.kBlack,
         'strategy': {
             "......": [2],
             "...x..": [0, 4, 5],
@@ -267,6 +270,7 @@ class strategies:
         'num_cols': 4,
         'player': pieces.kBlack,
         'player_order': 0,
+        'first_player': pieces.kBlack,
         'strategy': {
             "oo.xxo..x.o.": [6, 7],
             ".o.x..oxx.oo": [5, 4],

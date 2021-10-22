@@ -16,7 +16,7 @@ Parameters:
     -p: player to evaluate
     -S: strategy to evaluate
 '''
-from Projects.base.game.hex import pieces
+from Projects.base.game.hex import pieces, customBoard_print
 from strategy_data import strategies
 from copy import deepcopy
 
@@ -192,18 +192,49 @@ def possible_win_moves(game, player_turn):
     - moves: The list of moves that the player will make.
     - player_turn: The player whose turn it is. (the player)
     '''
+    if calculate_turn(game['board'], game['first_player']) != player_turn:
+        return []
     allowed_moves = []
-    opponent_board = game['boards'][game['opponent']]
+    player = game['opponent']
+    opponent_board = game['boards'][player]
     opponent_board_valid_moves = [i for i, k in enumerate(opponent_board) if k == pieces.kEmpty]
     for action in opponent_board_valid_moves:
-        new_game, collusion = play_action(game, game['opponent'], action)
+        new_game, collusion = play_action(game, player, action)
         if new_game == pieces.kBlackWin or new_game == pieces.kWhiteWin:
             allowed_moves.append(action)
         else:
-            res = start_the_game(new_game, False, player_turn if collusion else (player_turn + 1) % 2)
-            if min(res) < 1:
+            # customBoard_print(new_game['board'], new_game['num_cols'], new_game['num_rows'])
+            if collusion:
+                pos_moves = possible_win_moves(new_game, player_turn)
+            else:
+                pos_moves = []
+            res = start_the_game(new_game, pos_moves, player_turn if collusion else (player_turn + 1) % 2)
+            if res < 1:
                 allowed_moves.append(action)
     return allowed_moves
+
+def calculate_turn(game_board, first_player):
+    '''
+    Calculates the turn of the player.
+    '''
+    num_black = 0; num_white = 0
+    for i in range(len(game_board)):
+        if game_board[i] in pieces.black_pieces:
+            num_black += 1
+        if game_board[i] in pieces.white_pieces:
+            num_white -= 1
+    if first_player == pieces.kBlack:
+        if num_black > num_white:
+            # whites turn
+            return 1
+        else:
+            return 0
+    else:
+        if num_white > num_black:
+            # blacks turn
+            return 1
+        else:
+            return 0
 
 def start_the_game(game, multi_move, player_turn):
     '''
@@ -221,28 +252,26 @@ def start_the_game(game, multi_move, player_turn):
             print('Strategy incomplete')
             exit()
         prob = 1 / len(game['strategy'][player_board])
-        if len(game['strategy'][player_board]) > 1:
-            # multiple moves possible
-            for action in game['strategy'][player_board]:
-                new_game, collusion = play_action(game, game['player'], action)
-                if new_game == pieces.kBlackWin or new_game == pieces.kWhiteWin:
-                    continue
-                else:
-                    # find possible moves for opponent
-                    val = possible_win_moves(new_game, (player_turn if collusion else (player_turn + 1) % 2))
-                    possible_op_moves += val
-            possible_op_moves = list(set(possible_op_moves))
+        for action in game['strategy'][player_board]:
+            new_game, collusion = play_action(game, game['player'], action)
+            if new_game == pieces.kBlackWin or new_game == pieces.kWhiteWin:
+                continue
+            else:
+                # find possible moves for opponent
+                val = possible_win_moves(new_game, (player_turn if collusion else (player_turn + 1) % 2))
+                possible_op_moves += val
+        possible_op_moves = list(set(possible_op_moves))
                     
         for action in game['strategy'][player_board]:
             new_game, collusion = play_action(game, game['player'], action)
             if new_game == pieces.kBlackWin or new_game == pieces.kWhiteWin:
                 p_res += prob
             else:
+                # customBoard_print(new_game['board'], new_game['num_cols'], new_game['num_rows'])
                 # average using mean of the probabilities
-                mean_val = start_the_game(new_game, possible_op_moves, (player_turn if collusion else (player_turn + 1) % 2))
-                mean_val = sum(mean_val) / len(mean_val)
-                p_res += prob * mean_val
-        return [p_res]
+                value = start_the_game(new_game, possible_op_moves, (player_turn if collusion else (player_turn + 1) % 2))
+                p_res += prob * value
+        return p_res
     else:
         pos_results = []
         opponent_board = game['boards'][game['opponent']]
@@ -252,32 +281,39 @@ def start_the_game(game, multi_move, player_turn):
             if new_game == pieces.kBlackWin or new_game == pieces.kWhiteWin:
                 pos_results.append(0)
             else:
-                res = start_the_game(new_game, False, player_turn if collusion else (player_turn + 1) % 2)
-                pos_results.append(min(res))
-        return pos_results
+                # customBoard_print(new_game['board'], new_game['num_cols'], new_game['num_rows'])
+                if collusion:
+                    pos_moves = possible_win_moves(new_game, player_turn)
+                else:
+                    pos_moves = []
+                res = start_the_game(new_game, pos_moves, player_turn if collusion else (player_turn + 1) % 2)
+                pos_results.append(res)
+        mean_val = sum(pos_results) / len(pos_results)
+        return mean_val
 
 def main(): 
-    strategy_dict = strategies.test_4x3_1
+    strategy_dict = strategies.ryan_3x4_lower_bound
     game = {
         'num_rows': strategy_dict['num_rows'],
         'num_cols': strategy_dict['num_cols'],
         'player_order': strategy_dict['player_order'], # 0 or 1 depending on if player goes first
         'player': strategy_dict['player'], # player to evaluate - kBlack or kWhite
+        'first_player': strategy_dict['first_player'], # kBlack or kWhite
         'opponent': pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack,
         'strategy': strategy_dict['strategy'],
-        # 'board': pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols']),
-        # 'boards': {
-        #     strategy_dict['player']: pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols']),
-        #     pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack: 
-        #                             pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols'])
-        # },
-        'board': 'pp.yzp..z.o.',
+        'board': pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols']),
         'boards': {
-            strategy_dict['player']: 'oo.xxo..x.o.',
-            pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack: 'oo.xxo..x.o.',
-        }
+            strategy_dict['player']: pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols']),
+            pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack: 
+                                    pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols'])
+        },
+        # 'board': 'pp.yzp..z.o.',
+        # 'boards': {
+        #     strategy_dict['player']: 'oo.xxo..x.o.',
+        #     pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack: 'oo.xxo..x.o.',
+        # }
     }
-    win_p = min(start_the_game(game, False, 0))
+    win_p = start_the_game(game, [], 0)
     # report win probability for player p using strategy S
     print('Win probability for player {} (order {}): {}'\
         .format(game['player'], game['player_order'], win_p))

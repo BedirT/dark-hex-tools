@@ -389,9 +389,9 @@ def customBoard_print(board, num_cols, num_rows):
     for cell in range(num_cells):
         if cell % num_cols == 0: # first col
             print(colors.BOLD + colors.C_PLAYER2 + pieces.kWhite + '\ ' + colors.ENDC, end= '')
-        if board[cell] == pieces.kBlack:
+        if board[cell] in pieces.black_pieces:
             clr = colors.C_PLAYER1
-        elif board[cell] == pieces.kWhite:
+        elif board[cell] in pieces.white_pieces:
             clr = colors.C_PLAYER2
         else:
             clr = colors.NEUTRAL
