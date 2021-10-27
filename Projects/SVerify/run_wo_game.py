@@ -20,6 +20,8 @@ from Projects.base.game.hex import pieces, customBoard_print
 from strategy_data import strategies
 from copy import deepcopy
 
+opp_info = {}
+
 def pos_by_coord(num_cols, r, c):
     return num_cols * r + c
 
@@ -179,7 +181,7 @@ def game_over(board_state):
     return board_state.count(pieces.kBlackWin) +\
         board_state.count(pieces.kWhiteWin) == 1
 
-def possible_win_moves(game, player_turn):
+def possible_win_moves(game, possible_op_moves, player_turn):
     '''
     Calculates the possible moves that opponent can make and end up in a win.
     If the probability of the win (for opponent) is greater than 0 then we include
@@ -194,23 +196,33 @@ def possible_win_moves(game, player_turn):
     '''
     if calculate_turn(game['board'], game['first_player']) != player_turn:
         return []
+    
     allowed_moves = []
     player = game['opponent']
     opponent_board = game['boards'][player]
+
+    if opponent_board in opp_info:
+        return opp_info[opponent_board]
+
     opponent_board_valid_moves = [i for i, k in enumerate(opponent_board) if k == pieces.kEmpty]
     for action in opponent_board_valid_moves:
+        if action in possible_op_moves:
+            continue
         new_game, collusion = play_action(game, player, action)
         if new_game == pieces.kBlackWin or new_game == pieces.kWhiteWin:
             allowed_moves.append(action)
         else:
             # customBoard_print(new_game['board'], new_game['num_cols'], new_game['num_rows'])
             if collusion:
-                pos_moves = possible_win_moves(new_game, player_turn)
+                pos_moves = possible_win_moves(new_game, [], player_turn)
             else:
                 pos_moves = []
             res = start_the_game(new_game, pos_moves, player_turn if collusion else (player_turn + 1) % 2)
             if res < 1:
                 allowed_moves.append(action)
+
+    opp_info[opponent_board] = allowed_moves
+
     return allowed_moves
 
 def calculate_turn(game_board, first_player):
@@ -258,7 +270,7 @@ def start_the_game(game, multi_move, player_turn):
                 continue
             else:
                 # find possible moves for opponent
-                val = possible_win_moves(new_game, (player_turn if collusion else (player_turn + 1) % 2))
+                val = possible_win_moves(new_game, possible_op_moves, (player_turn if collusion else (player_turn + 1) % 2))
                 possible_op_moves += val
         possible_op_moves = list(set(possible_op_moves))
                     
@@ -283,7 +295,7 @@ def start_the_game(game, multi_move, player_turn):
             else:
                 # customBoard_print(new_game['board'], new_game['num_cols'], new_game['num_rows'])
                 if collusion:
-                    pos_moves = possible_win_moves(new_game, player_turn)
+                    pos_moves = possible_win_moves(new_game, [], player_turn)
                 else:
                     pos_moves = []
                 res = start_the_game(new_game, pos_moves, player_turn if collusion else (player_turn + 1) % 2)
@@ -291,8 +303,11 @@ def start_the_game(game, multi_move, player_turn):
         mean_val = sum(pos_results) / len(pos_results)
         return mean_val
 
+from time import time
+
 def main(): 
-    strategy_dict = strategies.ryan_3x4_lower_bound
+    start = time()
+    strategy_dict = strategies.test_3x3_1_no_iso
     game = {
         'num_rows': strategy_dict['num_rows'],
         'num_cols': strategy_dict['num_cols'],
@@ -301,22 +316,25 @@ def main():
         'first_player': strategy_dict['first_player'], # kBlack or kWhite
         'opponent': pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack,
         'strategy': strategy_dict['strategy'],
-        'board': pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols']),
+        'board': strategy_dict['board']
+            if 'board' in strategy_dict 
+            else pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols']),
         'boards': {
-            strategy_dict['player']: pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols']),
+            strategy_dict['player']: 
+                strategy_dict['boards'][strategy_dict['player']]
+                if 'boards' in strategy_dict
+                else pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols']),
             pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack: 
-                                    pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols'])
+                strategy_dict['boards'][pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack]
+                if 'boards' in strategy_dict
+                else pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols'])
         },
-        # 'board': 'pp.yzp..z.o.',
-        # 'boards': {
-        #     strategy_dict['player']: 'oo.xxo..x.o.',
-        #     pieces.kWhite if strategy_dict['player'] == pieces.kBlack else pieces.kBlack: 'oo.xxo..x.o.',
-        # }
     }
     win_p = start_the_game(game, [], 0)
     # report win probability for player p using strategy S
     print('Win probability for player {} (order {}): {}'\
         .format(game['player'], game['player_order'], win_p))
+    print('Time taken: {}'.format(time() - start))
 
 if __name__ == '__main__':
     main()

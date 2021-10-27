@@ -90,7 +90,6 @@ def is_collusion_possible(board_state, player, opponent, player_order):
     '''
     # Get the number of pieces on the board.
     count = Counter(board_state)
-    print(count)
     if opponent == pieces.kBlack:
         opponent_pieces = sum([s for x, s in count.items() if x in pieces.black_pieces])
         player_pieces = sum([s for x, s in count.items() if x in pieces.white_pieces])
@@ -214,14 +213,27 @@ def updated_board(board_state, cell, color, num_cols, num_rows):
     # Convert list back to string
     return ''.join(updated_board_state)
     
-def game_over(board_state):
+def game_over(board_state, player, player_order):
     '''
     Check if the game is over.
 
     - board_state: The current board state.
     '''
-    return board_state.count(pieces.kBlackWin) +\
-        board_state.count(pieces.kWhiteWin) == 1
+    if  board_state.count(pieces.kBlackWin) +\
+        board_state.count(pieces.kWhiteWin) == 1:
+        return True
+    ct = Counter(board_state)
+    empty_cells = ct[pieces.kEmpty]
+    if player == pieces.kBlack:
+        opponent_pieces = sum([s for x, s in ct.items() if x in pieces.white_pieces])
+        player_pieces = sum([s for x, s in ct.items() if x in pieces.black_pieces])
+    else:
+        opponent_pieces = sum([s for x, s in ct.items() if x in pieces.black_pieces])
+        player_pieces = sum([s for x, s in ct.items() if x in pieces.white_pieces])
+    if (player_order == 0 and opponent_pieces + empty_cells == player_pieces) or\
+        (player_order == 1 and opponent_pieces + empty_cells == player_pieces+1):
+        return True
+    return False
 
 def generate_info_states(board_state, info_states, player, opponent, player_order, num_cols, num_rows, move_sequence):
     '''
@@ -235,7 +247,7 @@ def generate_info_states(board_state, info_states, player, opponent, player_orde
     - player: The player we are generating the information states for.
     '''
     # Check if the game is over.
-    if game_over(board_state):
+    if game_over(board_state, player, player_order):
         return
     # Get the moves for the current board state. (Try until valid options are provided)
     valid_moves = False
@@ -257,8 +269,11 @@ def generate_info_states(board_state, info_states, player, opponent, player_orde
     # Update info_states with the moves.
     info_states[board_state] = moves
     # Also update the isomorphic states.
-    iso_state, iso_moves = isomorphic_single(board_state, moves)
-    info_states[iso_state] = iso_moves
+    # iso_state, iso_moves = isomorphic_single(board_state, moves)
+    # if iso_state not in info_states:
+    #     info_states[iso_state] = iso_moves
+    # else:
+    #     info_states[iso_state] = list(set(info_states[iso_state] + iso_moves))
     # If a collusion is possible
     collusion_possible = is_collusion_possible(board_state, player, opponent, player_order)
     # For each move, recursively call the generate_info_states function.
@@ -281,14 +296,14 @@ if __name__ == "__main__":
     '''
     # GAME SETUP
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    num_cols, num_rows = 4, 3                                                      # +
+    num_cols, num_rows = 3, 3                                                      # +
     player = pieces.kBlack                                                         # +
     opponent = pieces.kWhite                                                       # +
-    player_order = 1 # 0 for first player, 1 for second player                     # +                
+    player_order = 0 # 0 for first player, 1 for second player                     # +                
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     board_state = pieces.kEmpty * num_cols * num_rows # empty board
-    board_state = 'pp.yzp..z.o.'
+    # board_state = 'pp.yzp..z.o.'
     info_states = defaultdict(lambda: list())
     generate_info_states(board_state, info_states, player, opponent, player_order, num_cols, num_rows, [])
     # save info_states to file
@@ -297,12 +312,13 @@ if __name__ == "__main__":
             # TODO: Temp - FIX THIS
             s = ''
             for c in key:
-                if player == pieces.kBlack and c in 'pq':
-                    s += 'o'
-                elif player == pieces.kWhite and c in 'yz':
+                if c in 'yz':
                     s += 'x'
+                elif c in 'pq':
+                    s += 'o'
                 else:
                     s += c
             f.write('"' + s + '": ' + str(value) + ',\n')
+    
     # print info_states
     print(info_states)
