@@ -17,16 +17,32 @@ The game is Dark Hex on nxm board.
 '''
 
 from collections import Counter, defaultdict
+
+from numpy import random
 from Projects.base.game.hex import pieces
 from Projects.base.util.colors import colors
 from Projects.SVerify.isomorphic import isomorphic_single
 from copy import deepcopy
+import numpy as np
+import argparse
+import sys
+
+def convert_to_xo(str_board):
+    '''
+    Convert the board state to only x and o.
+    '''
+    for p in pieces.black_pieces:
+        str_board = str_board.replace(p, pieces.kBlack)
+    for p in pieces.white_pieces:
+        str_board = str_board.replace(p, pieces.kWhite)
+    return str_board
 
 def printBoard(board_state, num_cols, num_rows, move_sequence):
     '''
     Method for printing the board in a nice format.
     '''
     num_cells = num_cols * num_rows
+    the_cell = 0 # The cell we are currently printing.
     print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)
     print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC)
     for cell in range(num_cells):
@@ -38,7 +54,11 @@ def printBoard(board_state, num_cols, num_rows, move_sequence):
             clr = colors.C_PLAYER2
         else:
             clr = colors.NEUTRAL
-        print(clr + '{0: <3}'.format(board_state[cell]) + colors.ENDC, end='') 
+        if board_state[cell] == pieces.kEmpty:
+            print(clr + '{0: <3}'.format(the_cell) + colors.ENDC, end='') 
+        else:
+            print(clr + '{0: <3}'.format(board_state[cell]) + colors.ENDC, end='')
+        the_cell += 1 
         if cell % num_cols == num_cols-1: # last col
             print(colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.kWhite + '\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
     print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
@@ -63,24 +83,64 @@ def save_input(input_list):
     with open('input_new.txt', 'a') as f:
         for i in input_list:
             f.write(str(i) + ' ')
-        f.write('\n')
-
-def get_moves(board_state, num_cols, num_rows, move_sequence):
+        f.write('\n\n')
+ 
+def random_selection(board_state):
+    pos_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
+    return [np.random.choice(pos_moves)], [1.0] 
+       
+def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
     '''
     Get moves for the current board state from the user.
     Seperate the moves by spaces.
 
     - board_state: The current board state.
     '''
+    if fill_randomly:
+        moves, probs = random_selection(board_state)
+        return moves, probs, fill_randomly
+    
+    # TODO: FIX THE PROBABILITIES
     # Print the board state to the user.
     printBoard(board_state, num_cols, num_rows, move_sequence)
-    the_input = input('Enter moves for board state (space between each move): ').strip().split(' ')
-    if the_input[0] == 'exit':
+
+    # Get the moves and (if wanted) probabilities of those moves from the user.
+    moves_and_probs = input(colors.BOLD + colors.QUESTIONS + 
+                    'Enter moves and probabilities (separated by spaces)\n' +
+                    'For the single entries (one action) no need for the probabilites\n' + 
+                    'Start the entry with = for equiprobable entries (no prob entries)\n' +
+                    '"r" for random selection for the rest of the branch\n' + 
+                    '"exit" for exitting program\n:' + colors.ENDC)
+    moves_and_probs = moves_and_probs.split(' ')
+
+    if moves_and_probs[0] == 'exit':
         exit()
-    ins = list(map(int, the_input))
-    save_input(ins)
+
+    if moves_and_probs[0] == 'r':
+        # randomly select one possible move
+        moves, probs = random_selection(board_state)
+        fill_randomly = True
+    elif len(moves_and_probs) == 1:
+        # If there is only one move, then the probability is 1.
+        moves = moves_and_probs[0]
+        probs = [1]
+    elif moves_and_probs[0] == '=':
+        # Equaprobability
+        # No probabilities given.
+        moves = moves_and_probs[1:]
+        probs = [1/len(moves)] * len(moves)
+    else:
+        moves = []
+        probs = []
+        for i in range(0, len(moves_and_probs), 2):
+            moves.append(moves_and_probs[i])
+            probs.append(float(moves_and_probs[i+1]))
+        
+    moves = list(map(int, moves))
+    probs = list(map(float, probs))
+    save_input(moves_and_probs)
     
-    return ins
+    return moves, probs, fill_randomly
     
 def is_collusion_possible(board_state, player, opponent, player_order):
     '''
@@ -235,7 +295,17 @@ def game_over(board_state, player, player_order):
         return True
     return False
 
-def generate_info_states(board_state, info_states, player, opponent, player_order, num_cols, num_rows, move_sequence):
+def moves_and_probs(moves, probs):
+    if probs is None:
+        # equal probability for all moves
+        probs = [1/len(moves)] * len(moves)
+    else:
+        assert len(moves) == len(probs)
+    # return moves and probs in a list of tuples
+    # so 0th element will be (move[0], prob[0])
+    return list(zip(moves, probs))
+
+def generate_info_states(board_state, info_states, player, opponent, player_order, num_cols, num_rows, isomorphic, move_sequence, fill_randomly):
     '''
     Recursively call the generate_info_states function, one for a
     collusion if possible, and one for a non-collusion. Moves are specified
@@ -252,9 +322,10 @@ def generate_info_states(board_state, info_states, player, opponent, player_orde
     # Get the moves for the current board state. (Try until valid options are provided)
     valid_moves = False
     moves = []
+    probs = []
     while not valid_moves:
         valid_moves = True
-        moves = get_moves(board_state, num_cols, num_rows, move_sequence)
+        moves, probs, fill_randomly = get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly)
         # Check if the moves are valid. Save the new board states for each move.
         moves_and_boards = {}
         for move in moves:
@@ -267,13 +338,28 @@ def generate_info_states(board_state, info_states, player, opponent, player_orde
             moves_and_boards[str(move)+opponent] = new_board
             moves_and_boards[str(move)+player] = new_board_2
     # Update info_states with the moves.
-    info_states[board_state] = moves
-    # Also update the isomorphic states.
-    # iso_state, iso_moves = isomorphic_single(board_state, moves)
-    # if iso_state not in info_states:
-    #     info_states[iso_state] = iso_moves
-    # else:
-    #     info_states[iso_state] = list(set(info_states[iso_state] + iso_moves))
+    info_states[board_state] = moves_and_probs(moves, probs)
+    if isomorphic:
+        # Also update the isomorphic states.
+        iso_state, iso_moves_probs = isomorphic_single(board_state, moves, probs)
+        if iso_state not in info_states:
+            info_states[iso_state] = iso_moves_probs
+        else:
+            ls = []
+            d = {}
+            for move, prob in iso_moves_probs:
+                if move not in d:
+                    ls.append((move, prob/2))
+                    d[move] = len(ls)-1
+                else:
+                    ls[d[move]] = (move, ls[d[move]][1] + prob/2)
+            for move, prob in info_states[iso_state]:
+                if move not in d:
+                    ls.append((move, prob/2))
+                    d[move] = len(ls)-1
+                else:
+                    ls[d[move]] = (move, ls[d[move]][1] + prob/2)
+            info_states[iso_state] = ls
     # If a collusion is possible
     collusion_possible = is_collusion_possible(board_state, player, opponent, player_order)
     # For each move, recursively call the generate_info_states function.
@@ -283,42 +369,91 @@ def generate_info_states(board_state, info_states, player, opponent, player_orde
             new_board = moves_and_boards[str(move)+opponent]
             if new_board not in info_states: 
                 new_seq = move_sequence + [[move, opponent]]
-                generate_info_states(new_board, info_states, player, opponent, player_order, num_cols, num_rows, new_seq)
+                generate_info_states(new_board, info_states, player, opponent, player_order, num_cols, num_rows, isomorphic, new_seq, fill_randomly)
         # Generate the information state for a non-collusion.
         new_board = moves_and_boards[str(move)+player]
         if new_board not in info_states:
             new_seq = move_sequence + [[move, player]]
-            generate_info_states(new_board, info_states, player, opponent, player_order, num_cols, num_rows, new_seq)
+            generate_info_states(new_board, info_states, player, opponent, player_order, num_cols, num_rows, isomorphic, new_seq, fill_randomly)
         
-if __name__ == "__main__":
+def main():
     '''
     Main function.
     '''
     # GAME SETUP
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    num_cols, num_rows = 3, 3                                                      # +
-    player = pieces.kBlack                                                         # +
-    opponent = pieces.kWhite                                                       # +
-    player_order = 0 # 0 for first player, 1 for second player                     # +                
+    argparser = argparse.ArgumentParser(description='Generate information states.')
+    argparser.add_argument('--num_cols', type=int, default=3, help='Number of columns.')
+    argparser.add_argument('--num_rows', type=int, default=3, help='Number of rows.')
+    argparser.add_argument('--player_order', type=int, default=0, help='Player order (0/1)')
+    argparser.add_argument('--player_color', type=str, default='b', help='Player color (b/w)')
+    argparser.add_argument('--board_state', type=str, default='', help='Custom board state.')
+    argparser.add_argument('--convert_xo', action='store_true', default=True, help='Convert the board to x and o\'s.')
+    argparser.add_argument('--isomorphic', action='store_true', default=True, help='Generate isomorphic states.')
+    argparser.add_argument('--write_to_dict', action='store_true', default=True, help='Write to the end of the strategy_data.py')
+    argparser.add_argument('--dict_name', type=str, help='Name of the variable to write to.', required='--write_to_dict' in sys.argv)
+    args = argparser.parse_args()
+    
+    # print all the arguments with their data type
+    # for arg, value in vars(args).items():
+    #     print(arg, value, type(value))
+    # exit()
+    
+    if args.player_color == 'b':
+        player = pieces.kBlack 
+        opponent = pieces.kWhite
+    else:
+        player = pieces.kWhite  
+        opponent = pieces.kBlack
+    
+    if args.board_state == '':
+        board_state = pieces.kEmpty * args.num_cols * args.num_rows # empty board
+    else:
+        board_state = args.board_state
+        if len(board_state) != args.num_cols * args.num_rows:
+            print("Board state is not the correct size!")
+            return
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    board_state = pieces.kEmpty * num_cols * num_rows # empty board
-    # board_state = 'pp.yzp..z.o.'
+    
     info_states = defaultdict(lambda: list())
-    generate_info_states(board_state, info_states, player, opponent, player_order, num_cols, num_rows, [])
+    generate_info_states(board_state, info_states, player, opponent, args.player_order, args.num_cols, args.num_rows, args.isomorphic, [], False)
     # save info_states to file
     with open('info_states.txt', 'w') as f:
         for key, value in info_states.items():
-            # TODO: Temp - FIX THIS
-            s = ''
-            for c in key:
-                if c in 'yz':
-                    s += 'x'
-                elif c in 'pq':
-                    s += 'o'
-                else:
-                    s += c
-            f.write('"' + s + '": ' + str(value) + ',\n')
+            if args.convert_xo:
+                key = convert_to_xo(key)
+            f.write('"' + key + '": ' + str(value) + ',\n')
+    # write info_states to the end on the strategy_data.py file
+    if args.write_to_dict:
+        with open('strategy_data.py', 'a') as f:
+            f.write('\n\t' + args.dict_name + ' = {\n')
+            f.write('\t\t"num_rows": {},\n'.format(args.num_rows))
+            f.write('\t\t"num_cols": {},\n'.format(args.num_cols))
+            f.write('\t\t"player": "{}",\n'.format(player))
+            f.write('\t\t"player_order": {},\n'.format(args.player_order))
+            first_p = player if args.player_order == 0 else opponent
+            first_p = 'pieces.kBlack' if first_p == pieces.kBlack else 'pieces.kWhite'
+            f.write('\t\t"first_player": {},\n'.format(first_p))
+            f.write('\t\t"isomorphic": {},\n'.format(args.isomorphic))
+            if board_state != '':
+                f.write('\t\t"board": "{}",\n'.format(board_state))
+                f.write('\t\t"boards": {\n')
+                f.write('\t\t\tpieces.kBlack: "{}",\n'.format(convert_to_xo(board_state)))
+                f.write('\t\t\tpieces.kWhite: "{}"\n'.format(convert_to_xo(board_state)))
+                f.write('\t\t},\n')
+            f.write('\t\t"strategy": {\n')
+            for key, value in info_states.items():
+                if args.convert_xo:
+                    key = convert_to_xo(key)
+                f.write('\t\t\t"' + key + '": ' + str(value) + ',\n')
+            f.write('\t\t}\n\t}')
     
-    # print info_states
-    print(info_states)
+    # print success message
+    # state the number of states generated
+    # state the path where the info_states.txt file is saved
+    print('Successfully generated information states.')
+    print('Number of states: ' + str(len(info_states)))
+    print('Path: info_states.txt')    
+    
+if __name__ == "__main__":
+    main()
