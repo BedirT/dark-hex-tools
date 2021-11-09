@@ -394,11 +394,6 @@ def main():
     argparser.add_argument('--dict_name', type=str, help='Name of the variable to write to.', required='--write_to_dict' in sys.argv)
     args = argparser.parse_args()
     
-    # print all the arguments with their data type
-    # for arg, value in vars(args).items():
-    #     print(arg, value, type(value))
-    # exit()
-    
     if args.player_color == 'b':
         player = pieces.kBlack 
         opponent = pieces.kWhite
