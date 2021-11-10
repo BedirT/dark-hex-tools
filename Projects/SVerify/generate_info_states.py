@@ -122,7 +122,7 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
         fill_randomly = True
     elif len(moves_and_probs) == 1:
         # If there is only one move, then the probability is 1.
-        moves = moves_and_probs[0]
+        moves = [moves_and_probs[0]]
         probs = [1]
     elif moves_and_probs[0] == '=':
         # Equaprobability
