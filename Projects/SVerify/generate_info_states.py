@@ -83,7 +83,7 @@ def save_input(input_list):
     with open('input_new.txt', 'a') as f:
         for i in input_list:
             f.write(str(i) + ' ')
-        f.write('\n\n')
+        f.write('\n')
  
 def random_selection(board_state):
     pos_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
@@ -424,7 +424,8 @@ def main():
             f.write('\n\t' + args.dict_name + ' = {\n')
             f.write('\t\t"num_rows": {},\n'.format(args.num_rows))
             f.write('\t\t"num_cols": {},\n'.format(args.num_cols))
-            f.write('\t\t"player": "{}",\n'.format(player))
+            the_p = 'pieces.kBlack' if player == pieces.kBlack else 'pieces.kWhite'
+            f.write('\t\t"player": {},\n'.format(the_p))
             f.write('\t\t"player_order": {},\n'.format(args.player_order))
             first_p = player if args.player_order == 0 else opponent
             first_p = 'pieces.kBlack' if first_p == pieces.kBlack else 'pieces.kWhite'
@@ -442,6 +443,7 @@ def main():
                     key = convert_to_xo(key)
                 f.write('\t\t\t"' + key + '": ' + str(value) + ',\n')
             f.write('\t\t}\n\t}')
+    save_input([''])
     
     # print success message
     # state the number of states generated
