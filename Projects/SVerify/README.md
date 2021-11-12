@@ -23,6 +23,10 @@ Arguments:
 
 [Sample input](in.txt)
 
-<!--Explaning run_wo_game.py-->
+<!--Explaning run.py-->
+# run.py
+Runs the probability calculator. Takes in the input from the user, and generates the probability of the player winning based on the given strategy. The probability is printed to the console. The strategies to examine are specified in the strategy_data.py file. The strategies are specified in the form of a dictionary. The dictionary is named as the name of the strategy. To be examined a strategy must be complete in the sense that all the information states are present in the dictionary (there is an action provided for every possible information state).
 
 <!--Explaning strategy_data.py-->
+# strategy_data.py
+Variables in a dictionary form containing all the strategies to be examined. A strategy is a dictionary with the structure same as the dictionary in generate_info_states.py.
