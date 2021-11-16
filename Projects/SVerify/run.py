@@ -20,8 +20,16 @@ from Projects.base.game.hex import pieces, customBoard_print
 from strategy_data import strategies
 from copy import deepcopy
 from time import time
+import pickle
 
 opp_info = {}
+
+def save_opp_info(file_name):
+    '''
+    Saves opp_info to a file to load it later.
+    '''
+    with open(file_name + '.pkl', 'wb') as f:
+        pickle.dump(opp_info, f, pickle.HIGHEST_PROTOCOL)
 
 def pos_by_coord(num_cols, r, c):
     return num_cols * r + c
@@ -283,13 +291,12 @@ def start_the_game(game, op_moves, to_play):
     else:
         pos_results = []
         if len(op_moves) == 0:
-            # If the opponent has no moves, then the probability of the opponent winning is 1.
+            # If the opponent has no moves, then the probability of the opponent losing is 1.
             return 1
         assert len(op_moves) > 0
         for action in op_moves:
             new_game, collusion = play_action(game, game['opponent'], action)
             if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
-                
                 pos_results.append(0)
             else:
                 pos_moves = possible_win_moves(new_game, to_play) if collusion else [x for x in op_moves if x != action]
@@ -349,6 +356,8 @@ def main():
     print('Win probability for player {} (order {}): {}'\
         .format(game_state['player'], game_state['player_order'], win_p))
     print('Time taken: {}'.format(time() - start))
+    # Save opponent moves to file - opp_info
+    save_opp_info('opp_info')
 
 if __name__ == '__main__':
     main()

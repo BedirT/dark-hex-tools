@@ -416,3 +416,53 @@ def print_init_board(num_cols, num_rows):
             print(colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.kWhite + '\n' + (' ' * (cell//num_cols)) + colors.ENDC, end = ' ')
     print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
     print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)
+    
+def multiBoard_print(board1, board2, num_cols, num_rows, title1='', title2=''):
+    '''
+    Method for printing the board in a nice format.
+    '''
+    num_cells = num_cols * num_rows
+    gap = "{0:^10}".format(' ')
+    s = ''
+    if title1 != '' or title2 != '':
+        s += colors.BOLD + '  {}{}       {}\n'.format(title1,gap,title2) + colors.ENDC
+    s += colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC
+    s += gap
+    s += colors.C_PLAYER1 + '     ' + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC + '\n'
+    s += colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC
+    s += gap
+    s += colors.C_PLAYER1 + '    ' + '-' * (num_cols * 3 +1) + colors.ENDC + '\n'
+    
+    for cell in range(num_cells):
+        if cell % num_cols == 0: # first col
+            s1 = colors.BOLD + colors.C_PLAYER2 + pieces.kWhite + '\ ' + colors.ENDC
+            s2 = colors.BOLD + colors.C_PLAYER2 + pieces.kWhite + '\ ' + colors.ENDC
+        
+        if board1[cell] in pieces.black_pieces:     clr1 = colors.C_PLAYER1
+        elif board1[cell] in pieces.white_pieces:   clr1 = colors.C_PLAYER2
+        else: clr1 = colors.NEUTRAL
+        
+        if board2[cell] in pieces.black_pieces:     clr2 = colors.C_PLAYER1
+        elif board2[cell] in pieces.white_pieces:   clr2 = colors.C_PLAYER2
+        else: clr2 = colors.NEUTRAL
+        
+        s1 += clr1 + '{0: <3}'.format(board1[cell]) + colors.ENDC
+        s2 += clr2 + '{0: <3}'.format(board2[cell]) + colors.ENDC
+        
+        if cell % num_cols == num_cols-1: # last col
+            s1 += colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.kWhite
+            s2 += colors.BOLD + colors.C_PLAYER2 + '\\' + pieces.kWhite
+            s2 += '\n' + (' ' * (cell//num_cols)) + ' ' + colors.ENDC
+            
+            s += s1 + gap + s2
+            
+    s += colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC
+    s += gap
+    s += colors.BOLD + colors.C_PLAYER1 + '    ' + '-' * (num_cols * 3 +1) + colors.ENDC + '\n'
+    s += colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC
+    s += gap
+    s += colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+2) + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC + '\n'
+    
+    print(s)
+    
+# multiBoard_print('...x...x.', 'xxo......', 3, 3, 'Board 1', 'Board 2')
