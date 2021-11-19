@@ -417,7 +417,7 @@ def print_init_board(num_cols, num_rows):
     print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
     print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)
     
-def multiBoard_print(board1, board2, num_cols, num_rows, title1='', title2=''):
+def multiBoard_print(board1, board2, num_rows, num_cols, title1='', title2=''):
     '''
     Method for printing the board in a nice format.
     '''
