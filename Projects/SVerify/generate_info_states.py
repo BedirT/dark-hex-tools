@@ -23,6 +23,7 @@ from Projects.base.game.hex import pieces
 from Projects.base.util.colors import colors
 from Projects.SVerify.isomorphic import isomorphic_single
 from copy import deepcopy
+import logging as log
 import numpy as np
 import argparse
 import sys
@@ -332,7 +333,7 @@ def generate_info_states(board_state, info_states, player, opponent, player_orde
             new_board = updated_board(board_state, move, opponent, num_cols, num_rows)
             new_board_2 = updated_board(board_state, move, player, num_cols, num_rows)
             if not new_board:
-                print("Illegal move: " + str(move))
+                log.warning(f"Illegal move: {move}")
                 valid_moves = False
                 break
             moves_and_boards[str(move)+opponent] = new_board
@@ -406,7 +407,7 @@ def main():
     else:
         board_state = args.board_state
         if len(board_state) != args.num_cols * args.num_rows:
-            print("Board state is not the correct size!")
+            log.error("Board state is not the correct size!")
             return
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
@@ -448,9 +449,9 @@ def main():
     # print success message
     # state the number of states generated
     # state the path where the info_states.txt file is saved
-    print('Successfully generated information states.')
-    print('Number of states: ' + str(len(info_states)))
-    print('Path: info_states.txt')    
+    log.info('Successfully generated information states.')
+    log.info(f'Number of states: {len(info_states)}')
+    log.info('Path: info_states.txt')    
     
 if __name__ == "__main__":
     main()
