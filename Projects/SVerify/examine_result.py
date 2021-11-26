@@ -55,19 +55,15 @@ def display_options(game_state, turn):
             # Opponent loses no matter what
             print('Opponent loses no matter what')
             return -1, -1
-        action_choices = []
-        for i, a in enumerate(opts):
-            if a > -1:
-                action_choices.append((i, a))
         try:
-            assert len(action_choices) > 0
+            assert len(opts) > 0
         except AssertionError:
             log.critical('Opponent strategy is empty for board state: {}'.format(game_state['boards'][game_state['opponent']]))
             exit()
-        for i, (a, p) in enumerate(action_choices):
+        for i, (a, p) in enumerate(opts):
             print('{}. {} - {}'.format(i, a, p))
     choice = int(input('Enter your choice: '))
-    return opts[choice] if turn == game_state['player_order'] else action_choices[choice]
+    return opts[choice] if turn == game_state['player_order'] else opts[choice]
 
 def main():
     opp_strategy = pickle.load(open('opp_info.pkl', 'rb'))
