@@ -29,10 +29,6 @@ import coloredlogs
 log = logging.getLogger(__name__)
 coloredlogs.install(level='INFO')  # Change this to DEBUG to see more info.
 
-opp_info = {}
-opp_results = {}
-opp_counter = {}
-
 discount_factor = 0.9
 
 # cache the opponent's strategy
