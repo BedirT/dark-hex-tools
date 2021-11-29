@@ -401,6 +401,22 @@ def customBoard_print(board, num_cols, num_rows):
     print(colors.BOLD + colors.C_PLAYER1 + '  ' + '-' * (num_cols * 3 +1) + colors.ENDC)        
     print(colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+4) + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)
 
+def customBoard_write(board, num_cols, num_rows, file):
+    '''
+    Method for writing the board in a nice format, to a file.
+    '''
+    num_cells = num_cols * num_rows
+    file.write('  ' + '{0: <3}'.format(pieces.kBlack) * num_cols + '\n')
+    file.write(' ' + '-' * (num_cols * 3 +1) + '\n')
+    for cell in range(num_cells):
+        if cell % num_cols == 0: # first col
+            file.write(pieces.kWhite + '\ ')
+        file.write('{0: <3}'.format(board[cell])) 
+        if cell % num_cols == num_cols-1: # last col
+            file.write('\\' + pieces.kWhite + '\n' + (' ' * (cell//num_cols)) + ' ')
+    file.write('  ' + '-' * (num_cols * 3 +1) + '\n')
+    file.write(' ' * (num_rows+4) + '{0: <3}'.format(pieces.kBlack) * num_cols + '\n')
+
 def print_init_board(num_cols, num_rows):
     '''
     Print the board numbers

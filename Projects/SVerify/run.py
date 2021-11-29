@@ -17,19 +17,21 @@ Parameters:
     -S: strategy to evaluate
 '''
 from typing import DefaultDict
-from Projects.base.game.hex import pieces, customBoard_print
-from strategy_data import strategies
 from copy import deepcopy
-from time import perf_counter, time
+from time import perf_counter
 import pickle
 import logging
-
 import coloredlogs
+import sys
+sys.path.append('../../')
+
+from Projects.base.game.hex import pieces, customBoard_print, customBoard_write
+from strategy_data import strategies
 
 log = logging.getLogger(__name__)
-coloredlogs.install(level='INFO')  # Change this to DEBUG to see more info.
+coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.
 
-discount_factor = 0.9
+discount_factor = .9
 
 # cache the opponent's strategy
 # TODO: Make this a function of the game state
@@ -176,6 +178,7 @@ def play_action(game, player, action):
         res = updated_board(new_game['board'], action, 
                             player, game['num_cols'], game['num_rows'])
         if res == pieces.kBlackWin or res == pieces.kWhiteWin:
+            # The game is over.
             return res, False
         new_game['board'] = res
         new_game['boards'][player] = replace_action(new_game['boards'][player], action, 
@@ -228,34 +231,26 @@ def calculate(game, to_play):
     # whose turn
     if to_play == game['player_order']:
         # player's turn
+        next_to_act = 'player'
+        board_to_play = player_board
         strategy = game['strategy']
-        value = 0
-        # for every possible move, calculate the probability of winning
-        for action, prob in strategy[player_board]:
-            new_game, collusion = play_action(game, game['player'], action)
-            if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
-                assert new_game == (pieces.kBlackWin if game['player'] == pieces.kBlack else pieces.kWhiteWin)
-                value += prob
-            elif not collusion:
-                value = calculate(new_game, (to_play + 1) % 2) * prob
-            else:
-                value = calculate(new_game, to_play) * prob
-        return value
     else:
         # opponent's turn
+        next_to_act = 'opponent'
+        board_to_play = opponent_board
         strategy = game['opp_strategy']
-        value = 0
-        # for every possible move, calculate the probability of winning
-        for action, prob in strategy[opponent_board]:
-            new_game, collusion = play_action(game, game['opponent'], action)
-            if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
-                assert new_game == (pieces.kBlackWin if game['opponent'] == pieces.kBlack else pieces.kWhiteWin)
-                value += 0 * prob
-            elif not collusion:
-                value += calculate(new_game, (to_play + 1) % 2) * prob
-            else:
-                value += calculate(new_game, to_play) * prob
-        return value
+    value = 0
+    # for every possible move, calculate the probability of winning
+    for action, prob in strategy[board_to_play]:
+        new_game, collusion = play_action(game, game[next_to_act], action)
+        if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
+            assert new_game == (pieces.kBlackWin if game[next_to_act] == pieces.kBlack else pieces.kWhiteWin)
+            value += (0 if next_to_act == 'player' else 1) * prob
+        elif not collusion:
+            value += calculate(new_game, (to_play + 1) % 2) * prob
+        else:
+            value += calculate(new_game, to_play) * prob
+    return value
         
 def choose_strategy():
     '''
@@ -270,7 +265,14 @@ def choose_strategy():
         if not name.startswith('__'):
             print('{}. {}'.format(i, name))
             i += 1; arr.append(strategy)
-    choice = int(input('Enter your choice: '))
+    # make sure the user picks a valid option
+    try:
+        choice = int(input('Enter your choice: '))
+        if choice < 0 or choice >= len(arr):
+            raise ValueError
+    except ValueError:
+        log.critical('Invalid choice...')
+        return choose_strategy()
     return arr[choice]
 
 def calc_opponent_strategy(game_state, to_play, depth):
@@ -304,7 +306,7 @@ def calc_opponent_strategy(game_state, to_play, depth):
         # opponent's turn
         boards_combined = opponent_board + player_board
         if boards_combined in opp_state_visited_cache:
-            mx_value = 0
+            mx_value = -1
             for value_pair in opp_state_value_cache[opponent_board]:
                 if value_pair[0] > mx_value:
                     mx_value = value_pair[0]
@@ -314,17 +316,25 @@ def calc_opponent_strategy(game_state, to_play, depth):
             opp_state_visited_cache[boards_combined] = True
         mx_value = -1 # maximum value
         possible_moves = [i for i, x in enumerate(opponent_board) if x == pieces.kEmpty]
+        moves_considered = 0
         for action in possible_moves:
             new_game, collusion = play_action(game_state, opponent, action)
             if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
+                # if the game is an instant win, player should
+                # choose this move with probability 1
                 value = 1 # value is 1 for opponent win
+                # for idx, act in enumerate(opp_state_value_cache[opponent_board]):
+                #     if act != action:
+                #         opp_state_value_cache[opponent_board][idx] = (0, 0)
+                #     else:
+                #         opp_state_value_cache[opponent_board][idx] = (1, 1)
             else:
                 next_to_play = (to_play + 1) % 2 if not collusion else to_play
                 value = calc_opponent_strategy(new_game, next_to_play, depth + 1)
             # update the cache
-            # TODO: UPDATE CACHE HERE, NEEDS CHECKS
             if opponent_board in opp_state_value_cache:
                 c = opp_state_value_cache[opponent_board][action]
+                # update the value using the moving average
                 opp_state_value_cache[opponent_board][action] = ((c[0] * c[1] + value) / (c[1] + 1), c[1] + 1)
             else:
                 opp_state_value_cache[opponent_board][action] = (value, 1)
@@ -332,9 +342,13 @@ def calc_opponent_strategy(game_state, to_play, depth):
             if value > mx_value:
                 mx_value = value
                 total_value = value
+                moves_considered = 1
             elif value == mx_value:
                 total_value += value
-        return total_value * (discount_factor ** depth)
+                moves_considered += 1
+        if moves_considered == 0:
+            return total_value * (discount_factor ** depth)
+        return (total_value / moves_considered) * (discount_factor ** depth)
 
 def greedify():
     strategy = {}
@@ -399,17 +413,25 @@ def main():
     # Play the game and report the win probability of the player
     opp_win_prob = calculate(game_state, turn)
     
-    # for key, value in opp_state_value_cache.items():
+    # print the win probability with the boards to file
+    log.debug('Writing opponent full strategy to file')
+    with open('opp_strat_full', 'w') as f:
+        for key, value in opp_state_value_cache.items():
+            flag = False
+            for i, (val, count) in enumerate(value):
+                if val > 0:
+                    if not flag:
+                        customBoard_write(key, game_state['num_cols'], game_state['num_rows'], f)
+                        f.write('Strategy for the board {}: \n'.format(key))
+                        flag = True
+                    f.write('{}: {}\n'.format(i, val))
+            if flag:
+                f.write('\n')
+    # for key, val in opp_strategy.items():
     #     customBoard_print(key, game_state['num_cols'], game_state['num_rows'])
-    #     for i, (val, count) in enumerate(value):
-    #         if val > 0:
-    #             print('{}: {}'.format(i, val))
+    #     for i, (action, prob) in enumerate(val):
+    #         print('{}: {}'.format(action, prob))
     #     print('\n')
-    for key, val in opp_strategy.items():
-        customBoard_print(key, game_state['num_cols'], game_state['num_rows'])
-        for i, (action, prob) in enumerate(val):
-            print('{}: {}'.format(action, prob))
-        print('\n')
         
     # Report the win probability
     log.info('Win probability: {}'.format(1 - opp_win_prob))

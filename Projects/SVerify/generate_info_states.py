@@ -17,16 +17,16 @@ The game is Dark Hex on nxm board.
 '''
 
 from collections import Counter, defaultdict
-
-from numpy import random
-from Projects.base.game.hex import pieces
-from Projects.base.util.colors import colors
-from Projects.SVerify.isomorphic import isomorphic_single
 from copy import deepcopy
 import logging as log
 import numpy as np
 import argparse
 import sys
+sys.path.append('../../')
+
+from Projects.base.game.hex import pieces
+from Projects.base.util.colors import colors
+from Projects.SVerify.isomorphic import isomorphic_single
 
 def convert_to_xo(str_board):
     '''
