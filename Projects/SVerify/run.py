@@ -29,7 +29,7 @@ import coloredlogs
 log = logging.getLogger(__name__)
 coloredlogs.install(level='INFO')  # Change this to DEBUG to see more info.
 
-discount_factor = 0.9
+discount_factor = 1 #0.9
 
 # cache the opponent's strategy
 # TODO: Make this a function of the game state
@@ -399,24 +399,20 @@ def main():
     # Play the game and report the win probability of the player
     opp_win_prob = calculate(game_state, turn)
     
-    # for key, value in opp_state_value_cache.items():
+    # for key, val in opp_strategy.items():
     #     customBoard_print(key, game_state['num_cols'], game_state['num_rows'])
-    #     for i, (val, count) in enumerate(value):
-    #         if val > 0:
-    #             print('{}: {}'.format(i, val))
+    #     for i, (action, prob) in enumerate(val):
+    #         print('{}: {}'.format(action, prob))
     #     print('\n')
-    for key, val in opp_strategy.items():
-        customBoard_print(key, game_state['num_cols'], game_state['num_rows'])
-        for i, (action, prob) in enumerate(val):
-            print('{}: {}'.format(action, prob))
-        print('\n')
         
     # Report the win probability
     log.info('Win probability: {}'.format(1 - opp_win_prob))
     
+    # Report the time taken
+    log.info(f"Time took: {perf_counter() - start}")
+    
     # Save the opponent moves to file - opp_info
     save_opp_info(opp_strategy, 'opp_info')
-
 
 if __name__ == '__main__':
     main()

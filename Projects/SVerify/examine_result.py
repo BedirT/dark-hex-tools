@@ -93,7 +93,6 @@ def main():
         'opponent_strategy': opp_strategy
     }
     
-    win_prob = 1
     game_turn = calculate_turn(game_state)
     log.debug('Game turn: {}'.format(game_turn))
     

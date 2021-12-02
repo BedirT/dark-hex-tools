@@ -1,9 +1,9 @@
 --num_cols 3
 --num_rows 3
---player_order 1
---player_color w
---board_state .y.......
---convert_xo
+--player_order 0
+--player_color b
 --isomorphic
+--board_state ...x.....
+--convert_xo
 --write_to_dict
---dict_name test_3x3_w
+--dict_name ryan_3x3_puzzle2
