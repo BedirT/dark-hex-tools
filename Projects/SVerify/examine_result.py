@@ -42,6 +42,15 @@ def choose_strategy():
         return choose_strategy()
     return arr[choice]
 
+def conv_alphapos(pos, num_cols=8):
+    '''
+    Converts a position to a letter and number
+    pos: int
+    '''
+    col = pos % num_cols
+    row = pos // num_cols
+    return '{}{}'.format(chr(ord('a') + col), row + 1)
+
 def display_options(game_state, turn):
     '''
     Displays the moves and probabilities that were chosen.
@@ -53,7 +62,7 @@ def display_options(game_state, turn):
     if turn == game_state['player_order']:
         opts = game_state['player_strategy'][game_state['boards'][game_state['player']]]
         for i, (a, p) in enumerate(opts):
-            print('{}. {} - {}'.format(i, a, p))
+            print('{}. {}({}) - {}'.format(i, a, conv_alphapos(a, game_state['num_cols']), p))
     else:
         try:
             opts = game_state['opponent_strategy'][game_state['boards'][game_state['opponent']]]
@@ -70,7 +79,7 @@ def display_options(game_state, turn):
             log.critical('Opponent strategy is empty for board state: {}'.format(game_state['boards'][game_state['opponent']]))
             exit()
         for i, (a, p) in enumerate(opts):
-            print('{}. {} - {}'.format(i, a, p))
+            print('{}. {}({}) - {}'.format(i, a, conv_alphapos(a, game_state['num_cols']), p))
     
     # Add a rewind option if there is history
     if len(game_history) > 0:

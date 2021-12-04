@@ -442,17 +442,21 @@ def multiBoard_print(board1, board2, num_rows, num_cols, title1='', title2=''):
     s = ''
     if title1 != '' or title2 != '':
         s += colors.BOLD + '  {}{}       {}\n'.format(title1,gap,title2) + colors.ENDC
-    s += colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC
+    
+    s += colors.C_PLAYER1 + '  '
+    for i in range(num_cols):
+        s += '{0: <3}'.format(chr(ord('a') + i))
     s += gap
-    s += colors.C_PLAYER1 + '     ' + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC + '\n'
-    s += colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC
-    s += gap
-    s += colors.C_PLAYER1 + '    ' + '-' * (num_cols * 3 +1) + colors.ENDC + '\n'
+    s += '     '
+    for i in range(num_cols):
+        s += '{0: <3}'.format(chr(ord('a') + i))
+    s += '\n ' + '-' * (num_cols * 3 +1)
+    s += gap + '    ' + '-' * (num_cols * 3 +1) + colors.ENDC + '\n'
     
     for cell in range(num_cells):
         if cell % num_cols == 0: # first col
-            s1 = colors.BOLD + colors.C_PLAYER2 + pieces.kWhite + '\ ' + colors.ENDC
-            s2 = colors.BOLD + colors.C_PLAYER2 + pieces.kWhite + '\ ' + colors.ENDC
+            s1 = colors.BOLD + colors.C_PLAYER2 + str(cell // num_cols + 1) +'\\ ' + colors.ENDC
+            s2 = colors.BOLD + colors.C_PLAYER2 + str(cell // num_cols + 1) +'\\ ' + colors.ENDC
         
         if board1[cell] in pieces.black_pieces:     clr1 = colors.C_PLAYER1
         elif board1[cell] in pieces.white_pieces:   clr1 = colors.C_PLAYER2
