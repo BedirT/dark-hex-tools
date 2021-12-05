@@ -31,7 +31,7 @@ from strategy_data import strategies
 log = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.
 
-discount_factor = .9
+discount_factor = 1 #0.9
 
 # cache the opponent's strategy
 # TODO: Make this a function of the game state
@@ -429,11 +429,12 @@ def main():
         
     # Report the win probability
     log.info('Win probability: {}'.format(1 - opp_win_prob))
-    log.info('Time taken: {}'.format(perf_counter() - start))
-
+    
+    # Report the time taken
+    log.info(f"Time took: {perf_counter() - start}")
+    
     # Save the opponent moves to file - opp_info
     save_opp_info(opp_strategy, 'opp_info')
-
 
 if __name__ == '__main__':
     main()

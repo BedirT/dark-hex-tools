@@ -44,11 +44,14 @@ def printBoard(board_state, num_cols, num_rows, move_sequence):
     '''
     num_cells = num_cols * num_rows
     the_cell = 0 # The cell we are currently printing.
-    print(colors.C_PLAYER1 + '  ' + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC)
+    print(colors.C_PLAYER1, end='  ')
+    for i in range(num_cols):
+        print('{0: <3}'.format(chr(ord('a') + i)), end='')
+    print(colors.ENDC)
     print(colors.BOLD + colors.C_PLAYER1 + ' ' + '-' * (num_cols * 3 +1) + colors.ENDC)
     for cell in range(num_cells):
         if cell % num_cols == 0: # first col
-            print(colors.BOLD + colors.C_PLAYER2 + pieces.kWhite +'\\ ' + colors.ENDC, end= '')
+            print(colors.BOLD + colors.C_PLAYER2 + str(cell // num_cols + 1) +'\\ ' + colors.ENDC, end='')
         if board_state[cell] in pieces.black_pieces:
             clr = colors.C_PLAYER1
         elif board_state[cell] in pieces.white_pieces:
@@ -89,7 +92,24 @@ def save_input(input_list):
 def random_selection(board_state):
     pos_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
     return [np.random.choice(pos_moves)], [1.0] 
-       
+
+def numeric_action(action, num_cols):
+    '''
+    Converts the action in the form of alpha-numeric row column sequence to
+    numeric actions. i.e. a2 -> 3 for 3x3 board.
+    '''
+    # If not alpha-numeric, return the action as is.
+    if not action[0].isalpha():
+        return action
+    try:
+        row = int(action[1:]) - 1
+        # for column a -> 0, b -> 1 ...
+        col = ord(action[0]) - ord('a')
+    except ValueError:
+        log.error('Invalid action: {}'.format(action))
+        return False
+    return pos_by_coord(num_cols, row, col)
+  
 def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
     '''
     Get moves for the current board state from the user.
@@ -123,18 +143,20 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
         fill_randomly = True
     elif len(moves_and_probs) == 1:
         # If there is only one move, then the probability is 1.
-        moves = [moves_and_probs[0]]
+        moves = [numeric_action(moves_and_probs[0], num_cols)]
         probs = [1]
     elif moves_and_probs[0] == '=':
         # Equaprobability
         # No probabilities given.
-        moves = moves_and_probs[1:]
+        moves = [numeric_action(x[0], num_cols) for x in moves_and_probs[1:]]
+        if False in moves:
+            return get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly)
         probs = [1/len(moves)] * len(moves)
     else:
         moves = []
         probs = []
         for i in range(0, len(moves_and_probs), 2):
-            moves.append(moves_and_probs[i])
+            moves.append(numeric_action(moves_and_probs[i], num_cols))
             probs.append(float(moves_and_probs[i+1]))
         
     moves = list(map(int, moves))
