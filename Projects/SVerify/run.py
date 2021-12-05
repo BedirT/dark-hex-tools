@@ -372,9 +372,6 @@ def greedify():
     return strategy
 
 def main(): 
-    # initialize the log
-    start = perf_counter()
-    log.info('Timer started')
     # list all the strategies from strategies, display 
     # and let the user choose one
     strategy_dict = choose_strategy()
@@ -401,6 +398,8 @@ def main():
         },
     }
     log.info('Game state initialized')
+    start = perf_counter()
+    log.info('Timer started')
     turn = calculate_turn(game_state)
     
     # Save opponent moves to file - opp_info
@@ -427,15 +426,11 @@ def main():
                     f.write('{}: {}\n'.format(i, val))
             if flag:
                 f.write('\n')
-    # for key, val in opp_strategy.items():
-    #     customBoard_print(key, game_state['num_cols'], game_state['num_rows'])
-    #     for i, (action, prob) in enumerate(val):
-    #         print('{}: {}'.format(action, prob))
-    #     print('\n')
         
     # Report the win probability
     log.info('Win probability: {}'.format(1 - opp_win_prob))
-    
+    log.info('Time taken: {}'.format(perf_counter() - start))
+
     # Save the opponent moves to file - opp_info
     save_opp_info(opp_strategy, 'opp_info')
 
