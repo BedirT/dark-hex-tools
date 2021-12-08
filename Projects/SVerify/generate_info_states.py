@@ -23,6 +23,8 @@ import numpy as np
 import argparse
 import sys
 sys.path.append('../../')
+# import sleep
+from time import sleep
 
 from Projects.base.game.hex import pieces
 from Projects.base.util.colors import colors
@@ -99,9 +101,9 @@ def numeric_action(action, num_cols):
     numeric actions. i.e. a2 -> 3 for 3x3 board.
     '''
     # If not alpha-numeric, return the action as is.
-    if not action[0].isalpha():
-        return action
     try:
+        if not action[0].isalpha():
+            return action
         row = int(action[1:]) - 1
         # for column a -> 0, b -> 1 ...
         col = ord(action[0]) - ord('a')
@@ -124,7 +126,7 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
     # TODO: FIX THE PROBABILITIES
     # Print the board state to the user.
     printBoard(board_state, num_cols, num_rows, move_sequence)
-
+    sleep(0.1)
     # Get the moves and (if wanted) probabilities of those moves from the user.
     moves_and_probs = input(colors.BOLD + colors.QUESTIONS + 
                     'Enter moves and probabilities (separated by spaces)\n' +
@@ -132,7 +134,7 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
                     'Start the entry with = for equiprobable entries (no prob entries)\n' +
                     '"r" for random selection for the rest of the branch\n' + 
                     '"exit" for exitting program\n:' + colors.ENDC)
-    moves_and_probs = moves_and_probs.split(' ')
+    moves_and_probs = moves_and_probs.strip().split(' ')
 
     if moves_and_probs[0] == 'exit':
         exit()
@@ -148,7 +150,7 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
     elif moves_and_probs[0] == '=':
         # Equaprobability
         # No probabilities given.
-        moves = [numeric_action(x[0], num_cols) for x in moves_and_probs[1:]]
+        moves = [numeric_action(x, num_cols) for x in moves_and_probs[1:]]
         if False in moves:
             return get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly)
         probs = [1/len(moves)] * len(moves)
@@ -357,6 +359,10 @@ def generate_info_states(board_state, info_states, player, opponent, player_orde
             if not new_board:
                 log.warning(f"Illegal move: {move}")
                 valid_moves = False
+                while True:
+                    xxx = input()
+                    if xxx == 'continue':
+                        break
                 break
             moves_and_boards[str(move)+opponent] = new_board
             moves_and_boards[str(move)+player] = new_board_2

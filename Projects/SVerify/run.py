@@ -23,6 +23,7 @@ import pickle
 import logging
 import coloredlogs
 import sys
+import os
 sys.path.append('../../')
 
 from Projects.base.game.hex import pieces, customBoard_print, customBoard_write
@@ -30,6 +31,8 @@ from strategy_data import strategies
 
 log = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.
+
+FILE_NAME = 'w3x4_1o7'
 
 discount_factor = 1 #0.9
 
@@ -40,10 +43,11 @@ opp_state_visited_cache = {}
 
 def save_opp_info(info, file_name):
     '''
-    Saves opp_info to a file to load it later.
+    Saves opp_info to a file to load it later. 
+    Saves to SVerify/Data/opp_info_+file_name+.pkl
     '''
     log.info(f'Saving opponent strategy to file: {file_name}')
-    with open(file_name + '.pkl', 'wb') as f:
+    with open(f'../../Data/opp_info_{file_name}.pkl', 'wb') as f:
         pickle.dump(info, f, pickle.HIGHEST_PROTOCOL)
 
 def pos_by_coord(num_cols, r, c):
@@ -372,6 +376,7 @@ def greedify():
     return strategy
 
 def main(): 
+    global FILE_NAME
     # initialize the log
     start = perf_counter()
     log.info('Timer started')
@@ -414,8 +419,10 @@ def main():
     opp_win_prob = calculate(game_state, turn)
     
     # print the win probability with the boards to file
+    # file is saved in SVerify/Data/opp_strat_full_+filename.txt
     log.debug('Writing opponent full strategy to file')
-    with open('opp_strat_full', 'w') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'Data', 
+                           'opp_strat_full_{}.txt'.format(FILE_NAME)), 'w') as f:
         for key, value in opp_state_value_cache.items():
             flag = False
             for i, (val, count) in enumerate(value):
