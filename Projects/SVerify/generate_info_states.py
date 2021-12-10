@@ -101,6 +101,7 @@ def numeric_action(action, num_cols):
     numeric actions. i.e. a2 -> 3 for 3x3 board.
     '''
     # If not alpha-numeric, return the action as is.
+    action = action.lower().strip()
     try:
         if not action[0].isalpha():
             return action
@@ -145,8 +146,13 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
         fill_randomly = True
     elif len(moves_and_probs) == 1:
         # If there is only one move, then the probability is 1.
-        moves = [numeric_action(moves_and_probs[0], num_cols)]
-        probs = [1]
+        a = numeric_action(moves_and_probs[0], num_cols)
+        if a:
+            moves = [a]
+            probs = [1]
+        else:
+            log.error('Invalid move: {}'.format(moves_and_probs[0]))
+            return get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly)
     elif moves_and_probs[0] == '=':
         # Equaprobability
         # No probabilities given.
@@ -158,8 +164,13 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
         moves = []
         probs = []
         for i in range(0, len(moves_and_probs), 2):
-            moves.append(numeric_action(moves_and_probs[i], num_cols))
-            probs.append(float(moves_and_probs[i+1]))
+            a = numeric_action(moves_and_probs[i], num_cols)
+            if a:
+                moves.append(a)
+                probs.append(float(moves_and_probs[i+1]))
+            else:
+                log.warning('Invalid move: {}'.format(moves_and_probs[i]))
+                return get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly)
         
     moves = list(map(int, moves))
     probs = list(map(float, probs))
