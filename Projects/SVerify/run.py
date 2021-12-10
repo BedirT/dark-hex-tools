@@ -16,14 +16,18 @@ Parameters:
     -p: player to evaluate
     -S: strategy to evaluate
 '''
+from collections import defaultdict
 from typing import DefaultDict
 from copy import deepcopy
 from time import perf_counter
 import pickle
 import logging
+import beepy
 import coloredlogs
 import sys
 import os
+
+import dill
 sys.path.append('../../')
 
 from Projects.base.game.hex import pieces, customBoard_print, customBoard_write
@@ -31,8 +35,6 @@ from strategy_data import strategies
 
 log = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.
-
-FILE_NAME = 'w3x4_1o7'
 
 discount_factor = 1 #0.9
 
@@ -44,10 +46,10 @@ opp_state_visited_cache = {}
 def save_opp_info(info, file_name):
     '''
     Saves opp_info to a file to load it later. 
-    Saves to SVerify/Data/opp_info_+file_name+.pkl
+    Saves to SVerify/Data/FILE_NAME/opp_info.pkl
     '''
-    log.info(f'Saving opponent strategy to file: {file_name}')
-    with open(f'../../Data/opp_info_{file_name}.pkl', 'wb') as f:
+    log.info(f'Saving opponent strategy to folder: Data/{file_name}')
+    with open(f'Data/{file_name}/opp_info.pkl', 'wb') as f:
         pickle.dump(info, f, pickle.HIGHEST_PROTOCOL)
 
 def pos_by_coord(num_cols, r, c):
@@ -225,7 +227,7 @@ def calculate_turn(game_state):
         if num_white > num_black:   return 1
         else:                       return 0
 
-def calculate(game, to_play):
+def calculate(game, value_db, to_play):
     '''
     Given the player and opponent strategies. Calculate the lower bound.
     '''
@@ -247,13 +249,16 @@ def calculate(game, to_play):
     # for every possible move, calculate the probability of winning
     for action, prob in strategy[board_to_play]:
         new_game, collusion = play_action(game, game[next_to_act], action)
+        new_value = 0
         if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
             assert new_game == (pieces.kBlackWin if game[next_to_act] == pieces.kBlack else pieces.kWhiteWin)
-            value += (0 if next_to_act == 'player' else 1) * prob
+            new_value = (0 if next_to_act == 'player' else 1) * prob
         elif not collusion:
-            value += calculate(new_game, (to_play + 1) % 2) * prob
+            new_value = calculate(new_game, value_db, (to_play + 1) % 2) * prob
         else:
-            value += calculate(new_game, to_play) * prob
+            new_value = calculate(new_game, value_db, to_play) * prob
+        value += new_value
+        value_db[player_board + opponent_board][action] = (new_value, prob)
     return value
         
 def choose_strategy():
@@ -268,7 +273,7 @@ def choose_strategy():
         # no private variables
         if not name.startswith('__'):
             print('{}. {}'.format(i, name))
-            i += 1; arr.append(strategy)
+            i += 1; arr.append((strategy, name))
     # make sure the user picks a valid option
     try:
         choice = int(input('Enter your choice: '))
@@ -277,7 +282,7 @@ def choose_strategy():
     except ValueError:
         log.critical('Invalid choice...')
         return choose_strategy()
-    return arr[choice]
+    return arr[choice][0], arr[choice][1]
 
 def calc_opponent_strategy(game_state, to_play, depth):
     '''
@@ -375,15 +380,16 @@ def greedify():
     # exit()
     return strategy
 
-def main(): 
-    global FILE_NAME
+def main():
     # initialize the log
     start = perf_counter()
     log.info('Timer started')
     # list all the strategies from strategies, display 
     # and let the user choose one
-    strategy_dict = choose_strategy()
+    strategy_dict, file_name = choose_strategy()
     game_state = {
+        # use variable name as file_name
+        'file_name': file_name,
         'num_rows': strategy_dict['num_rows'],
         'num_cols': strategy_dict['num_cols'],
         'player_order': strategy_dict['player_order'], # 0 or 1 depending on if player goes first
@@ -405,6 +411,7 @@ def main():
                 else pieces.kEmpty * (strategy_dict['num_rows'] * strategy_dict['num_cols'])
         },
     }
+    FILE_NAME = game_state['file_name']
     log.info('Game state initialized')
     start = perf_counter()
     log.info('Timer started')
@@ -417,14 +424,27 @@ def main():
     opp_strategy = greedify()
     game_state['opp_strategy'] = opp_strategy
     
+    # check if the file exists already;
+    value_db = defaultdict(lambda: dict())
+    log.debug('Value database initialized')
+    log.debug('Calculating value database')
+    opp_win_prob = calculate(game_state, value_db, turn)
+    # save win_probs to pickle file with name: Data/FILE_NAME/win_probs.pkl
+    # create file if it doesn't exist
+    if not os.path.exists('Data/{}'.format(FILE_NAME)):
+        os.makedirs('Data/{}'.format(FILE_NAME))
+    dill.dump(value_db, open('Data/{}/value_db.pkl'.format(FILE_NAME), 'wb'))
+    # make sound when calculations are done
+    beepy.beep(sound="ping")
     # Play the game and report the win probability of the player
-    opp_win_prob = calculate(game_state, turn)
     
     # print the win probability with the boards to file
-    # file is saved in SVerify/Data/opp_strat_full_+filename.txt
+    # file is saved in SVerify/Data/FILE_NAME/opp_strat_full.txt
     log.debug('Writing opponent full strategy to file')
-    with open(os.path.join(os.path.dirname(__file__), 'Data', 
-                           'opp_strat_full_{}.txt'.format(FILE_NAME)), 'w') as f:
+    # Create the directory if it does not exist Data/FILE_NAME
+    if not os.path.exists('Data/' + FILE_NAME):
+        os.makedirs('Data/' + FILE_NAME)
+    with open('Data/' + FILE_NAME + '/opp_strat_full.txt', 'w') as f:
         for key, value in opp_state_value_cache.items():
             flag = False
             for i, (val, count) in enumerate(value):
@@ -444,7 +464,7 @@ def main():
     log.info(f"Time took: {perf_counter() - start}")
     
     # Save the opponent moves to file - opp_info
-    save_opp_info(opp_strategy, 'opp_info')
+    save_opp_info(opp_strategy, FILE_NAME)
 
 if __name__ == '__main__':
     main()

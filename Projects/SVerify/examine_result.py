@@ -4,22 +4,26 @@ Uses opp_info.pkl and info_states corresponding to the game.
 
 Presents a possibility for the examiner to select a state to examine.
 '''
+from collections import defaultdict
 import pickle
+import dill
 import logging
 import coloredlogs
 import sys
-import pygame
+import os
 sys.path.append('../../')
 
-from Projects.SVerify.run import FILE_NAME, calculate_turn, play_action
+from run import calculate_turn, play_action
 from strategy_data import strategies
-from Projects.base.game.hex import pieces, multiBoard_print
+from Projects.base.game.hex import pieces, multiBoard_print, customBoard_print
 
 log = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.
 game_history = []
 
+CALC_WINS = True
 FILE_NAME = 'w3x4_1o7'
+# FILE_NAME = 'w2x2_test'
 
 def choose_strategy():
     '''
@@ -33,7 +37,7 @@ def choose_strategy():
         # no private variables
         if not name.startswith('__'):
             print('{}. {}'.format(i, name))
-            i += 1; arr.append(strategy)
+            i += 1; arr.append((strategy, name))
     
     # make sure the choice is valid
     try:
@@ -43,7 +47,7 @@ def choose_strategy():
     except ValueError:
         print('Invalid choice')
         return choose_strategy()
-    return arr[choice]
+    return arr[choice][0], arr[choice][1]
 
 def conv_alphapos(pos, num_cols=8):
     '''
@@ -54,7 +58,7 @@ def conv_alphapos(pos, num_cols=8):
     row = pos // num_cols
     return '{}{}'.format(chr(ord('a') + col), row + 1)
 
-def display_options(game_state, turn):
+def display_options(game_state, win_probs, turn):
     '''
     Displays the moves and probabilities that were chosen.
     
@@ -66,11 +70,24 @@ def display_options(game_state, turn):
     # Add a rewind option if there is history
     if len(game_history) > 0:
         print('0. Rewind')
+
+    w_probs = win_probs[game_state['boards'][game_state['player']] + game_state['boards'][game_state['opponent']]]
+
+    # multiBoard_print(game_state['boards'][game_state['player']], game_state['boards'][game_state['opponent']], 
+    #                  game_state['num_rows'], game_state['num_cols'], 'Player', 'Opponent')
+    # print(game_state['player_strategy'][game_state['boards'][game_state['player']]] \
+    #         if turn == game_state['player_order'] 
+    #         else game_state['opponent_strategy'][game_state['boards'][game_state['opponent']]])
+    # print('Win Probabilities:{}'.format(w_probs))
+    # input()
     
     if turn == game_state['player_order']:
         opts = game_state['player_strategy'][game_state['boards'][game_state['player']]]
         for i, (a, p) in enumerate(opts):
-            print('{}. {}({}) - {}'.format(i+1, a, conv_alphapos(a, game_state['num_cols']), p))
+            val = w_probs[a][0] * w_probs[a][1]
+            print('{}. {}({}) - {}: <{} wins:{:.2f} | {} wins:{:.2f}>'
+                    .format(i+1, a, conv_alphapos(a, game_state['num_cols']), 
+                            p, game_state['player'], val, game_state['opponent'], 1-val))
     else:
         try:
             opts = game_state['opponent_strategy'][game_state['boards'][game_state['opponent']]]
@@ -87,17 +104,21 @@ def display_options(game_state, turn):
             log.critical('Opponent strategy is empty for board state: {}'.format(game_state['boards'][game_state['opponent']]))
             exit()
         for i, (a, p) in enumerate(opts):
-            print('{}. {}({}) - {}'.format(i+1, a, conv_alphapos(a, game_state['num_cols']), p))
+            val = w_probs[a][0] * w_probs[a][1]
+            print('{}. {}({}) - {}: <{} wins:{:.2f} | {} wins:{:.2f}>'
+                    .format(i+1, a, conv_alphapos(a, game_state['num_cols']), 
+                            p, game_state['player'], val, game_state['opponent'], 1-val))
 
     # make sure the choice is valid
     try:
         choice = int(input('Enter your choice: '))
-        if choice < 0 or choice > len(opts):
+        if choice < 0 or choice > len(opts) or \
+           (choice == 0 and len(game_history) == 0):
             raise ValueError
     except ValueError:
         print('Invalid choice')
-        return display_options(game_state, turn)
-    return opts[choice-1] if choice != 0 else -1, -1
+        return display_options(game_state, win_probs, turn)
+    return opts[choice-1] if choice != 0 else (-1, -1)
 
 def end_game_choice(game, opp_strategy):
     # The game is over give the option to go back to the beginning
@@ -149,10 +170,9 @@ def end_game_choice(game, opp_strategy):
     return game_state, game_turn
 
 def main():
-    global FILE_NAME
-    # load pickle file from SVerify/Data/opp_info_+FILE_NAME+.pkl
-    opp_strategy = pickle.load(open('../../Data/opp_info_{}.pkl'.format(FILE_NAME), 'rb'))
-    game = choose_strategy()
+    # load pickle file from SVerify/Data/FILE_NAME/opp_info.pkl
+    opp_strategy = pickle.load(open('Data/{}/opp_info.pkl'.format(FILE_NAME), 'rb'))
+    game, file_name = choose_strategy()
     # set up the game
     game_state = {
         'board': game['board']
@@ -177,10 +197,28 @@ def main():
         'player_strategy': game['strategy'],
         'opponent_strategy': opp_strategy
     }
-    play_pygame(game_state, opp_strategy)
     game_turn = calculate_turn(game_state)
     log.debug('Game turn: {}'.format(game_turn))
-    
+
+    if CALC_WINS:
+        # check if the file exists already;
+        win_probs = defaultdict(lambda: dict())
+        if not os.path.isfile('Data/{}/win_probs.pkl'.format(file_name)):
+            # if not, calculate the win probabilities
+            log.debug('Could not find win probabilities file, calculating')
+            calculate_win_probs(game_state, win_probs, game_turn)
+            # save win_probs to pickle file with name: Data/file_name/win_probs.pkl
+            dill.dump(win_probs, open('Data/{}/win_probs.pkl'.format(file_name), 'wb'))
+        else:
+            # if the file exists, load it
+            log.debug('Loading win probabilities')
+            win_probs = dill.load(open('Data/{}/win_probs.pkl'.format(file_name), 'rb'))
+        # make sound when calculations are done
+        import beepy
+        beepy.beep(sound="ping")
+    else:
+        win_probs = None
+
     while(True):
         # play the game and examine from the beginning
         multiBoard_print(game_state['boards'][game_state['player']], game_state['boards'][game_state['opponent']], 
@@ -192,7 +230,7 @@ def main():
               'Please choose a move to proceed:')
         
         # display the moves and probabilities they were chosen
-        action, prob = display_options(game_state, game_turn)
+        action, prob = display_options(game_state, win_probs, game_turn)
 
         # rewind the game
         if action == -1:
@@ -213,114 +251,56 @@ def main():
             game_state, game_turn = end_game_choice(game, opp_strategy)
             if game_state == None:
                 break
- 
-def play_pygame(game, opp_strategy):
+  
+def calculate_win_probs(game_state, win_probs, to_play):
     '''
-    Play the game dark hex using pygame.
-    
-    - Creates the visual board.
-    - Initializes the board given.
-    - White circles for 'o' in the information set, and black for 'x'.
-    - Lists the display options on the bottom of the board, let's user
-    to pick using their mouse.
-    - Plays to the new position, updates the board.
-    ''' 
-    # set up the game
-    game_state = {
-        'board': game['board']
-            if 'board' in game 
-            else pieces.kEmpty * (game['num_rows'] * game['num_cols']),
-        'boards': {
-            game['player']: 
-                game['boards'][game['player']]
-                if 'boards' in game
-                else pieces.kEmpty * (game['num_rows'] * game['num_cols']),
-            pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack: 
-                game['boards'][pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack]
-                if 'boards' in game
-                else pieces.kEmpty * (game['num_rows'] * game['num_cols'])
-        },
-        'num_rows': game['num_rows'],
-        'num_cols': game['num_cols'],
-        'first_player': game['first_player'],
-        'player_order': game['player_order'],
-        'player': game['player'],
-        'opponent': pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack,
-        'player_strategy': game['strategy'],
-        'opponent_strategy': opp_strategy
-    }
-    
-    game_turn = calculate_turn(game_state)
-    log.debug('Game turn: {}'.format(game_turn))
-    
-    # initialize pygame
-    pygame.init()
-    screen = pygame.display.set_mode((game_state['num_cols'] * 50, (game_state['num_rows'] + 1) * 50))
-    pygame.display.set_caption('Dark Hex')
-    done = False
-    clock = pygame.time.Clock()
-    selected = False
-    selected_move = None
-    selected_prob = None
-    while not done:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                if pos[1] > game_state['num_rows'] * 50:
-                    selected = True
-                    selected_move = pos[0]
-                    selected_prob = pos[1] - game_state['num_rows'] * 50
-            # draw the board
-            screen.fill((255, 255, 255))
-            for row in range(game_state['num_rows']):
-                for col in range(game_state['num_cols']):
-                    # draw hexagon if its empty
-                    if game_state['board'][row * game_state['num_cols'] + col] == pieces.kEmpty:
-                        pygame.draw.polygon(screen, (0, 0, 0), [(col * 50, row * 50 + 50),
-                                                                 (col * 50 + 50, row * 50 + 50),
-                                                                 (col * 50 + 25, row * 50),
-                                                                 (col * 50, row * 50)], 0)
-                    # draw hexagon with a circle in it if its not empty
-                    elif game_state['board'][row * game_state['num_cols'] + col] == pieces.kWhite:
-                        pygame.draw.polygon(screen, (255, 255, 255), [(col * 50, row * 50 + 50),
-                                                                     (col * 50 + 50, row * 50 + 50),
-                                                                     (col * 50 + 25, row * 50),
-                                                                     (col * 50, row * 50)], 0)
-                        pygame.draw.circle(screen, (0, 0, 0), (col * 50 + 25, row * 50 + 25), 25, 0)
-                    elif game_state['board'][row * game_state['num_cols'] + col] == pieces.kBlack:
-                        pygame.draw.polygon(screen, (255, 255, 255), [(col * 50, row * 50 + 50),
-                                                                     (col * 50 + 50, row * 50 + 50),
-                                                                     (col * 50 + 25, row * 50),
-                                                                     (col * 50, row * 50)], 0)
-                        pygame.draw.circle(screen, (255, 255, 255), (col * 50 + 25, row * 50 + 25), 25, 0)
-            # draw the display options
-            if selected:
-                pygame.draw.line(screen, (0, 0, 0), (selected_move, game_state['num_rows'] * 50),
-                                 (selected_move, selected_prob), 3)
-                pygame.draw.line(screen, (0, 0, 0), (0, selected_prob),
-                                 (selected_move, selected_prob), 3)
-                pygame.draw.line(screen, (0, 0, 0), (selected_move, selected_prob),
-                                 (game_state['num_cols'] * 50, selected_prob), 3)
-                pygame.draw.line(screen, (0, 0, 0), (game_state['num_cols'] * 50, selected_prob),
-                                 (game_state['num_cols'] * 50, game_state['num_rows'] * 50), 3)
-            pygame.display.flip()
-            clock.tick(60)
-        if selected:
-            selected_move = selected_move + 1
-            if selected_move > game_state['num_cols'] * 50:
-                selected = False
-                selected_move = None
-                selected_prob = None
-                game_state, game_turn = play_action(game_state, game_turn, (selected_move - game_state['num_cols'] * 50, selected_prob))
-                log.debug('Game turn: {}'.format(game_turn))
-                game_turn = calculate_turn(game_state)
-                log.debug('Game turn: {}'.format(game_turn))
-                if game_state in [pieces.kBlackWin, pieces.kWhiteWin]:
-                    game_state, game_turn = end_game_choice(game, opp_strategy)
-                    if game_state == None:
-                        break
-    
+    Plays the game and calculates the win probability for each move 
+    for Black and White. Recursively calls itself to play the game
+    until the game is over, then returns the win probability for the end
+    game, multiplied by the probabilities as it goes back up the tree.
+    Args:
+        game_state: the current game state
+        win_probs: the win probability dictionary. For each state it contains
+            the win probability (for opponent) for each action.
+    Returns:
+        win_probs: the win probability for each move for opponent
+    '''
+    player_board = game_state['boards'][game_state['player']]
+    opponent_board = game_state['boards'][game_state['opponent']]
+
+    if player_board + opponent_board in win_probs:
+        tot = 0
+        for key, value in win_probs[player_board + opponent_board].items():
+            tot += value[0] * value[1] # value * probability
+        return tot
+
+    # whose turn
+    if to_play == game_state['player_order']:
+        # player's turn
+        next_to_act = 'player'
+        board_to_play = player_board
+        strategy = game_state['player_strategy']
+    else:
+        # opponent's turn
+        next_to_act = 'opponent'
+        board_to_play = opponent_board
+        strategy = game_state['opponent_strategy']
+
+    win_p = 0
+    for action, prob in strategy[board_to_play]:
+        # get the next state
+        new_game, collusion = play_action(game_state, game_state[next_to_act], action)
+        if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
+            assert new_game == (pieces.kBlackWin if game_state[next_to_act] == pieces.kBlack else pieces.kWhiteWin)
+            new_p = (0 if next_to_act == 'player' else 1) * prob
+        elif not collusion:
+            new_p = calculate_win_probs(new_game, win_probs, (to_play + 1) % 2) * prob
+        else:
+            new_p = calculate_win_probs(new_game, win_probs, to_play) * prob
+        win_p += new_p
+        win_probs[player_board + opponent_board][action] = (new_p, prob) # opp wins
+    return win_p
+
+
 if __name__ == '__main__':
     main()
