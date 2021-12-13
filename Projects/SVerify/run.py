@@ -244,11 +244,10 @@ def calculate(game, value_db, to_play):
         next_to_act = 'opponent'
         board_to_play = opponent_board
         strategy = game['opp_strategy']
-    value = 0
+    tot_value = 0
     # for every possible move, calculate the probability of winning
     for action, prob in strategy[board_to_play]:
         new_game, collusion = play_action(game, game[next_to_act], action)
-        new_value = 0
         if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
             assert new_game == (pieces.kBlackWin if game[next_to_act] == pieces.kBlack else pieces.kWhiteWin)
             new_value = (0 if next_to_act == 'player' else 1) * prob
@@ -256,9 +255,9 @@ def calculate(game, value_db, to_play):
             new_value = calculate(new_game, value_db, (to_play + 1) % 2) * prob
         else:
             new_value = calculate(new_game, value_db, to_play) * prob
-        value += new_value
+        tot_value += new_value
         value_db[player_board + opponent_board][action] = (new_value, prob)
-    return value
+    return tot_value
         
 def choose_strategy():
     '''
@@ -331,11 +330,6 @@ def calc_opponent_strategy(game_state, to_play, depth):
                 # if the game is an instant win, player should
                 # choose this move with probability 1
                 value = 1 # value is 1 for opponent win
-                # for idx, act in enumerate(opp_state_value_cache[opponent_board]):
-                #     if act != action:
-                #         opp_state_value_cache[opponent_board][idx] = (0, 0)
-                #     else:
-                #         opp_state_value_cache[opponent_board][idx] = (1, 1)
             else:
                 next_to_play = (to_play + 1) % 2 if not collusion else to_play
                 value = calc_opponent_strategy(new_game, next_to_play, depth + 1)
@@ -346,6 +340,12 @@ def calc_opponent_strategy(game_state, to_play, depth):
                 opp_state_value_cache[opponent_board][action] = ((c[0] * c[1] + value) / (c[1] + 1), c[1] + 1)
             else:
                 opp_state_value_cache[opponent_board][action] = (value, 1)
+            if value == 1:
+                # remove all the other moves
+                for a, _ in enumerate(opp_state_value_cache[opponent_board]):
+                    opp_state_value_cache[opponent_board][a] = (0, 0)
+                opp_state_value_cache[opponent_board][action] = (1, 1)
+                return value * (discount_factor ** depth)
             # update the maximum value and the action
             if value > mx_value:
                 mx_value = value
