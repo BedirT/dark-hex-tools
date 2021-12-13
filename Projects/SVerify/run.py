@@ -22,7 +22,6 @@ from copy import deepcopy
 from time import perf_counter
 import pickle
 import logging
-import beepy
 import coloredlogs
 import sys
 import os
@@ -434,8 +433,6 @@ def main():
     if not os.path.exists('Data/{}'.format(FILE_NAME)):
         os.makedirs('Data/{}'.format(FILE_NAME))
     dill.dump(value_db, open('Data/{}/value_db.pkl'.format(FILE_NAME), 'wb'))
-    # make sound when calculations are done
-    beepy.beep(sound="ping")
     # Play the game and report the win probability of the player
     
     # print the win probability with the boards to file

@@ -30,6 +30,10 @@ from Projects.base.game.hex import pieces
 from Projects.base.util.colors import colors
 from Projects.SVerify.isomorphic import isomorphic_single
 
+READ_FROM_FILE = True
+input_list = []
+COUNTER = 0
+
 def convert_to_xo(str_board):
     '''
     Convert the board state to only x and o.
@@ -127,15 +131,22 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
     # TODO: FIX THE PROBABILITIES
     # Print the board state to the user.
     printBoard(board_state, num_cols, num_rows, move_sequence)
-    sleep(0.1)
+    # sleep(0.1)
     # Get the moves and (if wanted) probabilities of those moves from the user.
-    moves_and_probs = input(colors.BOLD + colors.QUESTIONS + 
-                    'Enter moves and probabilities (separated by spaces)\n' +
-                    'For the single entries (one action) no need for the probabilites\n' + 
-                    'Start the entry with = for equiprobable entries (no prob entries)\n' +
-                    '"r" for random selection for the rest of the branch\n' + 
-                    '"exit" for exitting program\n:' + colors.ENDC)
-    moves_and_probs = moves_and_probs.strip().split(' ')
+    global READ_FROM_FILE
+    global input_list
+    global COUNTER
+    if READ_FROM_FILE and COUNTER < len(input_list):
+        moves_and_probs = input_list[COUNTER]
+        COUNTER += 1
+    else:
+        moves_and_probs = input(colors.BOLD + colors.QUESTIONS + 
+                        'Enter moves and probabilities (separated by spaces)\n' +
+                        'For the single entries (one action) no need for the probabilites\n' + 
+                        'Start the entry with = for equiprobable entries (no prob entries)\n' +
+                        '"r" for random selection for the rest of the branch\n' + 
+                        '"exit" for exitting program\n:' + colors.ENDC)
+        moves_and_probs = moves_and_probs.strip().split(' ')
 
     if moves_and_probs[0] == 'exit':
         exit()
@@ -151,7 +162,7 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
             moves = [a]
             probs = [1]
         else:
-            log.error('Invalid move: {}'.format(moves_and_probs[0]))
+            log.error('Invalid move: {}'.format(moves_and_probs))
             return get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly)
     elif moves_and_probs[0] == '=':
         # Equaprobability
@@ -169,7 +180,7 @@ def get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly):
                 moves.append(a)
                 probs.append(float(moves_and_probs[i+1]))
             else:
-                log.warning('Invalid move: {}'.format(moves_and_probs[i]))
+                log.warning('Invalid move: {}'.format(moves_and_probs))
                 return get_moves(board_state, num_cols, num_rows, move_sequence, fill_randomly)
         
     moves = list(map(int, moves))
@@ -449,7 +460,16 @@ def main():
             log.error("Board state is not the correct size!")
             return
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
+    global READ_FROM_FILE
+    global input_list
+    if READ_FROM_FILE:
+        # read all the lines given in the file and store them in a list to use as input later
+        input_file = open('input_run.txt', 'r')
+        lines = input_file.readlines()
+        input_file.close()
+        for line in lines:
+            input_list.append(line.strip().split(' '))    
+        
     info_states = defaultdict(lambda: list())
     generate_info_states(board_state, info_states, player, opponent, args.player_order, args.num_cols, args.num_rows, args.isomorphic, [], False)
     # save info_states to file

@@ -22,8 +22,6 @@ coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.
 game_history = []
 
 CALC_WINS = True
-FILE_NAME = 'w3x4_1o7'
-# FILE_NAME = 'w2x2_test'
 
 def choose_strategy():
     '''
@@ -171,8 +169,8 @@ def end_game_choice(game, opp_strategy):
 
 def main():
     # load pickle file from SVerify/Data/FILE_NAME/opp_info.pkl
-    opp_strategy = pickle.load(open('Data/{}/opp_info.pkl'.format(FILE_NAME), 'rb'))
     game, file_name = choose_strategy()
+    opp_strategy = pickle.load(open('Data/{}/opp_info.pkl'.format(file_name), 'rb'))
     # set up the game
     game_state = {
         'board': game['board']
@@ -200,24 +198,17 @@ def main():
     game_turn = calculate_turn(game_state)
     log.debug('Game turn: {}'.format(game_turn))
 
-    if CALC_WINS:
-        # check if the file exists already;
-        win_probs = defaultdict(lambda: dict())
-        if not os.path.isfile('Data/{}/win_probs.pkl'.format(file_name)):
-            # if not, calculate the win probabilities
-            log.debug('Could not find win probabilities file, calculating')
-            calculate_win_probs(game_state, win_probs, game_turn)
-            # save win_probs to pickle file with name: Data/file_name/win_probs.pkl
-            dill.dump(win_probs, open('Data/{}/win_probs.pkl'.format(file_name), 'wb'))
-        else:
-            # if the file exists, load it
-            log.debug('Loading win probabilities')
-            win_probs = dill.load(open('Data/{}/win_probs.pkl'.format(file_name), 'rb'))
-        # make sound when calculations are done
-        import beepy
-        beepy.beep(sound="ping")
+    win_probs = defaultdict(lambda: dict())
+    if not os.path.isfile('Data/{}/value_db.pkl'.format(file_name)):
+        # if not, calculate the win probabilities
+        log.debug('Could not find win probabilities file, calculating')
+        calculate_win_probs(game_state, win_probs, game_turn)
+        # save win_probs to pickle file with name: Data/file_name/win_probs.pkl
+        dill.dump(win_probs, open('Data/{}/value_db.pkl'.format(file_name), 'wb'))
     else:
-        win_probs = None
+        # if the file exists, load it
+        log.debug('Loading win probabilities')
+        win_probs = dill.load(open('Data/{}/value_db.pkl'.format(file_name), 'rb'))
 
     while(True):
         # play the game and examine from the beginning
