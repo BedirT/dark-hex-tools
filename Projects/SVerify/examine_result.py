@@ -70,14 +70,6 @@ def display_options(game_state, win_probs, turn):
         print('0. Rewind')
 
     w_probs = win_probs[game_state['boards'][game_state['player']] + game_state['boards'][game_state['opponent']]]
-
-    # multiBoard_print(game_state['boards'][game_state['player']], game_state['boards'][game_state['opponent']], 
-    #                  game_state['num_rows'], game_state['num_cols'], 'Player', 'Opponent')
-    # print(game_state['player_strategy'][game_state['boards'][game_state['player']]] \
-    #         if turn == game_state['player_order'] 
-    #         else game_state['opponent_strategy'][game_state['boards'][game_state['opponent']]])
-    # print('Win Probabilities:{}'.format(w_probs))
-    # input()
     
     if turn == game_state['player_order']:
         opts = game_state['player_strategy'][game_state['boards'][game_state['player']]]
@@ -199,14 +191,7 @@ def main():
     log.debug('Game turn: {}'.format(game_turn))
 
     win_probs = defaultdict(lambda: dict())
-    # if not os.path.isfile('Data/{}/value_db.pkl'.format(file_name)):
-    #     # if not, calculate the win probabilities
-    #     log.debug('Could not find win probabilities file, calculating')
-    #     # calculate_win_probs(game_state, win_probs, game_turn)
-    #     # save win_probs to pickle file with name: Data/file_name/win_probs.pkl
-    #     dill.dump(win_probs, open('Data/{}/value_db.pkl'.format(file_name), 'wb'))
-    # else:
-    # if the file exists, load it
+
     log.debug('Loading win probabilities')
     win_probs = dill.load(open('Data/{}/value_db.pkl'.format(file_name), 'rb'))
 
@@ -243,55 +228,6 @@ def main():
             if game_state == None:
                 break
   
-def calculate_win_probs(game_state, win_probs, to_play):
-    '''
-    Plays the game and calculates the win probability for each move 
-    for Black and White. Recursively calls itself to play the game
-    until the game is over, then returns the win probability for the end
-    game, multiplied by the probabilities as it goes back up the tree.
-    Args:
-        game_state: the current game state
-        win_probs: the win probability dictionary. For each state it contains
-            the win probability (for opponent) for each action.
-    Returns:
-        win_probs: the win probability for each move for opponent
-    '''
-    player_board = game_state['boards'][game_state['player']]
-    opponent_board = game_state['boards'][game_state['opponent']]
-
-    if player_board + opponent_board in win_probs:
-        tot = 0
-        for key, value in win_probs[player_board + opponent_board].items():
-            tot += value[0] * value[1] # value * probability
-        return tot
-
-    # whose turn
-    if to_play == game_state['player_order']:
-        # player's turn
-        next_to_act = 'player'
-        board_to_play = player_board
-        strategy = game_state['player_strategy']
-    else:
-        # opponent's turn
-        next_to_act = 'opponent'
-        board_to_play = opponent_board
-        strategy = game_state['opponent_strategy']
-
-    win_p = 0
-    for action, prob in strategy[board_to_play]:
-        # get the next state
-        new_game, collusion = play_action(game_state, game_state[next_to_act], action)
-        if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
-            assert new_game == (pieces.kBlackWin if game_state[next_to_act] == pieces.kBlack else pieces.kWhiteWin)
-            new_p = (0 if next_to_act == 'player' else 1) * prob
-        elif not collusion:
-            new_p = calculate_win_probs(new_game, win_probs, (to_play + 1) % 2) * prob
-        else:
-            new_p = calculate_win_probs(new_game, win_probs, to_play) * prob
-        win_p += new_p
-        win_probs[player_board + opponent_board][action] = (new_p, prob) # opp wins
-    return win_p
-
 
 if __name__ == '__main__':
     main()
