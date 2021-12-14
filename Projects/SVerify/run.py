@@ -232,7 +232,8 @@ def calculate(game, value_db, to_play):
     '''
     player_board = game['boards'][game['player']]
     opponent_board = game['boards'][game['opponent']]
-    
+    if opponent_board == 'x..xoox.....':
+        print('Here')
     # whose turn
     if to_play == game['player_order']:
         # player's turn
@@ -340,12 +341,6 @@ def calc_opponent_strategy(game_state, to_play, depth):
                 opp_state_value_cache[opponent_board][action] = ((c[0] * c[1] + value) / (c[1] + 1), c[1] + 1)
             else:
                 opp_state_value_cache[opponent_board][action] = (value, 1)
-            if value == 1:
-                # remove all the other moves
-                for a, _ in enumerate(opp_state_value_cache[opponent_board]):
-                    opp_state_value_cache[opponent_board][a] = (0, 0)
-                opp_state_value_cache[opponent_board][action] = (1, 1)
-                return value * (discount_factor ** depth)
             # update the maximum value and the action
             if value > mx_value:
                 mx_value = value
