@@ -11,50 +11,15 @@ import logging
 import coloredlogs
 import sys
 import os
+from Projects.SVerify.util import calculate_turn, choose_strategy, conv_alphapos, get_game_state, load_file, play_action
 sys.path.append('../../')
 
-from run import calculate_turn, play_action
-from strategy_data import strategies
 from Projects.base.game.hex import pieces, multiBoard_print, customBoard_print
 
 log = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.
 game_history = []
 
-CALC_WINS = True
-
-def choose_strategy():
-    '''
-    User is displayed all the options in strategies
-    and will pick one to run the algorithm for.
-    '''
-    print('Choose a strategy to run the algorithm for:')
-    i = 0
-    arr = []
-    for name, strategy in vars(strategies).items():
-        # no private variables
-        if not name.startswith('__'):
-            print('{}. {}'.format(i, name))
-            i += 1; arr.append((strategy, name))
-    
-    # make sure the choice is valid
-    try:
-        choice = int(input('Enter your choice: '))
-        if choice < 0 or choice >= len(arr):
-            raise ValueError
-    except ValueError:
-        print('Invalid choice')
-        return choose_strategy()
-    return arr[choice][0], arr[choice][1]
-
-def conv_alphapos(pos, num_cols=8):
-    '''
-    Converts a position to a letter and number
-    pos: int
-    '''
-    col = pos % num_cols
-    row = pos // num_cols
-    return '{}{}'.format(chr(ord('a') + col), row + 1)
 
 def display_options(game_state, win_probs, turn):
     '''
@@ -110,6 +75,7 @@ def display_options(game_state, win_probs, turn):
         return display_options(game_state, win_probs, turn)
     return opts[choice-1] if choice != 0 else (-1, -1)
 
+
 def end_game_choice(game, opp_strategy):
     # The game is over give the option to go back to the beginning
     # rewind a move or quit
@@ -159,45 +125,27 @@ def end_game_choice(game, opp_strategy):
         return None, None
     return game_state, game_turn
 
+
 def main():
     # load pickle file from SVerify/Data/FILE_NAME/opp_info.pkl
     game, file_name = choose_strategy()
-    opp_strategy = pickle.load(open('Data/{}/opp_info.pkl'.format(file_name), 'rb'))
+    opp_strategy = load_file(f'Data/{file_name}/opp_info.pkl')
     # set up the game
-    game_state = {
-        'board': game['board']
-            if 'board' in game 
-            else pieces.kEmpty * (game['num_rows'] * game['num_cols']),
-        'boards': {
-            game['player']: 
-                game['boards'][game['player']]
-                if 'boards' in game
-                else pieces.kEmpty * (game['num_rows'] * game['num_cols']),
-            pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack: 
-                game['boards'][pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack]
-                if 'boards' in game
-                else pieces.kEmpty * (game['num_rows'] * game['num_cols'])
-        },
-        'num_rows': game['num_rows'],
-        'num_cols': game['num_cols'],
-        'first_player': game['first_player'],
-        'player_order': game['player_order'],
-        'player': game['player'],
-        'opponent': pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack,
-        'player_strategy': game['strategy'],
-        'opponent_strategy': opp_strategy
-    }
+    game_state = get_game_state(game, opp_strategy)
     game_turn = calculate_turn(game_state)
-    log.debug('Game turn: {}'.format(game_turn))
-
-    win_probs = defaultdict(lambda: dict())
-
     log.debug('Loading win probabilities')
-    win_probs = dill.load(open('Data/{}/value_db.pkl'.format(file_name), 'rb'))
-
+    value_db = load_file(f'Data/{file_name}/value_db.pkl')
+    
+    
+    # Check the size of value db
+    log.debug('Value DB type: {}'.format(type(value_db)))
+    log.debug('Value DB size: {}'.format(len(value_db)))
+    
+    
     while(True):
         # play the game and examine from the beginning
-        multiBoard_print(game_state['boards'][game_state['player']], game_state['boards'][game_state['opponent']], 
+        multiBoard_print(game_state['boards'][game_state['player']], 
+                         game_state['boards'][game_state['opponent']], 
                          game_state['num_rows'], game_state['num_cols'], 
                          f'Player - {game_state["player"]}', f'Opponent - {game_state["opponent"]}')
         p_turn = game_state['player'] if game_turn == game_state['player_order'] else game_state['opponent']
@@ -206,7 +154,7 @@ def main():
               'Please choose a move to proceed:')
         
         # display the moves and probabilities they were chosen
-        action, prob = display_options(game_state, win_probs, game_turn)
+        action, prob = display_options(game_state, value_db, game_turn)
 
         # rewind the game
         if action == -1:
@@ -228,6 +176,6 @@ def main():
             if game_state == None:
                 break
   
-
+  
 if __name__ == '__main__':
     main()
