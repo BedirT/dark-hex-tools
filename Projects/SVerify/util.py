@@ -1,6 +1,9 @@
 from copy import deepcopy
 import logging
 
+import sys
+sys.path.append('../../')
+
 import coloredlogs
 import dill
 from Projects.base.game.hex import pieces
@@ -49,7 +52,7 @@ def game_over(board_state):
     '''
     Check if the game is over.
 
-    - board_state: The current board state.
+    - board_state: The current refree board state.
     '''
     return board_state.count(pieces.kBlackWin) +\
         board_state.count(pieces.kWhiteWin) == 1
