@@ -5,8 +5,6 @@ Uses opp_info.pkl and info_states corresponding to the game.
 Presents a possibility for the examiner to select a state to examine.
 '''
 import sys
-
-from humanfriendly import text
 sys.path.append('../../')
 
 import logging
@@ -45,7 +43,7 @@ def gen_tree(tree, game_state, parent, depth, turn):
                             color='black' if to_play == 'x' else 'red', style='filled',
                             fontcolor='white')
         tree.add_node(node)
-        
+
         edge = pydot.Edge(parent, id_str, label=f'{prob:.2f}', color='black')
         tree.add_edge(edge)
 
@@ -55,27 +53,27 @@ def gen_tree(tree, game_state, parent, depth, turn):
             # If the game is over add an end node
             return tree
         tree = gen_tree(tree, new_game_state, id_str, depth+1, turn if collusion else (turn + 1) % 2)
-    
-    return tree    
- 
+
+    return tree
+
 
 def main():
     game, file_name = choose_strategy()
-    
+
     # Load opponent strategy
-    opp_strategy = load_file(f'Data/{file_name}/opp_info.pkl')
-    
+    opp_strategy = load_file(f'Data/{file_name}/opp_strategy.pkl')
+
     # Set up the game
     game_state = get_game_state(game, opp_strategy)
     game_turn = calculate_turn(game_state)
-    
+
     # Load win probabilities
     # log.debug('Loading win probabilities')
     # value_db = load_file(f'Data/{file_name}/value_db.pkl')
-    
+
     # Call gen_tree to generate the tree
     tree = pydot.Dot('my_graph', graph_type='digraph', bgcolor='white')
-    
+
     # Add the root node
     root = pydot.Node('root', label='root', shape='circle')
     tree.add_node(root)

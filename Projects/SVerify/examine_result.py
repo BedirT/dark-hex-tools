@@ -1,19 +1,15 @@
 '''
 Visually presents the game and probabilities after results of run.py.
-Uses opp_info.pkl and info_states corresponding to the game.
+Uses opp_strategy.pkl and info_states corresponding to the game.
 
 Presents a possibility for the examiner to select a state to examine.
 '''
-from collections import defaultdict
-import pickle
-import dill
+import sys
 import logging
 import coloredlogs
-import sys
-import os
-from Projects.SVerify.util import calculate_turn, choose_strategy, conv_alphapos, get_game_state, load_file, play_action
 sys.path.append('../../')
 
+from Projects.SVerify.util import calculate_turn, choose_strategy, conv_alphapos, get_game_state, load_file, play_action
 from Projects.base.game.hex import pieces, multiBoard_print, customBoard_print
 
 log = logging.getLogger(__name__)
@@ -93,29 +89,7 @@ def end_game_choice(game, opp_strategy):
         print('Invalid choice')
         return end_game_choice()
     if choice == 1:
-        game_state = {
-            'board': game['board']
-                if 'board' in game 
-                else pieces.kEmpty * (game['num_rows'] * game['num_cols']),
-            'boards': {
-                game['player']: 
-                    game['boards'][game['player']]
-                    if 'boards' in game
-                    else pieces.kEmpty * (game['num_rows'] * game['num_cols']),
-                pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack: 
-                    game['boards'][pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack]
-                    if 'boards' in game
-                    else pieces.kEmpty * (game['num_rows'] * game['num_cols'])
-            },
-            'num_rows': game['num_rows'],
-            'num_cols': game['num_cols'],
-            'first_player': game['first_player'],
-            'player_order': game['player_order'],
-            'player': game['player'],
-            'opponent': pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack,
-            'player_strategy': game['strategy'],
-            'opponent_strategy': opp_strategy
-        }
+        game_state = get_game_state(game, opp_strategy)
         game_turn = calculate_turn(game_state)
     elif choice == 2:
         log.debug('Rewinding game')
@@ -127,20 +101,18 @@ def end_game_choice(game, opp_strategy):
 
 
 def main():
-    # load pickle file from SVerify/Data/FILE_NAME/opp_info.pkl
     game, file_name = choose_strategy()
-    opp_strategy = load_file(f'Data/{file_name}/opp_info.pkl')
+    opp_strategy = load_file(f'Data/{file_name}/opp_strategy.pkl')
+
     # set up the game
     game_state = get_game_state(game, opp_strategy)
     game_turn = calculate_turn(game_state)
     log.debug('Loading win probabilities')
     value_db = load_file(f'Data/{file_name}/value_db.pkl')
     
-    
     # Check the size of value db
     log.debug('Value DB type: {}'.format(type(value_db)))
     log.debug('Value DB size: {}'.format(len(value_db)))
-    
     
     while(True):
         # play the game and examine from the beginning

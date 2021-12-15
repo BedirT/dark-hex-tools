@@ -2,6 +2,7 @@ from copy import deepcopy
 import logging
 
 import sys
+import os
 sys.path.append('../../')
 
 import coloredlogs
@@ -186,6 +187,11 @@ def save_file(content, filename):
     '''
     Saves the content to a file.
     '''
+    # Create the directory if it doesn't exist.
+    directory = os.path.dirname(filename)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     dill.dump(content, open(filename, 'wb'))
 
 
@@ -228,7 +234,7 @@ def choose_strategy():
     return arr[choice][0], arr[choice][1]
 
 
-def get_game_state(game, opp_strategy):
+def get_game_state(game, opp_strategy=None):
     game_state = {
         'board': game['board']
             if 'board' in game 
@@ -253,6 +259,33 @@ def get_game_state(game, opp_strategy):
         'opponent_strategy': opp_strategy
     }
     return game_state
+
+
+def greedify(strategy, multiple_actions_allowed=False):
+    '''
+    Greedifies the given strategy. -1 is the minumum value and 1 is the maximum.
+    Args:
+        strategy: The strategy to greedify.
+        multiple_actions_allowed: Whether multiple actions are allowed.
+    Returns:
+        A greedified version of the strategy.
+    '''
+    log.info('Greedifying strategy...')
+    greedy_strategy = {}
+    for board_state, item in strategy.items():
+        mx_value = -1.01
+        valid_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
+        actions = []
+        for idx, value_pair in enumerate(item):
+            if idx not in valid_moves:
+                continue
+            if value_pair[0] > mx_value:
+                mx_value = value_pair[0]
+                actions = [idx]
+            elif value_pair[0] == mx_value and multiple_actions_allowed:
+                actions.append(idx)
+        greedy_strategy[board_state] = [(actions[i], 1 / len(actions)) for i in range(len(actions))]
+    return greedy_strategy
 
 
 def calculate_turn(game_state):

@@ -9,6 +9,7 @@ from gi.repository import Gtk
 
 import xdot
 
+Gtk.init_check() 
 
 class MyDotWindow(xdot.DotWindow):
 
