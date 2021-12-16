@@ -6,9 +6,23 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x.......: 
-3: 0.75
+2: 0.5
+3: 0.875
 4: 1.0
-6: 0.875
+6: 0.9375
+7: 0.5
+8: 0.5
+
+  x  x  x  
+ ----------
+o\ .  x  o  \o
+ o\ .  .  .  \o
+  o\ .  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .xo......: 
+4: 0.5
+5: 0.5
 
   x  x  x  
  ----------
@@ -271,12 +285,25 @@ Strategy for the board .xo..x...:
   x  x  x  
  ----------
 o\ .  x  o  \o
+ o\ .  .  x  \o
+  o\ o  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .xo..xo..: 
+4: 0.25
+8: 0.25
+
+  x  x  x  
+ ----------
+o\ .  x  o  \o
  o\ .  .  .  \o
   o\ o  .  .  \o
      ----------
        x  x  x  
 Strategy for the board .xo...o..: 
+4: 0.25
 5: 0.25
+8: 0.25
 
   x  x  x  
  ----------
@@ -287,7 +314,10 @@ o\ .  x  .  \o
        x  x  x  
 Strategy for the board .x.o.....: 
 4: 0.5
+5: 0.25
 6: 0.5
+7: 0.375
+8: 0.375
 
   x  x  x  
  ----------
@@ -297,7 +327,34 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x.oo....: 
+0: 0.3333333333333333
+2: 0.3333333333333333
 5: 0.3333333333333333
+6: 0.3333333333333333
+7: 0.3333333333333333
+8: 0.3333333333333333
+
+  x  x  x  
+ ----------
+o\ .  x  .  \o
+ o\ o  .  x  \o
+  o\ .  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .x.o.x...: 
+7: 0.5
+8: 0.5
+
+  x  x  x  
+ ----------
+o\ .  x  .  \o
+ o\ o  .  x  \o
+  o\ .  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .x.o.x.o.: 
+2: 0.5
+8: 0.5
 
   x  x  x  
  ----------
@@ -355,6 +412,17 @@ Strategy for the board .x.o.xxoo:
 
   x  x  x  
  ----------
+o\ .  x  .  \o
+ o\ o  .  x  \o
+  o\ .  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board .x.o.x..o: 
+2: 0.5
+7: 0.5
+
+  x  x  x  
+ ----------
 o\ .  x  x  \o
  o\ o  .  x  \o
   o\ .  .  o  \o
@@ -362,6 +430,18 @@ o\ .  x  x  \o
        x  x  x  
 Strategy for the board .xxo.x..o: 
 7: 1.0
+
+  x  x  x  
+ ----------
+o\ .  x  .  \o
+ o\ o  .  .  \o
+  o\ .  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .x.o...o.: 
+2: 0.5
+5: 0.5
+8: 0.5
 
   x  x  x  
  ----------
@@ -421,6 +501,18 @@ Strategy for the board .x.o..xoo:
 2: 1.0
 4: 1.0
 5: 1.0
+
+  x  x  x  
+ ----------
+o\ .  x  .  \o
+ o\ o  .  .  \o
+  o\ .  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board .x.o....o: 
+2: 0.5
+5: 0.5
+7: 0.5
 
   x  x  x  
  ----------
@@ -684,8 +776,12 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x..o....: 
+2: 0.5
 3: 0.3333333333333333
+5: 0.5
 6: 0.5
+7: 0.5
+8: 0.5
 
   x  x  x  
  ----------
@@ -698,6 +794,17 @@ Strategy for the board .x..ox...:
 2: 1.0
 7: 1.0
 8: 1.0
+
+  x  x  x  
+ ----------
+o\ .  x  .  \o
+ o\ .  o  x  \o
+  o\ o  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .x..oxo..: 
+2: 0.25
+8: 0.25
 
   x  x  x  
  ----------
@@ -728,6 +835,7 @@ o\ .  x  x  \o
      ----------
        x  x  x  
 Strategy for the board .xx.ox.oo: 
+0: 0.5
 3: 1.0
 6: 1.0
 
@@ -749,6 +857,7 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x..ox.oo: 
+0: 0.5
 2: 1.0
 3: 1.0
 6: 1.0
@@ -816,7 +925,9 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x..o.o..: 
+2: 0.25
 5: 0.25
+8: 0.25
 
   x  x  x  
  ----------
@@ -849,6 +960,7 @@ o\ .  x  x  \o
      ----------
        x  x  x  
 Strategy for the board .xx.o..oo: 
+0: 0.5
 3: 1.0
 5: 1.0
 6: 1.0
@@ -872,6 +984,7 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x..o..oo: 
+0: 0.5
 2: 1.0
 3: 1.0
 5: 1.0
@@ -957,9 +1070,9 @@ o\ .  x  .  \o
 Strategy for the board .x....o..: 
 2: 0.25
 4: 0.25
-5: 0.5
-7: 0.875
-8: 0.875
+5: 0.75
+7: 0.9375
+8: 0.9375
 
   x  x  x  
  ----------
@@ -969,8 +1082,10 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x...xo..: 
-7: 0.5
-8: 0.5
+2: 0.125
+4: 0.125
+7: 0.75
+8: 0.75
 
   x  x  x  
  ----------
@@ -980,7 +1095,9 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x...xoo.: 
-8: 0.5
+2: 0.5
+4: 0.25
+8: 0.75
 
   x  x  x  
  ----------
@@ -1010,7 +1127,9 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x...xo.o: 
-7: 0.5
+2: 0.5
+4: 0.25
+7: 0.75
 
   x  x  x  
  ----------
@@ -1040,7 +1159,9 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x....oo.: 
-5: 0.75
+2: 0.5
+4: 0.25
+5: 0.875
 8: 0.75
 
   x  x  x  
@@ -1073,7 +1194,9 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x....o.o: 
-5: 0.75
+2: 0.5
+4: 0.25
+5: 0.875
 7: 0.75
 
   x  x  x  
@@ -1143,13 +1266,28 @@ Strategy for the board .x..o.o.x:
   x  x  x  
  ----------
 o\ .  x  .  \o
+ o\ .  .  .  \o
+  o\ .  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .x.....o.: 
+3: 0.25
+4: 0.5
+5: 0.5
+6: 0.4375
+8: 0.5
+
+  x  x  x  
+ ----------
+o\ .  x  .  \o
  o\ .  .  x  \o
   o\ .  o  .  \o
      ----------
        x  x  x  
 Strategy for the board .x...x.o.: 
+3: 0.5
 4: 1.0
-6: 0.5
+6: 0.75
 8: 1.0
 
   x  x  x  
@@ -1160,6 +1298,8 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x...x.oo: 
+2: 0.5
+3: 0.5
 4: 1.0
 6: 1.0
 
@@ -1193,6 +1333,8 @@ o\ .  x  .  \o
      ----------
        x  x  x  
 Strategy for the board .x.....oo: 
+2: 0.5
+3: 0.5
 4: 1.0
 5: 1.0
 6: 1.0
@@ -1224,12 +1366,27 @@ Strategy for the board .x..x..oo:
   x  x  x  
  ----------
 o\ .  x  .  \o
+ o\ .  .  .  \o
+  o\ .  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board .x......o: 
+3: 0.25
+4: 0.5
+5: 0.5
+6: 0.4375
+7: 0.5
+
+  x  x  x  
+ ----------
+o\ .  x  .  \o
  o\ .  .  x  \o
   o\ .  .  o  \o
      ----------
        x  x  x  
 Strategy for the board .x...x..o: 
+3: 0.5
 4: 1.0
-6: 0.5
+6: 0.75
 7: 1.0
 
