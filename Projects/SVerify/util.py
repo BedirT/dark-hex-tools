@@ -209,23 +209,27 @@ def conv_alphapos(pos, num_cols):
     return '{}{}'.format(chr(ord('a') + col), row + 1)
 
 
-def choose_strategy():
+def choose_strategy(choice=None):
     '''
     User is displayed all the options in strategies
     and will pick one to run the algorithm for.
     '''
-    print('Choose a strategy to run the algorithm for:')
     i = 0
     arr = []
+    if choice is None:
+        print('Choose a strategy to run the algorithm for:')
+
     for name, strategy in vars(strategies).items():
         # no private variables
         if not name.startswith('__'):
-            print('{}. {}'.format(i, name))
+            if choice is None:
+                print('{}. {}'.format(i, name))
             i += 1; arr.append((strategy, name))
     
     # make sure the choice is valid
     try:
-        choice = int(input('Enter your choice: '))
+        if choice is None:
+            choice = int(input('Enter your choice: '))
         if choice < 0 or choice >= len(arr):
             raise ValueError
     except ValueError:
@@ -273,7 +277,7 @@ def greedify(strategy, multiple_actions_allowed=False):
     log.info('Greedifying strategy...')
     greedy_strategy = {}
     for board_state, item in strategy.items():
-        mx_value = -1.01
+        mx_value = -1
         valid_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
         actions = []
         for idx, value_pair in enumerate(item):

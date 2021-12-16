@@ -27,9 +27,8 @@ class MyDotWindow(xdot.DotWindow):
         return True
 
 
-def main():
-    _, filename = choose_strategy()
-    dotcode = load_file(f'Data/{filename}/tree.dot')
+def tree_run(file_name):
+    dotcode = load_file(f'Data/{file_name}/tree.dot')
 
     dotcode = dotcode.encode('UTF-8')
 
@@ -37,7 +36,3 @@ def main():
     window.set_dotcode(dotcode)
     window.connect('delete-event', Gtk.main_quit)
     Gtk.main()
-
-
-if __name__ == '__main__':
-    main()
