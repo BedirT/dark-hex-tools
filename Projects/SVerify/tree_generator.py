@@ -41,21 +41,37 @@ def gen_tree(tree, game_state, value_db, parent, depth, turn):
         # Create the node
         alpha_action = conv_alphapos(action, game_state['num_cols'])
         id_str = f'{to_play}_{alpha_action}_{depth}'
-        node_value = value_db[player_board + opponent_board][action]
+        node_value = value_db[player_board + opponent_board][action][0] * value_db[player_board + opponent_board][action][1]
         # Add alpha_action to the node label, also add the value of the node
-        node_label = f'{alpha_action}\\n{node_value}'
+        node_label = f'{alpha_action}\\n{node_value:.2f}'
         node = pydot.Node(id_str, label=node_label, shape='hexagon', 
-                            color='black' if to_play == 'x' else 'red', style='filled',
-                            fontcolor='white')
+                            color='black' if to_play == game_state['player'] else 'red',
+                            fontcolor='white', style='filled')
         tree.add_node(node)
 
         edge = pydot.Edge(parent, id_str, label=f'{prob:.2f}', color='black')
-        tree.add_edge(edge)
+
+        # add the edge to the tree only if it is does not already exist
+        # or the probability is not the same as the existing edge
+        if not tree.get_edge(parent, id_str) or tree.get_edge(parent, id_str).get_label() != f'{prob:.2f}':
+            tree.add_edge(edge)
 
         # Continue to the child of this move
         new_game_state, collusion = play_action(game_state, to_play, action)
         if new_game_state in [pieces.kBlackWin, pieces.kWhiteWin]:
             # If the game is over add an end node
+            # End node is an empty circle with the player or opponent win text
+            node_label = f'{new_game_state}\\nwins'
+            # Node id is the boards
+            win_id = f'{to_play}_{alpha_action}_{depth}_end'
+            node = pydot.Node(win_id, label=node_label, shape='circle',
+                                color='black' if to_play == game_state['player'] else 'red',
+                                fontcolor='black' if to_play == game_state['player'] else 'red',)
+            tree.add_node(node)
+            # Add the edge only if it doesn't already exist
+            edge = pydot.Edge(id_str, win_id, color='black')
+            if not tree.get_edge(id_str, win_id):
+                tree.add_edge(edge)
             return tree
         tree = gen_tree(tree, new_game_state, value_db, id_str, depth+1, turn if collusion else (turn + 1) % 2)
 

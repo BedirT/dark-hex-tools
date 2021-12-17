@@ -30,6 +30,9 @@ def display_options(game_state, win_probs, turn):
     if len(game_history) > 0:
         print('0. Rewind')
 
+    first_player = game_state['player'] if game_state['player_order'] == 0 else game_state['opponent']
+    second_player = game_state['player'] if game_state['player_order'] == 1 else game_state['opponent'] 
+
     w_probs = win_probs[game_state['boards'][game_state['player']] + game_state['boards'][game_state['opponent']]]
     
     if turn == game_state['player_order']:
@@ -38,7 +41,7 @@ def display_options(game_state, win_probs, turn):
             val = w_probs[a][0] * w_probs[a][1]
             print('{}. {}({}) - {}: <{} wins:{:.2f} | {} wins:{:.2f}>'
                     .format(i+1, a, conv_alphapos(a, game_state['num_cols']), 
-                            p, game_state['player'], val, game_state['opponent'], 1-val))
+                            p, first_player, val, second_player, 1-val))
     else:
         try:
             opts = game_state['opponent_strategy'][game_state['boards'][game_state['opponent']]]
