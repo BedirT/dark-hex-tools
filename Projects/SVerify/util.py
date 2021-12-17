@@ -280,13 +280,13 @@ def greedify(strategy, multiple_actions_allowed=False):
         mx_value = -1
         valid_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
         actions = []
-        for idx, value_pair in enumerate(item):
+        for idx, value in enumerate(item):
             if idx not in valid_moves:
                 continue
-            if value_pair[0] > mx_value:
-                mx_value = value_pair[0]
+            if value > mx_value:
+                mx_value = value
                 actions = [idx]
-            elif value_pair[0] == mx_value and multiple_actions_allowed:
+            elif value == mx_value and multiple_actions_allowed:
                 actions.append(idx)
         greedy_strategy[board_state] = [(actions[i], 1 / len(actions)) for i in range(len(actions))]
     return greedy_strategy

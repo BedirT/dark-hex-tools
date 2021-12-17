@@ -49,11 +49,11 @@ class LowerBoundCalculator:
         self.DISCOUNT_FACTOR = 1 #0.9
 
         # cache the opponent's strategy
-        self.STATE_VALUE_CACHE = {}
+        self.STATE_VALUE_CACHE = DefaultDict(lambda: [0.0 for x in range(game['num_rows'] * game['num_cols'])]) # (cumulative value of the state)
         self.STATE_VISITED_CACHE = {}
 
 
-    def __calculate(self, game, value_db, to_play):
+    def __calculate_lower_bound(self, game, value_db, to_play):
         '''
         Given the player and opponent strategies. Calculate the lower bound.
         '''
@@ -81,19 +81,23 @@ class LowerBoundCalculator:
                                                     else pieces.kWhiteWin)
                 new_value = (0 if next_to_act == 'player' else 1) * prob
             elif not collusion:
-                new_value = self.__calculate(new_game, value_db, (to_play + 1) % 2) * prob
+                new_value = self.__calculate_lower_bound(new_game, value_db, (to_play + 1) % 2) * prob
             else:
-                new_value = self.__calculate(new_game, value_db, to_play) * prob
+                new_value = self.__calculate_lower_bound(new_game, value_db, to_play) * prob
             tot_value += new_value
             value_db[player_board + opponent_board][action] = (new_value, prob)
         return tot_value
         
 
-    def __calc_counter_strategy(self, game_state, to_play, depth) -> float:
+    def __calc_counter_strategy(self, game_state, to_play, reach_prob, depth) -> float:
         '''
         Calculate the counter strategy for the given game state. The counter
         strategy is the best possible move for the opponent given that the
-        player is playing the given strategy.
+        player is playing the given strategy. Uses reach probability to
+        calculate the probability of winning. The assumption is that the 
+        player plays with the given strategy, and reach probability captures
+        the probability of player getting to the given state, opponent then
+        gets its value using the probability that player gets to the state.
         Args:
             game_state: The game state to calculate the counter strategy for.
             to_play: The player to play. (0 or 1)
@@ -117,23 +121,23 @@ class LowerBoundCalculator:
                     value = 0 # value is 0 for player win
                 else:
                     next_to_play = (to_play + 1) % 2 if not collusion else to_play
-                    value = self.__calc_counter_strategy(new_game, next_to_play, depth + 1)
+                    value = self.__calc_counter_strategy(new_game, next_to_play, reach_prob * prob, depth + 1)
                 total_value += value * prob
             return total_value * (self.DISCOUNT_FACTOR ** depth)
 
         # opponent's turn
         # Check if we have already calculated the value of this state
-        boards_combined = opponent_board + player_board
-        if boards_combined in self.STATE_VISITED_CACHE:
-            mx_value = -1
-            for value_pair in self.STATE_VALUE_CACHE[opponent_board]:
-                if value_pair[0] > mx_value:
-                    mx_value = value_pair[0]
-            return mx_value * (self.DISCOUNT_FACTOR ** depth)
+        # boards_combined = opponent_board + player_board
+        # if boards_combined in self.STATE_VISITED_CACHE:
+        #     mx_value = -1
+        #     for value in self.STATE_VALUE_CACHE[opponent_board]:
+        #         if value > mx_value:
+        #             mx_value = value
+        #     return mx_value * (self.DISCOUNT_FACTOR ** depth)
 
         # If we haven't calculated the value of this state, calculate it
-        self.STATE_VISITED_CACHE[boards_combined] = True
-        mx_value = 0 # maximum value initialized to 0
+        # self.STATE_VISITED_CACHE[boards_combined] = True
+        mx_value = -1 # maximum value initialized to -1
         possible_moves = [i for i, x in enumerate(opponent_board) if x == pieces.kEmpty]
         moves_considered = 0
 
@@ -144,16 +148,15 @@ class LowerBoundCalculator:
                 value = 1 # value is 1 for opponent win
             else:
                 next_to_play = (to_play + 1) % 2 if not collusion else to_play
-                value = self.__calc_counter_strategy(new_game, next_to_play, depth + 1)
+                value = self.__calc_counter_strategy(new_game, next_to_play, reach_prob, depth + 1)
+            
             # update the cache
-            if opponent_board in self.STATE_VALUE_CACHE:
-                c = self.STATE_VALUE_CACHE[opponent_board][action]
-                # update the value using the moving average
-                self.STATE_VALUE_CACHE[opponent_board][action] = ((c[0] * c[1] + value) 
-                                                                / (c[1] + 1), c[1] + 1)
-            else:
-                self.STATE_VALUE_CACHE[opponent_board][action] = (value, 1)
+            c = self.STATE_VALUE_CACHE[opponent_board][action]
+            # using reach probability, update the value of the state
+            # current value of the state + probability of winning * reach probability
+            self.STATE_VALUE_CACHE[opponent_board][action] = c + value * reach_prob
             # update the maximum value and the action
+            
             if value > mx_value:
                 mx_value = value
                 total_value = value
@@ -161,6 +164,7 @@ class LowerBoundCalculator:
             elif value == mx_value:
                 total_value += value
                 moves_considered += 1
+
         if moves_considered == 0:
             return total_value * (self.DISCOUNT_FACTOR ** depth)
         return (total_value / moves_considered) * (self.DISCOUNT_FACTOR ** depth)
@@ -173,16 +177,13 @@ class LowerBoundCalculator:
         
         # and let the user choose one
         game_state = get_game_state(self.game)
-
-        # Initialize the value database
-        self.STATE_VALUE_CACHE = DefaultDict(lambda: [(0.0, 0) for i in range(12)])
         
         start = perf_counter()
         log.info('Timer started')
 
         turn = calculate_turn(game_state)
 
-        self.__calc_counter_strategy(game_state, turn, 0)
+        self.__calc_counter_strategy(game_state, turn, 1, 0)
         opp_strategy = greedify(self.STATE_VALUE_CACHE)
         game_state['opponent_strategy'] = opp_strategy
 
@@ -190,7 +191,7 @@ class LowerBoundCalculator:
         value_db = defaultdict(lambda: {})
         log.debug('Value database initialized')
         log.info('Calculating values for opponent strategy')
-        opp_win_prob = self.__calculate(game_state, value_db, turn)
+        opp_win_prob = self.__calculate_lower_bound(game_state, value_db, turn)
 
         log.debug('Writing value database to file...')
         save_file(value_db, f'Data/{self.file_name}/value_db.pkl')
@@ -199,7 +200,7 @@ class LowerBoundCalculator:
         with open(f'Data/{self.file_name}/opp_strategy_text.txt', 'w') as f:
             for key, value in self.STATE_VALUE_CACHE.items():
                 flag = False
-                for i, (val, _count) in enumerate(value):
+                for i, val in enumerate(value):
                     if val > 0:
                         if not flag:
                             customBoard_write(key, game_state['num_cols'], game_state['num_rows'], f)
