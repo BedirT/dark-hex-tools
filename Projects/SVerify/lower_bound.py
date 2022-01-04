@@ -50,7 +50,7 @@ class LowerBoundCalculator:
 
         # cache the opponent's strategy
         self.STATE_VALUE_CACHE = DefaultDict(lambda: [0.0 for x in range(game['num_rows'] * game['num_cols'])]) # (cumulative value of the state)
-        self.STATE_VISITED_CACHE = {}
+        self.STATE_VISITED_CACHE = DefaultDict(lambda: list())
 
 
     def __calculate_lower_bound(self, game, value_db, to_play):
@@ -85,7 +85,7 @@ class LowerBoundCalculator:
             else:
                 new_value = self.__calculate_lower_bound(new_game, value_db, to_play) * prob
             tot_value += new_value
-            value_db[player_board + opponent_board][action] = (new_value, prob)
+            value_db[opponent_board + player_board][action] = (new_value, prob)
         return tot_value
         
 
@@ -126,18 +126,23 @@ class LowerBoundCalculator:
             return total_value * (self.DISCOUNT_FACTOR ** depth)
 
         # opponent's turn
+        prior_max = -1
         # Check if we have already calculated the value of this state
-        # boards_combined = opponent_board + player_board
-        # if boards_combined in self.STATE_VISITED_CACHE:
-        #     mx_value = -1
-        #     for value in self.STATE_VALUE_CACHE[opponent_board]:
-        #         if value > mx_value:
-        #             mx_value = value
-        #     return mx_value * (self.DISCOUNT_FACTOR ** depth)
+        boards_combined = opponent_board + player_board
+        if boards_combined in self.STATE_VISITED_CACHE:
+            mx_value = -1
+            for value in self.STATE_VALUE_CACHE[opponent_board]:
+                if value > mx_value:
+                    mx_value = value
+            if str(reach_prob) in self.STATE_VISITED_CACHE[boards_combined]:
+                return mx_value * (self.DISCOUNT_FACTOR ** depth)
+            else:
+                prior_max = mx_value
 
         # If we haven't calculated the value of this state, calculate it
-        # self.STATE_VISITED_CACHE[boards_combined] = True
-        mx_value = -1 # maximum value initialized to -1
+        self.STATE_VISITED_CACHE[boards_combined].append(str(reach_prob))
+
+        mx_value = 0 # maximum value initialized to -1
         possible_moves = [i for i, x in enumerate(opponent_board) if x == pieces.kEmpty]
         moves_considered = 0
 
@@ -151,10 +156,9 @@ class LowerBoundCalculator:
                 value = self.__calc_counter_strategy(new_game, next_to_play, reach_prob, depth + 1)
             
             # update the cache
-            c = self.STATE_VALUE_CACHE[opponent_board][action]
             # using reach probability, update the value of the state
             # current value of the state + probability of winning * reach probability
-            self.STATE_VALUE_CACHE[opponent_board][action] = c + value * reach_prob
+            self.STATE_VALUE_CACHE[opponent_board][action] += value * reach_prob
             # update the maximum value and the action
             
             if value > mx_value:
@@ -164,8 +168,9 @@ class LowerBoundCalculator:
             elif value == mx_value:
                 total_value += value
                 moves_considered += 1
-
-        if moves_considered == 0:
+        if prior_max > total_value:
+            return prior_max * (self.DISCOUNT_FACTOR ** depth)
+        elif moves_considered == 0:
             return total_value * (self.DISCOUNT_FACTOR ** depth)
         return (total_value / moves_considered) * (self.DISCOUNT_FACTOR ** depth)
 

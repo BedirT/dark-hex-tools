@@ -308,3 +308,4 @@ def calculate_turn(game_state):
     else:
         if num_white > num_black:   return 1
         else:                       return 0
+        

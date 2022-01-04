@@ -23,14 +23,12 @@ import numpy as np
 import argparse
 import sys
 sys.path.append('../../')
-# import sleep
-from time import sleep
 
 from Projects.base.game.hex import pieces
 from Projects.base.util.colors import colors
 from Projects.SVerify.isomorphic import isomorphic_single
 
-READ_FROM_FILE = True
+READ_FROM_FILE = False
 input_list = []
 COUNTER = 0
 

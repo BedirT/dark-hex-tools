@@ -4,6 +4,7 @@ Uses opp_info.pkl and info_states corresponding to the game.
 
 Presents a possibility for the examiner to select a state to examine.
 '''
+from os import write
 import sys
 sys.path.append('../../')
 
@@ -11,7 +12,7 @@ import logging
 import coloredlogs
 import pydot
 
-from Projects.base.game.hex import pieces
+from Projects.base.game.hex import multiBoard_print, multiBoard_string, pieces
 from Projects.SVerify.util import calculate_turn, choose_strategy, conv_alphapos, game_over, get_game_state, load_file, play_action, save_file
 
 log = logging.getLogger(__name__)
@@ -41,9 +42,9 @@ def gen_tree(tree, game_state, value_db, parent, depth, turn):
         # Create the node
         alpha_action = conv_alphapos(action, game_state['num_cols'])
         id_str = f'{to_play}_{alpha_action}_{depth}'
-        node_value = value_db[player_board + opponent_board][action][0] * value_db[player_board + opponent_board][action][1]
+        node_value = value_db[opponent_board + player_board][action][0]
         # Add alpha_action to the node label, also add the value of the node
-        node_label = f'{alpha_action}\\n{node_value:.2f}'
+        node_label = f'{alpha_action}\\n{node_value:.3f}'
         node = pydot.Node(id_str, label=node_label, shape='hexagon', 
                             color='black' if to_play == game_state['player'] else 'red',
                             fontcolor='white', style='filled')
@@ -53,7 +54,7 @@ def gen_tree(tree, game_state, value_db, parent, depth, turn):
 
         # add the edge to the tree only if it is does not already exist
         # or the probability is not the same as the existing edge
-        if not tree.get_edge(parent, id_str) or tree.get_edge(parent, id_str).get_label() != f'{prob:.2f}':
+        if not tree.get_edge(parent, id_str) or f'{prob:.2f}' != tree.get_edge(parent, id_str)[0].get_label():
             tree.add_edge(edge)
 
         # Continue to the child of this move
@@ -95,8 +96,7 @@ def tree_generator(game, file_name):
 
     # Call gen_tree to generate the tree
     tree = pydot.Dot('my_graph', graph_type='digraph', bgcolor='white',
-                        fontname='Helvetica', fontsize='12', rankdir='LR',
-                        )
+                        fontname='Helvetica', fontsize='12', rankdir='TB')
 
     # Add the root node
     root = pydot.Node('root', label='root', shape='circle')

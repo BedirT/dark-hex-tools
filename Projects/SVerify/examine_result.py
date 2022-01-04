@@ -119,10 +119,11 @@ def main():
     
     while(True):
         # play the game and examine from the beginning
-        multiBoard_print(game_state['boards'][game_state['player']], 
+        s = multiBoard_print(game_state['boards'][game_state['player']], 
                          game_state['boards'][game_state['opponent']], 
                          game_state['num_rows'], game_state['num_cols'], 
                          f'Player - {game_state["player"]}', f'Opponent - {game_state["opponent"]}')
+        print(s)
         p_turn = game_state['player'] if game_turn == game_state['player_order'] else game_state['opponent']
         
         print(f'It is {p_turn}\'s turn, below are the moves that were examined for lower bound. \n' +

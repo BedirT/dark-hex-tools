@@ -6,4 +6,4 @@
 --board_state .....o......
 --convert_xo
 --write_to_dict
---dict_name ryan_3x4_b2_w_secondtry
+--dict_name inbalanced_test_1

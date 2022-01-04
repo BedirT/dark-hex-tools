@@ -1,0 +1,697 @@
+  x  x  x  
+ ----------
+o\ .  o  .  \o
+ o\ .  .  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .o....x..: 
+0: 0.3
+2: 0.7
+3: 0.09
+4: 0.48999999999999994
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  .  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo...x..: 
+3: 0.7
+4: 0.7
+5: 0.7
+7: 0.7
+8: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  x  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo.x.x..: 
+3: 0.7
+5: 0.7
+7: 0.7
+8: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  x  o  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo.xox..: 
+3: 0.7
+8: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  x  o  \o
+  o\ x  .  x  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo.xox.x: 
+3: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  x  .  \o
+  o\ x  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo.x.xo.: 
+3: 0.7
+5: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  x  x  \o
+  o\ x  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo.xxxo.: 
+3: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  x  .  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo.x.x.o: 
+3: 0.7
+5: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  x  x  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo.xxx.o: 
+3: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  .  o  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo..ox..: 
+3: 0.7
+4: 0.48999999999999994
+8: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  .  o  \o
+  o\ x  .  x  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo..ox.x: 
+3: 0.7
+4: 0.48999999999999994
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  .  .  \o
+  o\ x  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo...xo.: 
+3: 0.7
+4: 0.48999999999999994
+5: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  .  x  \o
+  o\ x  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo..xxo.: 
+3: 0.7
+4: 0.48999999999999994
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  .  .  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo...x.o: 
+3: 0.7
+4: 0.48999999999999994
+5: 0.7
+
+  x  x  x  
+ ----------
+o\ x  o  o  \o
+ o\ .  .  x  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board xoo..xx.o: 
+3: 0.7
+4: 0.48999999999999994
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  .  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo...x..: 
+0: 0.7
+3: 0.7
+4: 0.7
+5: 0.7
+7: 0.7
+8: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  x  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo.x.x..: 
+0: 0.48999999999999994
+3: 0.7
+5: 0.7
+7: 0.7
+8: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  x  o  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo.xox..: 
+0: 0.48999999999999994
+3: 0.7
+8: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  x  o  \o
+  o\ x  .  x  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo.xox.x: 
+0: 0.48999999999999994
+3: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  x  .  \o
+  o\ x  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo.x.xo.: 
+0: 0.48999999999999994
+3: 0.7
+5: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  x  x  \o
+  o\ x  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo.xxxo.: 
+0: 0.48999999999999994
+3: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  x  .  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo.x.x.o: 
+0: 0.48999999999999994
+3: 0.7
+5: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  x  x  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo.xxx.o: 
+0: 0.48999999999999994
+3: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  .  o  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo..ox..: 
+0: 0.48999999999999994
+3: 0.7
+4: 0.48999999999999994
+8: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  .  o  \o
+  o\ x  .  x  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo..ox.x: 
+0: 0.48999999999999994
+3: 0.7
+4: 0.48999999999999994
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  .  .  \o
+  o\ x  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo...xo.: 
+0: 0.48999999999999994
+3: 0.7
+4: 0.48999999999999994
+5: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  .  x  \o
+  o\ x  o  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo..xxo.: 
+0: 0.48999999999999994
+3: 0.7
+4: 0.48999999999999994
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  .  .  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo...x.o: 
+0: 0.48999999999999994
+3: 0.7
+4: 0.48999999999999994
+5: 0.7
+
+  x  x  x  
+ ----------
+o\ .  o  o  \o
+ o\ .  .  x  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board .oo..xx.o: 
+0: 0.48999999999999994
+3: 0.7
+4: 0.48999999999999994
+
+  x  x  x  
+ ----------
+o\ .  o  .  \o
+ o\ .  x  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .o..x.x..: 
+2: 0.48999999999999994
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  .  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo....x..: 
+2: 0.3
+3: 0.3
+4: 0.3
+5: 0.3
+7: 0.3
+8: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  .  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.x..x..: 
+2: 0.3
+4: 0.3
+5: 0.3
+7: 0.3
+8: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  o  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.xo.x..: 
+2: 0.3
+5: 0.3
+7: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  o  x  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.xoxx..: 
+2: 0.3
+7: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  o  x  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.xoxxx.: 
+2: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  o  .  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.xo.xx.: 
+2: 0.3
+5: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  .  o  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.x.ox..: 
+2: 0.3
+4: 0.3
+7: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  x  o  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.xxox..: 
+2: 0.3
+7: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  x  o  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.xxoxx.: 
+2: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  .  o  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.x.oxx.: 
+2: 0.3
+4: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  .  .  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.x..xx.: 
+2: 0.3
+4: 0.09
+5: 0.09
+8: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  .  .  \o
+  o\ x  x  o  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.x..xxo: 
+2: 0.3
+5: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  .  x  \o
+  o\ x  x  o  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.x.xxxo: 
+2: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  .  .  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.x..x.o: 
+2: 0.3
+5: 0.3
+7: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ x  .  x  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board oo.x.xx.o: 
+2: 0.3
+7: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  o  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo..o.x..: 
+2: 0.3
+3: 0.09
+5: 0.3
+7: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  o  x  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo..oxx..: 
+2: 0.3
+3: 0.09
+7: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  o  x  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo..oxxx.: 
+2: 0.3
+3: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  o  .  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo..o.xx.: 
+2: 0.3
+3: 0.09
+5: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  .  o  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo...ox..: 
+2: 0.3
+3: 0.09
+4: 0.3
+7: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  x  o  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo..xox..: 
+2: 0.3
+3: 0.09
+7: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  x  o  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo..xoxx.: 
+2: 0.3
+3: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  .  o  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo...oxx.: 
+2: 0.3
+3: 0.09
+4: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  .  .  \o
+  o\ x  x  .  \o
+     ----------
+       x  x  x  
+Strategy for the board oo....xx.: 
+2: 0.3
+3: 0.09
+4: 0.09
+5: 0.09
+8: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  .  .  \o
+  o\ x  x  o  \o
+     ----------
+       x  x  x  
+Strategy for the board oo....xxo: 
+2: 0.3
+3: 0.09
+5: 0.3
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  .  x  \o
+  o\ x  x  o  \o
+     ----------
+       x  x  x  
+Strategy for the board oo...xxxo: 
+2: 0.3
+3: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  .  .  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board oo....x.o: 
+2: 0.3
+3: 0.09
+5: 0.3
+7: 0.09
+
+  x  x  x  
+ ----------
+o\ o  o  .  \o
+ o\ .  .  x  \o
+  o\ x  .  o  \o
+     ----------
+       x  x  x  
+Strategy for the board oo...xx.o: 
+2: 0.3
+3: 0.09
+7: 0.09
+
+  x  x  x  
+ ----------
+o\ .  o  .  \o
+ o\ x  .  .  \o
+  o\ x  .  .  \o
+     ----------
+       x  x  x  
+Strategy for the board .o.x..x..: 
+0: 0.09
+
