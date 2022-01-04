@@ -483,6 +483,50 @@ def multiBoard_print(board1, board2, num_rows, num_cols, title1='', title2=''):
     s += gap
     s += colors.BOLD + colors.C_PLAYER1 + ' ' * (num_rows+2) + '{0: <3}'.format(pieces.kBlack) * num_cols + colors.ENDC + '\n'
     
-    print(s)
+    return s
+
+
+def multiBoard_string(board1, board2, num_rows, num_cols, title1='', title2=''):
+    '''
+    Method for printing the board in a nice format.
+    '''
+    num_cells = num_cols * num_rows
+    gap = "{0:^10}".format(' ')
+    s = ''
+    if title1 != '' or title2 != '':
+        s += '  {}{}       {}\n'.format(title1,gap,title2)
     
-# multiBoard_print('...x...x.', 'xxo......', 3, 3, 'Board 1', 'Board 2')
+    s += '  '
+    for i in range(num_cols):
+        s += '{0: <3}'.format(chr(ord('a') + i))
+    s += gap
+    s += '     '
+    for i in range(num_cols):
+        s += '{0: <3}'.format(chr(ord('a') + i))
+    s += '\n ' + '-' * (num_cols * 3 +1)
+    s += gap + '    ' + '-' * (num_cols * 3 +1) + '\n'
+    
+    for cell in range(num_cells):
+        if cell % num_cols == 0: # first col
+            s1 =  str(cell // num_cols + 1) +'\\ '
+            s2 =  str(cell // num_cols + 1) +'\\ '
+        
+        s1 += '{0: <3}'.format(board1[cell])
+        s2 += '{0: <3}'.format(board2[cell])
+        
+        if cell % num_cols == num_cols-1: # last col
+            s1 += '\\' + pieces.kWhite
+            s2 += '\\' + pieces.kWhite
+            s2 += '\n' + (' ' * (cell//num_cols)) + ' '
+            
+            s += s1 + gap + s2
+            
+    s += '  ' + '-' * (num_cols * 3 +1)
+    s += gap
+    s += '    ' + '-' * (num_cols * 3 +1) + '\n'
+    s += ' ' * (num_rows+4) + '{0: <3}'.format(pieces.kBlack) * num_cols
+    s += gap
+    s += ' ' * (num_rows+2) + '{0: <3}'.format(pieces.kBlack) * num_cols + '\n'
+    
+    return s
+    
