@@ -3,12 +3,12 @@ import logging
 
 import sys
 import os
+import numpy as np
 sys.path.append('../../')
 
 import coloredlogs
 import dill
 from Projects.base.game.hex import pieces
-from strategy_data import strategies
 
 
 LOG_LEVEL = 'DEBUG'
@@ -309,3 +309,35 @@ def calculate_turn(game_state):
         if num_white > num_black:   return 1
         else:                       return 0
         
+def numeric_action(action, num_cols):
+    '''
+    Converts the action in the form of alpha-numeric row column sequence to
+    numeric actions. i.e. a2 -> 3 for 3x3 board.
+    '''
+    # If not alpha-numeric, return the action as is.
+    action = action.lower().strip()
+    try:
+        if not action[0].isalpha():
+            return action
+        row = int(action[1:]) - 1
+        # for column a -> 0, b -> 1 ...
+        col = ord(action[0]) - ord('a')
+    except ValueError:
+        log.error('Invalid action: {}'.format(action))
+        return False
+    return pos_by_coord(num_cols, row, col)
+
+
+def random_selection(board_state):
+    pos_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
+    return [np.random.choice(pos_moves)], [1.0] 
+ 
+def convert_to_xo(str_board):
+    '''
+    Convert the board state to only x and o.
+    '''
+    for p in pieces.black_pieces:
+        str_board = str_board.replace(p, pieces.kBlack)
+    for p in pieces.white_pieces:
+        str_board = str_board.replace(p, pieces.kWhite)
+    return str_board

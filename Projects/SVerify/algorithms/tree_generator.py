@@ -13,7 +13,7 @@ import coloredlogs
 import pydot
 
 from Projects.base.game.hex import multiBoard_print, multiBoard_string, pieces
-from Projects.SVerify.util import calculate_turn, choose_strategy, conv_alphapos, game_over, get_game_state, load_file, play_action, save_file
+from Projects.SVerify.utils.util import calculate_turn, choose_strategy, conv_alphapos, game_over, get_game_state, load_file, play_action, save_file
 
 log = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.

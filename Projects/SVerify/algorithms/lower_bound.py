@@ -25,12 +25,12 @@ import coloredlogs
 
 sys.path.append('../../')
 
-from Projects.SVerify.util import calculate_turn
-from Projects.SVerify.util import choose_strategy
-from Projects.SVerify.util import get_game_state
-from Projects.SVerify.util import greedify
-from Projects.SVerify.util import save_file
-from Projects.SVerify.util import play_action
+from Projects.SVerify.utils.util import calculate_turn
+from Projects.SVerify.utils.util import choose_strategy
+from Projects.SVerify.utils.util import get_game_state
+from Projects.SVerify.utils.util import greedify
+from Projects.SVerify.utils.util import save_file
+from Projects.SVerify.utils.util import play_action
 
 from Projects.base.game.hex import pieces 
 from Projects.base.game.hex import customBoard_write
@@ -89,7 +89,7 @@ class LowerBoundCalculator:
         return tot_value
         
 
-    def __calc_counter_strategy(self, game_state, to_play, reach_prob, depth) -> float:
+    def __calc_counter_strategy(self, game_state, to_play, reach_prob, op_legal_moves, depth) -> float:
         '''
         Calculate the counter strategy for the given game state. The counter
         strategy is the best possible move for the opponent given that the
@@ -121,7 +121,7 @@ class LowerBoundCalculator:
                     value = 0 # value is 0 for player win
                 else:
                     next_to_play = (to_play + 1) % 2 if not collusion else to_play
-                    value = self.__calc_counter_strategy(new_game, next_to_play, reach_prob * prob, depth + 1)
+                    value = self.__calc_counter_strategy(new_game, next_to_play, reach_prob * prob, op_legal_moves, depth + 1)
                 total_value += value * prob
             return total_value * (self.DISCOUNT_FACTOR ** depth)
 
@@ -143,24 +143,25 @@ class LowerBoundCalculator:
         self.STATE_VISITED_CACHE[boards_combined].append(str(reach_prob))
 
         mx_value = 0 # maximum value initialized to -1
-        possible_moves = [i for i, x in enumerate(opponent_board) if x == pieces.kEmpty]
+        possible_moves = [i for i in op_legal_moves]
         moves_considered = 0
 
         # for every possible move, calculate the probability of winning
         for action in possible_moves:
             new_game, collusion = play_action(game_state, opponent, action)
+            op_legal_moves.remove(action)
             if new_game in [pieces.kBlackWin, pieces.kWhiteWin]:
                 value = 1 # value is 1 for opponent win
             else:
                 next_to_play = (to_play + 1) % 2 if not collusion else to_play
-                value = self.__calc_counter_strategy(new_game, next_to_play, reach_prob, depth + 1)
+                value = self.__calc_counter_strategy(new_game, next_to_play, reach_prob, op_legal_moves, depth + 1)
             
             # update the cache
             # using reach probability, update the value of the state
             # current value of the state + probability of winning * reach probability
             self.STATE_VALUE_CACHE[opponent_board][action] += value * reach_prob
             # update the maximum value and the action
-            
+            op_legal_moves.append(action)
             if value > mx_value:
                 mx_value = value
                 total_value = value

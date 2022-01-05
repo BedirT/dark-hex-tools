@@ -9,7 +9,7 @@ import logging
 import coloredlogs
 sys.path.append('../../')
 
-from Projects.SVerify.util import calculate_turn, choose_strategy, conv_alphapos, get_game_state, load_file, play_action
+from Projects.SVerify.utils.util import calculate_turn, choose_strategy, conv_alphapos, get_game_state, load_file, play_action
 from Projects.base.game.hex import pieces, multiBoard_print, customBoard_print
 
 log = logging.getLogger(__name__)

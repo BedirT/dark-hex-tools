@@ -1,11 +1,11 @@
 import sys
 import argparse
 sys.path.append('../../')
-from Projects.SVerify.tree_generator import tree_generator
-from Projects.SVerify.tree_run import tree_run
-from Projects.SVerify.lower_bound import LowerBoundCalculator
+from Projects.SVerify.algorithms.tree_generator import tree_generator
+from Projects.SVerify.algorithms.tree_run import tree_run
+from Projects.SVerify.algorithms.lower_bound import LowerBoundCalculator
 
-from Projects.SVerify.util import choose_strategy
+from Projects.SVerify.utils.util import choose_strategy
 
 def main():
     # Get arguments from command line using argparse.

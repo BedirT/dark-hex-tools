@@ -1,9 +1,0 @@
---num_cols 4
---num_rows 3
---player_order 0
---player_color w
---isomorphic
---board_state .....o......
---convert_xo
---write_to_dict
---dict_name inbalanced_test_1
