@@ -22,13 +22,12 @@ import logging as log
 import os
 import numpy as np
 import sys
-import json
 sys.path.append('../../')
 
 from Projects.base.game.hex import pieces
 from Projects.base.util.colors import colors
 from Projects.SVerify.utils.isomorphic import isomorphic_single
-from Projects.SVerify.utils.util import numeric_action, random_selection, updated_board
+from Projects.SVerify.utils.util import numeric_action, random_selection, save_file, updated_board
 
 input_list = []
 COUNTER = 0
@@ -153,6 +152,7 @@ def is_collusion_possible(board_state, player):
         return opponent_pieces <= player_pieces
     player_pieces = sum([s for x, s in count.items() if x in pieces.black_pieces])
     opponent_pieces = sum([s for x, s in count.items() if x in pieces.white_pieces])
+    print(player_pieces, opponent_pieces)
     return opponent_pieces < player_pieces
    
 def game_over(board_state, player):
@@ -300,23 +300,21 @@ def generate_information_states(num_cols,
     log.info('Successfully generated information states.')
     log.info(f'Number of states: {len(info_states)}')
 
-    # save the data into the file path
+    # save the data into the file path using dill
     data = {
         'num_cols': num_cols,
         'num_rows': num_rows,
         'player': player,
         'isomorphic': isomorphic,
-        'strategy': info_states,
+        'strategy': dict(info_states),
+        'initial_board': board_state
     }
     if file_path == None:
-        file_path = f'Data/pre_process/{num_cols}x{num_rows}_{player}_{isomorphic}.json'
-    # if file path is not ending with .json, add it
-    if not file_path.endswith('.json'):
-        file_path += '.json'
-    # if file path does not exist, create it
-    if not os.path.exists(os.path.dirname(file_path)):
-        os.makedirs(os.path.dirname(file_path))
-    with open(file_path, 'w') as f:
-        json.dump(data, f)
-        
+        file_path = f'Data/pre_process/{num_cols}x{num_rows}_{player}_{isomorphic}'
+        # if the file already exists, add a number to the end of the file name
+        i = 1
+        while os.path.exists(file_path):
+            file_path = f'Data/pre_process/{num_cols}x{num_rows}_{player}_{isomorphic}_{i}'
+            i += 1
+    save_file(data, file_path)
     log.info(f'Saved information states to {file_path}')
