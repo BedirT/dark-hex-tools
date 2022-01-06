@@ -2,6 +2,7 @@ from copy import deepcopy
 import logging
 
 import sys
+import pyspiel
 import os
 import numpy as np
 sys.path.append('../../')
@@ -57,8 +58,8 @@ def game_over(board_state):
     '''
     return board_state.count(pieces.kBlackWin) +\
         board_state.count(pieces.kWhiteWin) == 1
-        
-        
+
+
 def updated_board(board_state, cell, color, num_cols, num_rows):
     '''
     Update the board state with the move.
@@ -183,16 +184,18 @@ def load_file(filename):
     return dill.load(open(filename, 'rb'))
 
 
-def save_file(content, filename):
+def save_file(content, file_path):
     '''
     Saves the content to a file.
     '''
     # Create the directory if it doesn't exist.
-    directory = os.path.dirname(filename)
+    directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
         os.makedirs(directory)
-
-    dill.dump(content, open(filename, 'wb'))
+    # If the path is not ending with pkl, add it.
+    if not file_path.endswith('.pkl'):
+        file_path += '.pkl'
+    dill.dump(content, open(file_path, 'wb'))
 
 
 def pos_by_coord(num_cols, r, c):
@@ -308,7 +311,8 @@ def calculate_turn(game_state):
     else:
         if num_white > num_black:   return 1
         else:                       return 0
-        
+
+
 def numeric_action(action, num_cols):
     '''
     Converts the action in the form of alpha-numeric row column sequence to
@@ -332,6 +336,7 @@ def random_selection(board_state):
     pos_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
     return [np.random.choice(pos_moves)], [1.0] 
  
+
 def convert_to_xo(str_board):
     '''
     Convert the board state to only x and o.
@@ -341,3 +346,47 @@ def convert_to_xo(str_board):
     for p in pieces.white_pieces:
         str_board = str_board.replace(p, pieces.kWhite)
     return str_board
+
+
+def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.State:
+    '''
+    Setup the game state, -start is same as given initial state
+    '''
+    game_state = game.new_initial_state()
+    for action, cell in enumerate(initial_state):
+        cur_player = game_state.current_player()
+        if cur_player == 0 and cell in pieces.black_pieces:
+            game_state.apply_action(action)
+            game_state.apply_action(action)
+        elif cur_player == 1 and cell in pieces.white_pieces:
+            game_state.apply_action(action)
+            game_state.apply_action(action)
+    return game_state
+
+
+def convert_os_str(str_board: str, num_cols: int, player: int):
+    '''
+    Convert the board state to pyspiel format.
+    ie. P{player} firstrow\nsecondrow
+    '''
+    new_board = 'P' + str(player) + ' '
+    for i, cell in enumerate(str_board):
+        if i % num_cols == 0 and i != 0:
+            new_board += '\n'
+        if cell in pieces.black_pieces:
+            new_board += pieces.kBlack
+        elif cell in pieces.white_pieces:
+            new_board += pieces.kWhite
+        else:
+            new_board += pieces.kEmpty
+    return new_board
+
+
+def convert_os_strategy(strategy: dict, num_cols: int, player: int) -> dict:
+    '''
+    Convert the strategy from open_spiel to the format of the game.
+    '''
+    new_strat = {}
+    for board_state, actions in strategy.items():
+        new_strat[convert_os_str(board_state, num_cols, player)] = actions
+    return new_strat
