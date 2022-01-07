@@ -157,9 +157,9 @@ class TreeGenerator:
         for cell in info_state[3:]:
             if cell == '\n':
                 # add \n and spaces amount of the row number
-                info_state_str += '\n' + ' ' * line_num
+                info_state_str += '\n' + '  ' * line_num
                 line_num += 1 
             else:
-                info_state_str += cell
+                info_state_str += cell + ' '
         # info_state_str += '\n' + ' ' * line_num + info_state[:2]
         return info_state_str
