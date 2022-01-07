@@ -280,6 +280,7 @@ def generate_information_states(num_cols,
     '''
     # GAME SETUP
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # TODO: USE OPEN_SPIEL RELATED VARIABLES
     opponent = pieces.kBlack if player == pieces.kWhite else pieces.kWhite
     
     if board_state == None:

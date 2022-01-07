@@ -21,7 +21,8 @@ def main():
                       player, 
                       initial_state,
                       data['num_cols'], 
-                      strategy)
+                      strategy,
+                      'Data/post_process/4x3_boundsOver7/opponent_strategy.pkl')
 
     # calculate best response value
     br.best_response()

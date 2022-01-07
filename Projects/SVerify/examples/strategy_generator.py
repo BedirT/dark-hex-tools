@@ -14,7 +14,7 @@ def main():
         player=pieces.kBlack,
         isomorphic=True,
         board_state='....x.......',
-        file_path='Data/pre_process/4x3_boundsOver7'
+        file_path='Data/strategy_data/4x3_boundsOver7/game_info.pkl'
     )
 
 if __name__ == '__main__':

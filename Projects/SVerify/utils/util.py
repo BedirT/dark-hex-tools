@@ -222,23 +222,29 @@ def choose_strategy(choice=None):
     if choice is None:
         print('Choose a strategy to run the algorithm for:')
 
-    for name, strategy in vars(strategies).items():
-        # no private variables
-        if not name.startswith('__'):
-            if choice is None:
-                print('{}. {}'.format(i, name))
-            i += 1; arr.append((strategy, name))
-    
+    # Read strategies from Data/strategy_data folder
+    data_folder_names = os.listdir(os.path.join(os.getcwd(), 'Data', 'strategy_data'))
+    # give the data folders as options to user
+    for data_folder_name in data_folder_names:
+        if choice is None:
+            print('{}. {}'.format(i, data_folder_name))
+        # get the 
+        arr.append(data_folder_name)
+        i += 1
+
     # make sure the choice is valid
     try:
         if choice is None:
-            choice = int(input('Enter your choice: '))
+            choice = int(input('> '))
         if choice < 0 or choice >= len(arr):
             raise ValueError
     except ValueError:
-        print('Invalid choice')
-        return choose_strategy()
-    return arr[choice][0], arr[choice][1]
+        print('Invalid choice. Please try again.')
+        return choose_strategy(choice)
+
+    # return the chosen strategy
+    strat = load_file(os.path.join(os.getcwd(), 'Data', 'strategy_data', arr[choice], 'game_info.pkl'))
+    return strat, arr[choice]
 
 
 def get_game_state(game, opp_strategy=None):
@@ -258,8 +264,6 @@ def get_game_state(game, opp_strategy=None):
         },
         'num_rows': game['num_rows'],
         'num_cols': game['num_cols'],
-        'first_player': game['first_player'],
-        'player_order': game['player_order'],
         'player': game['player'],
         'opponent': pieces.kWhite if game['player'] == pieces.kBlack else pieces.kBlack,
         'player_strategy': game['strategy'],
@@ -305,13 +309,7 @@ def calculate_turn(game_state):
     for i in range(len(game_board)):
         if game_board[i] in pieces.black_pieces: num_black += 1
         if game_board[i] in pieces.white_pieces: num_white += 1
-    if game_state['first_player'] == pieces.kBlack:
-        if num_black > num_white:   return 1
-        else:                       return 0
-    else:
-        if num_white > num_black:   return 1
-        else:                       return 0
-
+    return 1 if num_black > num_white else 0
 
 def numeric_action(action, num_cols):
     '''

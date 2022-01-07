@@ -4,123 +4,128 @@ Uses opp_info.pkl and info_states corresponding to the game.
 
 Presents a possibility for the examiner to select a state to examine.
 '''
-from os import write
+from copy import deepcopy
 import sys
 sys.path.append('../../')
+
+from Projects.SVerify.utils.util import conv_alphapos, convert_os_strategy, get_open_spiel_state
+from Projects.SVerify.utils.util import load_file
+from Projects.SVerify.utils.util import save_file
 
 import logging
 import coloredlogs
 import pydot
-
-from Projects.base.game.hex import multiBoard_print, multiBoard_string, pieces
-from Projects.SVerify.utils.util import calculate_turn, choose_strategy, conv_alphapos, game_over, get_game_state, load_file, play_action, save_file
+import pyspiel
 
 log = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')  # Change this to DEBUG to see more info.
 
 
-def gen_tree(tree, game_state, value_db, parent, depth, turn):
-    '''
-    Generates a pydot tree using players and opponents strategies.
-    Each node is a move, and each edge is the probability of playing that move.
-    'x's moves are black, 'o's moves are red.
-    '''
-    opponent_board = game_state['boards'][game_state['opponent']]
-    player_board = game_state['boards'][game_state['player']]
-    # Depending on the turn, choose the player or opponent strategy
-    if turn == game_state['player_order']:
-        strategy = game_state['player_strategy']
-        to_play = game_state['player']
-        board_to_play = player_board
-    else:
-        strategy = game_state['opponent_strategy']
-        to_play = game_state['opponent']
-        board_to_play = opponent_board
+class TreeGenerator:
+    def __init__(self, game, file_name):
+        self.file_name = file_name
 
-    # Add the child moves to the string with their probabilities
-    for action, prob in strategy[board_to_play]:
+        # Load the game information
+        self.game_info = load_file(f'Data/strategy_data/{self.file_name}/game_info.pkl')
+
+        # TODO: Remove after fixing the generate_info_states.py
+        player = 0 if self.game_info['player'] == 'x' else 1 
+
+        self.strategies = {
+            player: convert_os_strategy(self.game_info['strategy'], self.game_info['num_cols'], player),
+            1 - player: load_file(f'Data/strategy_data/{self.file_name}/opp_strategy.pkl')
+        }
+
+        # Match game state to initial_state in game_info
+        self.game_state = get_open_spiel_state(game, self.game_info['initial_board'])
+
+        # tree componenets attributes
+        self.attributes = {
+            0: {'shape': 'hexagon', 'style': 'filled', 'fillcolor': 'white',
+                'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'black'},
+            1: {'shape': 'hexagon', 'style': 'filled', 'fillcolor': 'white',
+                'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'black'},
+            'edge': {'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'black'},
+            '0-terminal': {'shape': 'doublecircle', 'style': 'filled', 'fillcolor': 'black',
+                            'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'white'},
+            '1-terminal': {'shape': 'doublecircle', 'style': 'filled', 'fillcolor': 'white',
+                            'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'black',
+                            'peripheries': '2', 'linecolor': 'black'},
+        }
+
+        # Create the tree
+        self.generate_tree()
+
+        # Save the tree
+        self.save_tree_data()
+
+    def generate_tree(self):
+        # Start the tree
+        self.tree = pydot.Dot('Strategy Tree', graph_type='digraph', bgcolor='white',
+                              fontname='Helvetica', fontsize='12', fontcolor='black',
+                              rankdir='TB')
+
+        # Add the root node
+        self.root = pydot.Node(self.game_state.information_state_string(),
+                               shape='circle', style='filled', fillcolor='white',
+                               fontname='Helvetica', fontsize='12', fontcolor='black')
+        self.tree.add_node(self.root)
+
+        # Add the root node's children
+        self._add_children(self.root, self.game_state)
+
+    def save_tree_data(self):
+        # Save the tree dot file
+        output_raw_dot = self.tree.to_string()
+        idx = output_raw_dot.find('my_graph {')
+        legend_string = '''\nsubgraph cluster_01 { 
+            label = "Legend";
+            style = "filled";
+            color = "lightgrey";
+            node [style=filled,color=white];
+            a0 [label="x", shape=hexagon, color=black, style=filled, fontcolor=white];
+            a1 [label="o", shape=hexagon, color=white, style=filled, fontcolor=black, linecolor=black];
+        }'''
+        # add the legend to the dotcode
+        output_raw_dot = output_raw_dot[:idx + len('my_graph {')] + \
+                         legend_string + output_raw_dot[idx + len('my_graph {'):]
+
+        # Save the dot file
+        save_file(output_raw_dot, f'Data/strategy_data/{self.file_name}/tree.dot')
+
+        # Save the tree
+        # self.tree.write_png(f'Data/strategy_data/{self.file_name}/tree.pdf')
+
+    def _add_children(self, parent, game_state):
+        '''
+        Generates the children of the parent node.
+        '''
+        info_state = game_state.information_state_string()
+        cur_player = game_state.current_player()
+        cur_player_str = '0' if cur_player == 0 else '1'
         # Create the node
-        alpha_action = conv_alphapos(action, game_state['num_cols'])
-        id_str = f'{to_play}_{alpha_action}_{depth}'
-        node_value = value_db[opponent_board + player_board][action][0]
-        # Add alpha_action to the node label, also add the value of the node
-        node_label = f'{alpha_action}\\n{node_value:.3f}'
-        node = pydot.Node(id_str, label=node_label, shape='hexagon', 
-                            color='black' if to_play == game_state['player'] else 'red',
-                            fontcolor='white', style='filled')
-        tree.add_node(node)
+        node_label = f'{info_state}'
+        node = pydot.Node(node_label, **self.attributes[cur_player])
+        self.tree.add_node(node)
 
-        edge = pydot.Edge(parent, id_str, label=f'{prob:.2f}', color='black')
+        # Add an edge for each action
+        for action, prob in self.strategies[cur_player][info_state]:
+            num_cols = self.game_info['num_cols']
+            edge_label = f'{conv_alphapos(action, num_cols)}: {prob:.2f}'
+            edge = pydot.Edge(parent, node, label=edge_label, **self.attributes['edge'])
 
-        # add the edge to the tree only if it is does not already exist
-        # or the probability is not the same as the existing edge
-        if not tree.get_edge(parent, id_str) or f'{prob:.2f}' != tree.get_edge(parent, id_str)[0].get_label():
-            tree.add_edge(edge)
+            self.tree.add_edge(edge)
 
-        # Continue to the child of this move
-        new_game_state, collusion = play_action(game_state, to_play, action)
-        if new_game_state in [pieces.kBlackWin, pieces.kWhiteWin]:
-            # If the game is over add an end node
-            # End node is an empty circle with the player or opponent win text
-            node_label = f'{new_game_state}\\nwins'
-            # Node id is the boards
-            win_id = f'{to_play}_{alpha_action}_{depth}_end'
-            node = pydot.Node(win_id, label=node_label, shape='circle',
-                                color='black' if to_play == game_state['player'] else 'red',
-                                fontcolor='black' if to_play == game_state['player'] else 'red',)
-            tree.add_node(node)
-            # Add the edge only if it doesn't already exist
-            edge = pydot.Edge(id_str, win_id, color='black')
-            if not tree.get_edge(id_str, win_id):
-                tree.add_edge(edge)
-            return tree
-        tree = gen_tree(tree, new_game_state, value_db, id_str, depth+1, turn if collusion else (turn + 1) % 2)
+            # Update the game state
+            new_game_state = deepcopy(game_state)
+            new_game_state.apply_action(action)   
 
-    return tree
-
-
-def tree_generator(game, file_name):
-    # Load opponent strategy
-    opp_strategy = load_file(f'Data/{file_name}/opp_strategy.pkl')
-
-    # Load the value database
-    value_db = load_file(f'Data/{file_name}/value_db.pkl')
-
-    # Set up the game
-    game_state = get_game_state(game, opp_strategy)
-    game_turn = calculate_turn(game_state)
-
-    # Load win probabilities
-    # log.debug('Loading win probabilities')
-    # value_db = load_file(f'Data/{file_name}/value_db.pkl')
-
-    # Call gen_tree to generate the tree
-    tree = pydot.Dot('my_graph', graph_type='digraph', bgcolor='white',
-                        fontname='Helvetica', fontsize='12', rankdir='TB')
-
-    # Add the root node
-    root = pydot.Node('root', label='root', shape='circle')
-    tree.add_node(root)
-
-    # Add the tree
-    tree = gen_tree(tree, game_state, value_db, 'root', 0, game_turn)
-
-    # Save the tree dot file
-    output_raw_dot = tree.to_string()
-    idx = output_raw_dot.find('my_graph {')
-    # Add a legend to the tree
-    # legend has 'player' and 'opponent' texts
-    # pointing to a black and red hexagons respectively
-    # also add win probabilities
-    legend_string = '''\nsubgraph cluster_01 { 
-        label = "Legend";
-        style = "filled";
-        color = "lightgrey";
-        node [style=filled,color=white];
-        a0 [label="P", shape=hexagon, color=black, style=filled, fontcolor=white];
-        a1 [label="O", shape=hexagon, color=red, style=filled, fontcolor=white];
-    }'''
-    # add the legend to the dotcode
-    output_raw_dot = output_raw_dot[:idx + len('my_graph {')] + legend_string + output_raw_dot[idx + len('my_graph {'):]
-
-    save_file(output_raw_dot, f'Data/{file_name}/tree.dot')
+            # If terminal add terminal node
+            if new_game_state.is_terminal():
+                terminal_node = pydot.Node('', **self.attributes[f'{cur_player_str}-terminal'])
+                self.tree.add_node(terminal_node)
+                edge = pydot.Edge(node, terminal_node, **self.attributes['edge'])
+                self.tree.add_edge(edge) 
+            else:
+                # Add the child node
+                self._add_children(node, new_game_state)

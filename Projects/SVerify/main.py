@@ -28,15 +28,9 @@ def main():
         lb.run()
 
     if args.tree_generator:
-        try:
-            tree_generator(game, file_name)
-        except Exception as FileNotFoundError:
-            print('File not found. Please run lower_bound first.')
+        tree_generator(game, file_name)
     if args.tree_run:
-        try:
-            tree_run(file_name)
-        except Exception as FileNotFoundError:
-            print('File not found. Please run tree_generator first.')
+        tree_run(file_name)
 
 
 if __name__ == '__main__':
