@@ -181,8 +181,10 @@ def load_file(filename):
     '''
     Loads a file and returns the content.
     '''
-    return dill.load(open(filename, 'rb'))
-
+    try:
+        return dill.load(open(filename, 'rb'))
+    except IOError:
+        raise IOError(f"File not found: {filename}")
 
 def save_file(content, file_path):
     '''
@@ -192,9 +194,6 @@ def save_file(content, file_path):
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
         os.makedirs(directory)
-    # If the path is not ending with pkl, add it.
-    if not file_path.endswith('.pkl'):
-        file_path += '.pkl'
     dill.dump(content, open(file_path, 'wb'))
 
 
