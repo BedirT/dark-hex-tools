@@ -1,8 +1,0 @@
-coloredlogs==15.0.1
-dill==0.3.4
-humanfriendly==10.0
-numpy==1.17.4
-Projects==1.0.9
-pydot==1.4.2
-PyGObject==3.36.0
-xdot==1.2

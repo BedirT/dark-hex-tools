@@ -8,7 +8,10 @@ import pyspiel
 import typing
 sys.path.append('../../')
 
-from Projects.SVerify.utils.util import convert_os_strategy, get_open_spiel_state, greedify, save_file
+from Projects.SVerify.utils.util import convert_os_strategy
+from Projects.SVerify.utils.util import get_open_spiel_state
+from Projects.SVerify.utils.util import greedify
+from Projects.SVerify.utils.util import save_file
 
 class BestResponse:
     def __init__(self,
@@ -17,7 +20,7 @@ class BestResponse:
                  initial_state: str,
                  num_cols: int,
                  strategy: typing.Dict[str, typing.List[typing.Tuple[int, float]]],
-                 file_path: str = 'Data/post_process/test/opponent_strategy.pkl'):
+                 file_path: str):
         self.game = game
         self.player = player
         self.initial_state = initial_state
@@ -73,20 +76,20 @@ class BestResponse:
                     value = self._generate_response_strategy(new_state, reach_prob * prob)
                 total_value += value * prob
             return total_value
-        else:
-            mx_value = -1
-            for action in cur_state.legal_actions():
-                new_state = cur_state.clone()
-                new_state.apply_action(action)
-                if new_state.is_terminal():
-                    value = 1
-                else:
-                    value = self._generate_response_strategy(new_state, reach_prob)
-                self.opp_state_value_cache[info_state][action] += value * reach_prob
-                if value > mx_value:
-                    mx_value = value
-            # ? NOT SURE IF THIS SHOULD BE MULTIPLIED BY THE REACH PROBABILITY
-            return mx_value * reach_prob
+        # oppononts turn
+        mx_value = -1
+        for action in cur_state.legal_actions():
+            new_state = cur_state.clone()
+            new_state.apply_action(action)
+            if new_state.is_terminal():
+                value = 1
+            else:
+                value = self._generate_response_strategy(new_state, reach_prob)
+            self.opp_state_value_cache[info_state][action] += value * reach_prob
+            if value > mx_value:
+                mx_value = value
+        # ? NOT SURE IF THIS SHOULD BE MULTIPLIED BY THE REACH PROBABILITY
+        return mx_value * reach_prob
 
     def _calculate_br_value(self, cur_state: pyspiel.State) -> float:
         '''
