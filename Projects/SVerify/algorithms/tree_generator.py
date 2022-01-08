@@ -43,19 +43,19 @@ class TreeGenerator:
         # tree componenets attributes
         self.attributes = {
             0: {'shape': 'hexagon', 'style': 'filled', 'fillcolor': 'black',
-                'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'white',
+                'fontname': 'Monospace', 'fontcolor': 'white', 'fontsize': '12',
                 'width': '1.5', 'height': '1.5'},
             1: {'shape': 'hexagon', 'style': 'filled', 'fillcolor': 'red',
-                'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'white',
+                'fontname': 'Monospace', 'fontsize': '12', 'fontcolor': 'white',
                 'width': '1.5', 'height': '1.5'},
-            'edge': {'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'black'},
+            'edge': {'fontname': 'Monospace', 'fontsize': '12', 'fontcolor': 'black'},
             '0-terminal': {'shape': 'doublecircle', 'style': 'filled', 'fillcolor': 'black',
-                            'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'white'},
+                            'fontname': 'Monospace', 'fontsize': '12', 'fontcolor': 'white'},
             '1-terminal': {'shape': 'doublecircle', 'style': 'filled', 'fillcolor': 'red',
-                            'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'black',
+                            'fontname': 'Monospace', 'fontsize': '12', 'fontcolor': 'white',
                             'peripheries': '2', 'linecolor': 'black'},
             'root': {'shape': 'hexagon', 'style': 'filled', 'fillcolor': 'darkgrey',
-                    'fontname': 'Helvetica', 'fontsize': '12', 'fontcolor': 'white',
+                    'fontname': 'Monospace', 'fontsize': '12', 'fontcolor': 'white',
                     'width': '1.5', 'height': '1.5'}
         }
 
@@ -69,7 +69,7 @@ class TreeGenerator:
         # Start the tree
         self.tree_name = f'Strategy_Tree'
         self.tree = pydot.Dot(self.tree_name, graph_type='digraph', bgcolor='white',
-                              fontname='Helvetica', fontsize='12', fontcolor='black',
+                              fontname='Monospace', fontsize='12', fontcolor='black',
                               rankdir='TB')
         # Add the root node's children
         self._add_children(self.game_state)
@@ -126,10 +126,11 @@ class TreeGenerator:
                 terminal_node = pydot.Node(f'{info_state_str}', **self.attributes[f'{cur_player_terminal}-terminal'])
                 self.tree.add_node(terminal_node)
 
-                # Add edge
+                # Add the edge if it doesnt already exist
                 edge_label = f'{conv_alphapos(action, num_cols)}: {prob:.2f}'
-                edge = pydot.Edge(parent, terminal_node, label=edge_label, **self.attributes['edge'])
-                self.tree.add_edge(edge) 
+                if not self.tree.get_edge(parent, terminal_node):
+                    edge = pydot.Edge(parent, terminal_node, label=edge_label, **self.attributes['edge'])
+                    self.tree.add_edge(edge)
             else:
                 info_state_str = self.tree_info_string(new_game_state.information_state_string(cur_player_terminal))
             
@@ -138,12 +139,13 @@ class TreeGenerator:
                 node = pydot.Node(node_label, **self.attributes[cur_player])
                 self.tree.add_node(node)
 
-                # Add the edge
+                # Add the edge if it doesnt already exist
                 edge_label = f'{conv_alphapos(action, num_cols)}: {prob:.2f}'
-                edge = pydot.Edge(parent, node, label=edge_label, **self.attributes['edge'])
-                self.tree.add_edge(edge)
+                if not self.tree.get_edge(parent, node):
+                    edge = pydot.Edge(parent, node, label=edge_label, **self.attributes['edge'])
+                    self.tree.add_edge(edge)
 
-                # Add the child node
+                # Add the child's children
                 self._add_children(new_game_state, node)
 
             
@@ -153,11 +155,13 @@ class TreeGenerator:
         Converts the info_state to a string.
         '''
         info_state_str = ''
-        line_num = 0
-        for cell in info_state[3:]:
-            if cell == '\n':
+        line_num = 1
+        for cell in info_state:
+            if cell == ' ':
+                info_state_str += '\n'
+            elif cell == '\n':
                 # add \n and spaces amount of the row number
-                info_state_str += '\n' + '  ' * line_num
+                info_state_str += '\n' + ' ' * line_num
                 line_num += 1 
             else:
                 info_state_str += cell + ' '

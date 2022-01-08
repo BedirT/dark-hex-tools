@@ -282,18 +282,15 @@ def greedify(strategy, multiple_actions_allowed=False):
     '''
     log.info('Greedifying strategy...')
     greedy_strategy = {}
-    for board_state, item in strategy.items():
+    for board_state, action_val in strategy.items():
         mx_value = -1
-        valid_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
         actions = []
-        for idx, value in enumerate(item):
-            if idx not in valid_moves:
-                continue
+        for action, value in action_val.items():
             if value > mx_value:
                 mx_value = value
-                actions = [idx]
+                actions = [action]
             elif value == mx_value and multiple_actions_allowed:
-                actions.append(idx)
+                actions.append(action)
         greedy_strategy[board_state] = [(actions[i], 1 / len(actions)) for i in range(len(actions))]
     return greedy_strategy
 
@@ -350,14 +347,25 @@ def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.Stat
     Setup the game state, -start is same as given initial state
     '''
     game_state = game.new_initial_state()
-    for action, cell in enumerate(initial_state):
+    black_stones_loc = []
+    white_stones_loc = []
+    for i in range(len(initial_state)):
+        if initial_state[i] in pieces.black_pieces:
+            black_stones_loc.append(i)
+        if initial_state[i] in pieces.white_pieces:
+            white_stones_loc.append(i)
+    black_loc = 0
+    white_loc = 0
+    for _ in range(len(black_stones_loc) + len(white_stones_loc)):
         cur_player = game_state.current_player()
-        if cur_player == 0 and cell in pieces.black_pieces:
-            game_state.apply_action(action)
-            game_state.apply_action(action)
-        elif cur_player == 1 and cell in pieces.white_pieces:
-            game_state.apply_action(action)
-            game_state.apply_action(action)
+        if cur_player == 0:
+            game_state.apply_action(black_stones_loc[black_loc])
+            game_state.apply_action(black_stones_loc[black_loc])
+            black_loc += 1
+        else:
+            game_state.apply_action(white_stones_loc[white_loc])
+            game_state.apply_action(white_stones_loc[white_loc])
+            white_loc += 1
     return game_state
 
 

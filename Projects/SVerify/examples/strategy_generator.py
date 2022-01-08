@@ -13,8 +13,8 @@ def main():
         num_rows=4,
         player=pieces.kBlack,
         isomorphic=True,
-        board_state='....x.......',
-        file_path='Data/strategy_data/4x3_boundsOver7/game_info.pkl'
+        board_state='.yq.y...xp..',
+        file_path='Data/strategy_data/4x3_subgame/game_info.pkl'
     )
 
 if __name__ == '__main__':
