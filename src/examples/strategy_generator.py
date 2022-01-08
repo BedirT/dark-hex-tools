@@ -4,8 +4,8 @@ Example of a strategy generator using generate_info_states
 import sys
 sys.path.append('../../')
 
-from Projects.SVerify.algorithms.generate_info_states import generate_information_states
-from Projects.base.game.hex import pieces
+from algorithms.generate_info_states import generate_information_states
+from game.hex import pieces
 
 def main():
     generate_information_states(
@@ -14,7 +14,7 @@ def main():
         player=pieces.kBlack,
         isomorphic=True,
         board_state='.yq.y...xp..',
-        file_path='Data/strategy_data/4x3_subgame/game_info.pkl'
+        file_path='data/strategy_data/4x3_subgame/game_info.pkl'
     )
 
 if __name__ == '__main__':

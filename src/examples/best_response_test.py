@@ -4,12 +4,12 @@ import json
 import sys
 sys.path.append('../../')
 
-from Projects.SVerify.algorithms.best_response import BestResponse
-from Projects.SVerify.utils.util import load_file
+from algorithms.best_response import BestResponse
+from utils.util import load_file
 
 
 def main():
-    data = load_file('Data/strategy_data/4x3_boundsOver7/game_info.pkl')
+    data = load_file('data/strategy_data/4x3_boundsOver7/game_info.pkl')
     game = pyspiel.load_game(f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]})')
 
     strategy = data['strategy']
@@ -22,7 +22,7 @@ def main():
                       initial_state,
                       data['num_cols'], 
                       strategy,
-                      'Data/strategy_data/4x3_boundsOver7/opponent_strategy.pkl')
+                      'data/strategy_data/4x3_boundsOver7/opponent_strategy.pkl')
 
     # calculate best response value
     br.best_response()

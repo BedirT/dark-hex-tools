@@ -2,11 +2,11 @@ import sys
 import pyspiel
 sys.path.append('../../')
 
-from Projects.SVerify.algorithms.tree_generator import TreeGenerator
-from Projects.SVerify.algorithms.tree_run import TreeRun
-from Projects.SVerify.algorithms.best_response import BestResponse
+from algorithms.tree_generator import TreeGenerator
+from algorithms.tree_run import TreeRun
+from algorithms.best_response import BestResponse
 
-from Projects.SVerify.utils.util import load_file
+from utils.util import load_file
 
 import logging
 import coloredlogs
@@ -17,7 +17,7 @@ coloredlogs.install(level='INFO')
 def main():
     file_name = '4x3_boundsOver7'
     # file_name = '4x3_subgame'
-    file_path = f'Data/strategy_data/{file_name}/'
+    file_path = f'data/strategy_data/{file_name}/'
     data = load_file(file_path + 'game_info.pkl')
     game = pyspiel.load_game(f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]})')
 
