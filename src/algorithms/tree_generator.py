@@ -9,9 +9,9 @@ import copy
 import sys
 sys.path.append('../../')
 
-from Projects.SVerify.utils.util import conv_alphapos, convert_os_strategy, get_open_spiel_state
-from Projects.SVerify.utils.util import load_file
-from Projects.SVerify.utils.util import save_file
+from utils.util import conv_alphapos, convert_os_strategy, get_open_spiel_state
+from utils.util import load_file
+from utils.util import save_file
 
 import logging
 import coloredlogs

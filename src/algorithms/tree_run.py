@@ -2,7 +2,7 @@ import gi
 import sys
 sys.path.append('../../')
 
-from Projects.SVerify.utils.util import load_file
+from utils.util import load_file
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk

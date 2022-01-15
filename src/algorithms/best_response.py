@@ -8,10 +8,10 @@ import pyspiel
 import typing
 sys.path.append('../../')
 
-from Projects.SVerify.utils.util import convert_os_strategy
-from Projects.SVerify.utils.util import get_open_spiel_state
-from Projects.SVerify.utils.util import greedify
-from Projects.SVerify.utils.util import save_file
+from utils.util import convert_os_strategy
+from utils.util import get_open_spiel_state
+from utils.util import greedify
+from utils.util import save_file
 
 class BestResponse:
     def __init__(self,

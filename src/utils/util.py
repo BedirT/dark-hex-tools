@@ -9,7 +9,6 @@ sys.path.append('../../')
 
 import coloredlogs
 import dill
-from Projects.base.game.hex import pieces
 
 
 LOG_LEVEL = 'DEBUG'
