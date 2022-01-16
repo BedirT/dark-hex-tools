@@ -1,5 +1,4 @@
 import gi
-
 from utils.util import load_file
 
 gi.require_version("Gtk", "3.0")

@@ -7,8 +7,7 @@ Presents a possibility for the examiner to select a state to examine.
 import logging
 
 import coloredlogs
-from Projects.base.game.hex import customBoard_print, multiBoard_print, pieces
-from Projects.SVerify.utils.util import (
+from utils.util import (
     calculate_turn,
     choose_strategy,
     conv_alphapos,

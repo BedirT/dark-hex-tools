@@ -22,15 +22,9 @@ from collections import Counter, defaultdict
 from copy import deepcopy
 
 import numpy as np
-from Projects.base.game.hex import pieces
-from Projects.base.util.colors import colors
-from Projects.SVerify.utils.isomorphic import isomorphic_single
-from Projects.SVerify.utils.util import (
-    numeric_action,
-    random_selection,
-    save_file,
-    updated_board,
-)
+from util.colors import colors
+from utils.isomorphic import isomorphic_single
+from utils.util import numeric_action, random_selection, save_file, updated_board
 
 input_list = []
 COUNTER = 0

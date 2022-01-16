@@ -2,7 +2,7 @@
 Setup for calculating all the definite wins for a board
 using pONE.
 """
-from algorithms.pONE import PONE
+from darkhextools.pone import PONE
 from utils.util import save_file
 
 

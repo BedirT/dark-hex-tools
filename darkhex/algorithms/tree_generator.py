@@ -11,7 +11,6 @@ from copy import deepcopy
 import coloredlogs
 import pydot
 import pyspiel
-
 from utils.util import (
     conv_alphapos,
     convert_os_strategy,
