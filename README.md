@@ -20,35 +20,61 @@ For details on DarkHex and any of the algorithms used as well as the experiments
 - [ ] NFSP
 - [ ] Deep CFR
 
-### Experiments and Results
+### Installation
 
-#### pONE
+The library is uploaded on Pypi and can be installed using pip. Before pip called make sure you have the following packages installed:
 
-Explanation for the pONE algorithm.
+- [Python 3.6](https://www.python.org/downloads/)
+- [PyGObject - bindings for GTK3](https://pypi.org/project/pygobject/)
+- [Graphviz](https://www.graphviz.org/)
+- [GCC](https://gcc.gnu.org/)
+- [Libcairo](https://www.cairographics.org/)
 
-- [ ] Reimplement using OpenSpiel.
+They are mostly required for graph drawing and setup reasons. Please make sure you have these packages installed before installing the library.
 
-- [x] 2x2
-- [x] 3x3
-- [x] 3x4
-- [x] 4x3
-- [ ] 4x4
+#### For Debian / Ubuntu
 
-#### CFR
+```bash
+sudo apt-get install libgirepository1.0-dev gcc libcairo2-dev pkg-config gir1.2-gtk-3.0 graphviz
+```
 
-Explanation for the CFR algorithm.
+#### For MacOS
 
-#### FSI-CFR
+````bash
+brew install gobject-introspection graphviz cairo pkg-config gtk+3 gcc
+```
 
-Explanation for the FSI-CFR algorithm.
+After installing the packages you can install the library using pypi.
 
-#### Backward Induction Best Response
+```bash
+pip install darkhex
+```
 
-Explanation for the Backward Induction Best Response algorithm.
+#### Setup from source using pip
 
-#### AlphaZero Approximate Best Response
+Installing from source would be helpful if you wanted a custom version of the library / helping with development. Make sure you have the packages above installed.
 
-Explanation for the AlphaZero Approximate Best Response algorithm.
+##### Virtual Environment
 
-**Please add the project pythonpath for relative refs to work.**
-run `export PYTHONPATH="${PYTHONPATH}:<path_to_repo>"`
+We recommend using a virtual environment for the development.
+
+E.g. for Ubuntu or Debian:
+```bash
+sudo apt-get install virtualenv python3-virtualenv
+virtualenv venv
+source venv/bin/activate
+````
+
+Rest of the installation is just installing python requirements.
+
+E.g. for Ubuntu or Debian:
+
+```bash
+# Install the libraries listed above
+sudo apt-get install libgirepository1.0-dev gcc libcairo2-dev pkg-config gir1.2-gtk-3.0 graphviz
+
+# Install the python packages
+pip install -r requirements.txt
+```
+
+**Update PYTHONPATH on your .bashrc or .zshrc file (or .venv/bin/activate)**

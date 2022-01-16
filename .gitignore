@@ -2,10 +2,11 @@
 .DS_Store
 
 # IDE
-.trunk/
+.trunk
+.flake8
 .vscode
 .isort.cfg
-.markdownlint.json
+.markdownlint.yaml
 
 tmp/
 build/
