@@ -59,11 +59,12 @@ Installing from source would be helpful if you wanted a custom version of the li
 We recommend using a virtual environment for the development.
 
 E.g. for Ubuntu or Debian:
+
 ```bash
 sudo apt-get install virtualenv python3-virtualenv
 virtualenv venv
 source venv/bin/activate
-````
+```
 
 Rest of the installation is just installing python requirements.
 
