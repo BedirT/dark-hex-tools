@@ -4,16 +4,12 @@ Dark Hex is the imperfect information version of the game Hex. This game has a r
 
 For details on DarkHex and any of the algorithms used as well as the experiments please check my thesis [-link-]().
 
-- [What is Hex](https://en.wikipedia.org/wiki/Hex_(board_game))
+- [What is Hex](<https://en.wikipedia.org/wiki/Hex_(board_game)>)
 - [Dark-Hex Open Spiel Implementation](https://github.com/deepmind/open_spiel/blob/master/open_spiel/games/dark_hex.h)
 - [Sample Game](Sample_game.md)
 
 ## Implementations
-### Games
-- [x] Hex
-- [x] Dark Hex
 
-### Algorithms
 - [x] pONE
 - [x] Vanilla CFR
 - [x] FSI-CFR
@@ -25,8 +21,10 @@ For details on DarkHex and any of the algorithms used as well as the experiments
 - [ ] Deep CFR
 
 ### Experiments and Results
+
 #### pONE
-Explanation for the pONE algorithm. 
+
+Explanation for the pONE algorithm.
 
 - [ ] Reimplement using OpenSpiel.
 
@@ -37,16 +35,20 @@ Explanation for the pONE algorithm.
 - [ ] 4x4
 
 #### CFR
+
 Explanation for the CFR algorithm.
 
 #### FSI-CFR
+
 Explanation for the FSI-CFR algorithm.
 
 #### Backward Induction Best Response
+
 Explanation for the Backward Induction Best Response algorithm.
 
 #### AlphaZero Approximate Best Response
+
 Explanation for the AlphaZero Approximate Best Response algorithm.
 
 **Please add the project pythonpath for relative refs to work.**
-run ```export PYTHONPATH="${PYTHONPATH}:<path_to_repo>"```
+run `export PYTHONPATH="${PYTHONPATH}:<path_to_repo>"`

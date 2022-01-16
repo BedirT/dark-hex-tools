@@ -1,26 +1,25 @@
-'''
+"""
 Using open_spiel dark_hex implementation
 to calculate best response value for a given player strategy.
-'''
-from collections import defaultdict
-import sys
-import pyspiel
+"""
 import typing
-sys.path.append('../../')
+from collections import defaultdict
 
-from utils.util import convert_os_strategy
-from utils.util import get_open_spiel_state
-from utils.util import greedify
-from utils.util import save_file
+import pyspiel
+
+from utils.util import convert_os_strategy, get_open_spiel_state, greedify, save_file
+
 
 class BestResponse:
-    def __init__(self,
-                 game: pyspiel.Game,
-                 player: int,
-                 initial_state: str,
-                 num_cols: int,
-                 strategy: typing.Dict[str, typing.List[typing.Tuple[int, float]]],
-                 file_path: str):
+    def __init__(
+        self,
+        game: pyspiel.Game,
+        player: int,
+        initial_state: str,
+        num_cols: int,
+        strategy: typing.Dict[str, typing.List[typing.Tuple[int, float]]],
+        file_path: str,
+    ):
         self.game = game
         self.player = player
         self.initial_state = initial_state
@@ -31,10 +30,10 @@ class BestResponse:
         self.opp_state_value_cache = defaultdict(lambda: defaultdict(lambda: 0))
         self.full_game_cache = defaultdict(lambda: list())
 
-    def _generate_response_strategy(self, 
-                                    cur_state: pyspiel.State,
-                                    reach_prob: float = 1.0) -> float:
-        '''
+    def _generate_response_strategy(
+        self, cur_state: pyspiel.State, reach_prob: float = 1.0
+    ) -> float:
+        """
         Each possible information set is observed and the response value for the
         opponent is calculated recursively.
 
@@ -54,13 +53,13 @@ class BestResponse:
         the state with the highest value only. (single action for each state).
 
         v(s) = \tau(s) * max_a v(s,a)
-    
+
         where \tau(s) is the probability of reaching the state s, and v(s,a) is the value
-        of the state s after action a. 
+        of the state s after action a.
         \tau(s) is always the maximum possible probability of reaching the state s.
 
         Updates the opponent strategy based on the calculated values.
-        '''
+        """
         cur_player = cur_state.current_player()
         info_state = cur_state.information_state_string()
 
@@ -73,7 +72,9 @@ class BestResponse:
                 if new_state.is_terminal():
                     value = 0
                 else:
-                    value = self._generate_response_strategy(new_state, reach_prob * prob)
+                    value = self._generate_response_strategy(
+                        new_state, reach_prob * prob
+                    )
                 total_value += value * prob
             return total_value
         # oppononts turn
@@ -92,10 +93,10 @@ class BestResponse:
         return mx_value * reach_prob
 
     def _calculate_br_value(self, cur_state: pyspiel.State) -> float:
-        '''
+        """
         Calculate the best response value for the given player strategy and
         calculated opponent strategy.
-        '''
+        """
         br_value = 0
         cur_player = cur_state.current_player()
         info_state = cur_state.information_state_string()
@@ -110,22 +111,22 @@ class BestResponse:
         return br_value
 
     def best_response(self):
-        '''
+        """
         Calculate the best response value for the given player strategy.
-        '''
+        """
         game_state = get_open_spiel_state(self.game, self.initial_state)
         self.strategy = convert_os_strategy(self.strategy, self.num_cols, self.player)
 
         # Get opponent strategy
         self._generate_response_strategy(game_state)
-        
+
         # Greeedify the opponent strategy (single move allowed for each state)
         self.opponent_strategy = greedify(self.opp_state_value_cache)
 
         # calculate the best response value
         self.strategies = {
             self.player: self.strategy,
-            1 - self.player: self.opponent_strategy
+            1 - self.player: self.opponent_strategy,
         }
         br_value = 1 - self._calculate_br_value(game_state)
 
