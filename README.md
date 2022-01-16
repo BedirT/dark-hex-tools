@@ -40,7 +40,7 @@ sudo apt-get install libgirepository1.0-dev gcc libcairo2-dev pkg-config gir1.2-
 
 #### For MacOS
 
-````bash
+```bash
 brew install gobject-introspection graphviz cairo pkg-config gtk+3 gcc
 ```
 
