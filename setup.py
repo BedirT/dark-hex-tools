@@ -34,7 +34,6 @@ setuptools.setup(
     packages = setuptools.find_packages(),
     install_requires = [
         'numpy',
-        'coloredlogs',
         'open-spiel',
         'pydot',
         'xdot',

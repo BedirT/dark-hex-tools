@@ -2,7 +2,6 @@
 # open_spiel >= 1.0.2
 pytest
 numpy
-coloredlogs
 typing
 open-spiel
 pycairo

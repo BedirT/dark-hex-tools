@@ -11,9 +11,13 @@
 tmp/
 build/
 venv/
+data/
 
 # Python
 .venv
 *.egg-info
 *.pyc
 __pycache__/
+
+# Distribution
+dist/
