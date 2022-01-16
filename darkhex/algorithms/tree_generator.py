@@ -5,10 +5,8 @@ Uses opp_info.pkl and info_states corresponding to the game.
 Presents a possibility for the examiner to select a state to examine.
 """
 import copy
-import logging
 from copy import deepcopy
 
-import coloredlogs
 import pydot
 import pyspiel
 from utils.util import (
@@ -18,9 +16,6 @@ from utils.util import (
     load_file,
     save_file,
 )
-
-log = logging.getLogger(__name__)
-coloredlogs.install(level="DEBUG")  # Change this to DEBUG to see more info.
 
 
 class TreeGenerator:

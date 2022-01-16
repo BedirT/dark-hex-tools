@@ -4,8 +4,12 @@ pytest
 numpy
 coloredlogs
 typing
-open_spiel
+open-spiel
 pycairo
 pydot
 xdot
 pygobject
+dill
+pandas
+matplotlib
+seaborn

@@ -1,15 +1,9 @@
-import logging
 import os
 from copy import deepcopy
 
-import coloredlogs
 import dill
 import numpy as np
 import pyspiel
-
-LOG_LEVEL = "DEBUG"
-log = logging.getLogger(__name__)
-coloredlogs.install(level=LOG_LEVEL)  # Change this to DEBUG to see more info.
 
 
 def cell_connections(cell, num_cols, num_rows):

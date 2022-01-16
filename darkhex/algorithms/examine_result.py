@@ -4,9 +4,6 @@ Uses opp_strategy.pkl and info_states corresponding to the game.
 
 Presents a possibility for the examiner to select a state to examine.
 """
-import logging
-
-import coloredlogs
 from utils.util import (
     calculate_turn,
     choose_strategy,
@@ -15,10 +12,6 @@ from utils.util import (
     load_file,
     play_action,
 )
-
-log = logging.getLogger(__name__)
-coloredlogs.install(level="DEBUG")  # Change this to DEBUG to see more info.
-game_history = []
 
 
 def display_options(game_state, win_probs, turn):

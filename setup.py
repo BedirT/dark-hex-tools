@@ -35,11 +35,12 @@ setuptools.setup(
     install_requires = [
         'numpy',
         'coloredlogs',
-        'open_spiel',
+        'open-spiel',
         'pydot',
         'xdot',
         'pycairo',
         'PyGObject',
+        'dill',
     ],
     extras_require = {
         'dev': [

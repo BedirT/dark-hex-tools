@@ -15,8 +15,6 @@ from there in a dictionary.
 
 The game is Dark Hex on nxm board.
 """
-
-import logging as log
 import os
 from collections import Counter, defaultdict
 from copy import deepcopy
