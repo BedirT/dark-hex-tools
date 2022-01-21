@@ -12,3 +12,4 @@ dill
 pandas
 matplotlib
 seaborn
+pygame
