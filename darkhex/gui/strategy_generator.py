@@ -725,7 +725,3 @@ def is_valid_board(board: str, num_rows: int, num_cols: int) -> bool:
     if len(board) != num_rows * num_cols:
         return False
     return True
-
-
-if __name__ == "__main__":
-    gen_ui = StrategyGeneratorGUI("....", 2, 2, 0)
