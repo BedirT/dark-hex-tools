@@ -23,10 +23,8 @@ class TreeGenerator:
         self.file_name = file_name
 
         # Load the game information
-        self.game_info = load_file(f"Data/strategy_data/{self.file_name}/game_info.pkl")
-
-        # TODO: Remove after fixing the generate_info_states.py
-        player = 0 if self.game_info["player"] == "x" else 1
+        self.game_info = load_file(f"data/strategy_data/{self.file_name}/game_info.pkl")
+        player = self.game_info["player"]
 
         self.strategies = {
             player: convert_os_strategy(
@@ -34,7 +32,7 @@ class TreeGenerator:
             ),
             1
             - player: load_file(
-                f"Data/strategy_data/{self.file_name}/opp_strategy.pkl"
+                f"data/strategy_data/{self.file_name}/opp_strategy.pkl"
             ),
         }
 
@@ -135,10 +133,10 @@ class TreeGenerator:
         )
 
         # Save the dot file
-        save_file(output_raw_dot, f"Data/strategy_data/{self.file_name}/tree.dot")
+        save_file(output_raw_dot, f"data/strategy_data/{self.file_name}/tree.dot")
 
         # Save the tree
-        self.tree.write_png(f"Data/strategy_data/{self.file_name}/tree.png")
+        self.tree.write_png(f"data/strategy_data/{self.file_name}/tree.png")
 
     def _add_children(self, game_state, parent=None):
         """

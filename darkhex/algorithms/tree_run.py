@@ -24,7 +24,7 @@ class TreeRun(xdot.DotWindow):
         return True
 
     def tree_run(self):
-        dotcode = load_file(f"Data/strategy_data/{self.file_name}/tree.dot")
+        dotcode = load_file(f"data/strategy_data/{self.file_name}/tree.dot")
 
         dotcode = dotcode.encode("UTF-8")
 

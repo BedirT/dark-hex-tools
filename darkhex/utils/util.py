@@ -4,6 +4,7 @@ from copy import deepcopy
 import dill
 import numpy as np
 import pyspiel
+from utils.cell_state import cellState
 
 
 def cell_connections(cell, num_cols, num_rows):
@@ -46,11 +47,11 @@ def game_over(board_state):
     - board_state: The current refree board state.
     """
     return (
-        board_state.count(pieces.kBlackWin) + board_state.count(pieces.kWhiteWin) == 1
+        board_state.count(cellState.kBlackWin) + board_state.count(cellState.kWhiteWin) == 1
     )
 
 
-def updated_board(board_state, cell, color, num_cols, num_rows):
+def updated_board(board_state, cell, color, num_rows, num_cols):
     """
     Update the board state with the move.
 
@@ -66,11 +67,11 @@ def updated_board(board_state, cell, color, num_cols, num_rows):
     if (
         cell < 0
         or cell >= len(updated_board_state)
-        or updated_board_state[cell] != pieces.kEmpty
+        or updated_board_state[cell] != cellState.kEmpty
     ):
         return False
     # Update the board state with the move.
-    if color == pieces.kBlack:
+    if color == cellState.kBlack:
         north_connected = False
         south_connected = False
         if cell < num_cols:  # First row
@@ -78,19 +79,19 @@ def updated_board(board_state, cell, color, num_cols, num_rows):
         elif cell >= num_cols * (num_rows - 1):  # Last row
             south_connected = True
         for neighbour in cell_connections(cell, num_cols, num_rows):
-            if updated_board_state[neighbour] == pieces.kBlackNorth:
+            if updated_board_state[neighbour] == cellState.kBlackNorth:
                 north_connected = True
-            elif updated_board_state[neighbour] == pieces.kBlackSouth:
+            elif updated_board_state[neighbour] == cellState.kBlackSouth:
                 south_connected = True
         if north_connected and south_connected:
-            updated_board_state[cell] = pieces.kBlackWin
+            updated_board_state[cell] = cellState.kBlackWin
         elif north_connected:
-            updated_board_state[cell] = pieces.kBlackNorth
+            updated_board_state[cell] = cellState.kBlackNorth
         elif south_connected:
-            updated_board_state[cell] = pieces.kBlackSouth
+            updated_board_state[cell] = cellState.kBlackSouth
         else:
-            updated_board_state[cell] = pieces.kBlack
-    elif color == pieces.kWhite:
+            updated_board_state[cell] = cellState.kBlack
+    elif color == cellState.kWhite:
         east_connected = False
         west_connected = False
         if cell % num_cols == 0:  # First column
@@ -98,22 +99,22 @@ def updated_board(board_state, cell, color, num_cols, num_rows):
         elif cell % num_cols == num_cols - 1:  # Last column
             east_connected = True
         for neighbour in cell_connections(cell, num_cols, num_rows):
-            if updated_board_state[neighbour] == pieces.kWhiteWest:
+            if updated_board_state[neighbour] == cellState.kWhiteWest:
                 west_connected = True
-            elif updated_board_state[neighbour] == pieces.kWhiteEast:
+            elif updated_board_state[neighbour] == cellState.kWhiteEast:
                 east_connected = True
         if east_connected and west_connected:
-            updated_board_state[cell] = pieces.kWhiteWin
+            updated_board_state[cell] = cellState.kWhiteWin
         elif east_connected:
-            updated_board_state[cell] = pieces.kWhiteEast
+            updated_board_state[cell] = cellState.kWhiteEast
         elif west_connected:
-            updated_board_state[cell] = pieces.kWhiteWest
+            updated_board_state[cell] = cellState.kWhiteWest
         else:
-            updated_board_state[cell] = pieces.kWhite
+            updated_board_state[cell] = cellState.kWhite
 
-    if updated_board_state[cell] in [pieces.kBlackWin, pieces.kWhiteWin]:
+    if updated_board_state[cell] in [cellState.kBlackWin, cellState.kWhiteWin]:
         return updated_board_state[cell]
-    elif updated_board_state[cell] not in [pieces.kBlack, pieces.kWhite]:
+    elif updated_board_state[cell] not in [cellState.kBlack, cellState.kWhite]:
         # The cell is connected to an edge but not a win position.
         # We need to use flood-fill to find the connected edges.
         flood_stack = [cell]
@@ -143,8 +144,8 @@ def play_action(game, player, action):
     Plays the action on the game board.
     """
     new_game = deepcopy(game)
-    if new_game["board"][action] != pieces.kEmpty:
-        opponent = pieces.kBlack if player == pieces.kWhite else pieces.kWhite
+    if new_game["board"][action] != cellState.kEmpty:
+        opponent = cellState.kBlack if player == cellState.kWhite else cellState.kWhite
         new_game["boards"][player] = replace_action(
             new_game["boards"][player], action, opponent
         )
@@ -153,7 +154,7 @@ def play_action(game, player, action):
         res = updated_board(
             new_game["board"], action, player, game["num_cols"], game["num_rows"]
         )
-        if res == pieces.kBlackWin or res == pieces.kWhiteWin:
+        if res == cellState.kBlackWin or res == cellState.kWhiteWin:
             # The game is over.
             return res, False
         new_game["board"] = res
@@ -161,12 +162,12 @@ def play_action(game, player, action):
             new_game["boards"][player], action, new_game["board"][action]
         )
         s = ""
-        opponent = pieces.kBlack if player == pieces.kWhite else pieces.kWhite
+        opponent = cellState.kBlack if player == cellState.kWhite else cellState.kWhite
         for r in new_game["boards"][player]:
-            if r in pieces.black_pieces:
-                s += pieces.kBlack
-            elif r in pieces.white_pieces:
-                s += pieces.kWhite
+            if r in cellState.black_pieces:
+                s += cellState.kBlack
+            elif r in cellState.white_pieces:
+                s += cellState.kWhite
             else:
                 s += r
         new_game["boards"][player] = s
@@ -249,23 +250,23 @@ def get_game_state(game, opp_strategy=None):
     game_state = {
         "board": game["board"]
         if "board" in game
-        else pieces.kEmpty * (game["num_rows"] * game["num_cols"]),
+        else cellState.kEmpty * (game["num_rows"] * game["num_cols"]),
         "boards": {
             game["player"]: game["boards"][game["player"]]
             if "boards" in game
-            else pieces.kEmpty * (game["num_rows"] * game["num_cols"]),
-            pieces.kWhite
-            if game["player"] == pieces.kBlack
-            else pieces.kBlack: game["boards"][
-                pieces.kWhite if game["player"] == pieces.kBlack else pieces.kBlack
+            else cellState.kEmpty * (game["num_rows"] * game["num_cols"]),
+            cellState.kWhite
+            if game["player"] == cellState.kBlack
+            else cellState.kBlack: game["boards"][
+                cellState.kWhite if game["player"] == cellState.kBlack else cellState.kBlack
             ]
             if "boards" in game
-            else pieces.kEmpty * (game["num_rows"] * game["num_cols"]),
+            else cellState.kEmpty * (game["num_rows"] * game["num_cols"]),
         },
         "num_rows": game["num_rows"],
         "num_cols": game["num_cols"],
         "player": game["player"],
-        "opponent": pieces.kWhite if game["player"] == pieces.kBlack else pieces.kBlack,
+        "opponent": cellState.kWhite if game["player"] == cellState.kBlack else cellState.kBlack,
         "player_strategy": game["strategy"],
         "opponent_strategy": opp_strategy,
     }
@@ -281,7 +282,6 @@ def greedify(strategy, multiple_actions_allowed=False):
     Returns:
         A greedified version of the strategy.
     """
-    log.info("Greedifying strategy...")
     greedy_strategy = {}
     for board_state, action_val in strategy.items():
         mx_value = -1
@@ -307,14 +307,14 @@ def calculate_turn(game_state):
     num_black = 0
     num_white = 0
     for i in range(len(game_board)):
-        if game_board[i] in pieces.black_pieces:
+        if game_board[i] in cellState.black_pieces:
             num_black += 1
-        if game_board[i] in pieces.white_pieces:
+        if game_board[i] in cellState.white_pieces:
             num_white += 1
     return 1 if num_black > num_white else 0
 
 
-def numeric_action(action, num_cols):
+def num_action(action, num_cols):
     """
     Converts the action in the form of alpha-numeric row column sequence to
     numeric actions. i.e. a2 -> 3 for 3x3 board.
@@ -334,7 +334,7 @@ def numeric_action(action, num_cols):
 
 
 def random_selection(board_state):
-    pos_moves = [i for i, x in enumerate(board_state) if x == pieces.kEmpty]
+    pos_moves = [i for i, x in enumerate(board_state) if x == cellState.kEmpty]
     return [np.random.choice(pos_moves)], [1.0]
 
 
@@ -342,10 +342,10 @@ def convert_to_xo(str_board):
     """
     Convert the board state to only x and o.
     """
-    for p in pieces.black_pieces:
-        str_board = str_board.replace(p, pieces.kBlack)
-    for p in pieces.white_pieces:
-        str_board = str_board.replace(p, pieces.kWhite)
+    for p in cellState.black_pieces:
+        str_board = str_board.replace(p, cellState.kBlack)
+    for p in cellState.white_pieces:
+        str_board = str_board.replace(p, cellState.kWhite)
     return str_board
 
 
@@ -357,9 +357,9 @@ def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.Stat
     black_stones_loc = []
     white_stones_loc = []
     for i in range(len(initial_state)):
-        if initial_state[i] in pieces.black_pieces:
+        if initial_state[i] in cellState.black_pieces:
             black_stones_loc.append(i)
-        if initial_state[i] in pieces.white_pieces:
+        if initial_state[i] in cellState.white_pieces:
             white_stones_loc.append(i)
     black_loc = 0
     white_loc = 0
@@ -385,12 +385,12 @@ def convert_os_str(str_board: str, num_cols: int, player: int):
     for i, cell in enumerate(str_board):
         if i % num_cols == 0 and i != 0:
             new_board += "\n"
-        if cell in pieces.black_pieces:
-            new_board += pieces.kBlack
-        elif cell in pieces.white_pieces:
-            new_board += pieces.kWhite
+        if cell in cellState.black_pieces:
+            new_board += cellState.kBlack
+        elif cell in cellState.white_pieces:
+            new_board += cellState.kWhite
         else:
-            new_board += pieces.kEmpty
+            new_board += cellState.kEmpty
     return new_board
 
 
