@@ -132,9 +132,9 @@ class StrategyGeneratorGUI:
         return frm
 
     def _init_board_frame(self) -> tk.Frame:
-        self.loc_cen = [(0, 0) for _ in range(self.nr * self.nr)]
-        self.coord_cells = [(0 for __ in range(6)) for _ in range(self.nr * self.nr)]
-        self.loc_circle = [(0, 0, 0, 0) for _ in range(self.nr * self.nr)]
+        self.loc_cen = [(0, 0) for _ in range(self.nr * self.nc)]
+        self.coord_cells = [(0 for __ in range(6)) for _ in range(self.nr * self.nc)]
+        self.loc_circle = [(0, 0, 0, 0) for _ in range(self.nr * self.nc)]
         self._calculate_board_locations()
 
         frm = tk.Frame(pady=20, padx=20)
@@ -290,7 +290,7 @@ class StrategyGeneratorGUI:
         cell_id = 0
         len_sq = self.len_ce * math.sqrt(3) / 2
         for row in range(self.nr):
-            for col in range(self.nr):
+            for col in range(self.nc):
                 # Draw the cell.
                 x = len_sq + row * len_sq + 2 * col * len_sq
                 y = 1.5 * row * self.len_ce
@@ -316,7 +316,7 @@ class StrategyGeneratorGUI:
 
     def draw_board(self, board_str: str) -> None:
         self.canvas.delete("all")
-        for cell_id in range(self.nr * self.nr):
+        for cell_id in range(self.nr * self.nc):
             self._draw_cell(board_str[cell_id], cell_id)
 
     def _draw_cell(self, cell_str: str, cell_id: int) -> None:
@@ -393,7 +393,7 @@ class StrategyGeneratorGUI:
         # find data
         data_dir = os.path.join(
             os.path.dirname(__file__),
-            f"../data/strategy_data/{self.nc}x{self.nr}_{self.player}_def",
+            f"../data/strategy_data/{self.nr}x{self.nc}_{self.player}_def",
         )
         # create the directory if it doesn't exist
         if not os.path.exists(data_dir):

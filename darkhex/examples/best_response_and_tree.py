@@ -1,6 +1,5 @@
 import logging
 
-import coloredlogs
 import pyspiel
 from algorithms.best_response import BestResponse
 from algorithms.tree_generator import TreeGenerator
@@ -9,7 +8,7 @@ from utils.util import load_file
 
 
 def main():
-    file_name = "3x3_0_def"
+    file_name = "4x3_1_def"
     # file_name = '4x3_subgame'
     file_path = f"data/strategy_data/{file_name}/"
     data = load_file(file_path + "game_info.pkl")
