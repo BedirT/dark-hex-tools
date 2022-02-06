@@ -5,7 +5,7 @@ from gui.strategy_generator import StrategyGeneratorGUI
 
 
 def main():
-    StrategyGeneratorGUI("....", 2, 2, 0)
+    StrategyGeneratorGUI("............", 4, 3, 1)
 
 
 if __name__ == "__main__":

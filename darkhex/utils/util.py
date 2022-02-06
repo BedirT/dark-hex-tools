@@ -39,7 +39,6 @@ def cell_connections(cell, num_cols, num_rows):
             positions.append(pos_by_coord(num_cols, row - 1, col + 1))
     return positions
 
-
 def game_over(board_state):
     """
     Check if the game is over.
@@ -49,7 +48,6 @@ def game_over(board_state):
     return (
         board_state.count(cellState.kBlackWin) + board_state.count(cellState.kWhiteWin) == 1
     )
-
 
 def updated_board(board_state, cell, color, num_rows, num_cols):
     """
@@ -129,7 +127,6 @@ def updated_board(board_state, cell, color, num_rows, num_cols):
     # Convert list back to string
     return "".join(updated_board_state)
 
-
 def replace_action(board, action, new_value):
     """
     Replaces the action on the board with the new value.
@@ -137,7 +134,6 @@ def replace_action(board, action, new_value):
     new_board = list(deepcopy(board))
     new_board[action] = new_value
     return "".join(new_board)
-
 
 def play_action(game, player, action):
     """
@@ -173,7 +169,6 @@ def play_action(game, player, action):
         new_game["boards"][player] = s
         return new_game, False
 
-
 def load_file(filename):
     """
     Loads a file and returns the content.
@@ -182,7 +177,6 @@ def load_file(filename):
         return dill.load(open(filename, "rb"))
     except IOError:
         raise IOError(f"File not found: {filename}")
-
 
 def save_file(content, file_path):
     """
@@ -194,10 +188,8 @@ def save_file(content, file_path):
         os.makedirs(directory)
     dill.dump(content, open(file_path, "wb"))
 
-
 def pos_by_coord(num_cols, r, c):
     return num_cols * r + c
-
 
 def conv_alphapos(pos, num_cols):
     """
@@ -207,7 +199,6 @@ def conv_alphapos(pos, num_cols):
     col = pos % num_cols
     row = pos // num_cols
     return "{}{}".format(chr(ord("a") + col), row + 1)
-
 
 def choose_strategy(choice=None):
     """
@@ -245,7 +236,6 @@ def choose_strategy(choice=None):
     )
     return strat, arr[choice]
 
-
 def get_game_state(game, opp_strategy=None):
     game_state = {
         "board": game["board"]
@@ -272,7 +262,6 @@ def get_game_state(game, opp_strategy=None):
     }
     return game_state
 
-
 def greedify(strategy, multiple_actions_allowed=False):
     """
     Greedifies the given strategy. -1 is the minumum value and 1 is the maximum.
@@ -297,7 +286,6 @@ def greedify(strategy, multiple_actions_allowed=False):
         ]
     return greedy_strategy
 
-
 def calculate_turn(game_state):
     """
     Calculates which player's turn it is.
@@ -312,7 +300,6 @@ def calculate_turn(game_state):
         if game_board[i] in cellState.white_pieces:
             num_white += 1
     return 1 if num_black > num_white else 0
-
 
 def num_action(action, num_cols):
     """
@@ -332,11 +319,9 @@ def num_action(action, num_cols):
         return False
     return pos_by_coord(num_cols, row, col)
 
-
 def random_selection(board_state):
     pos_moves = [i for i, x in enumerate(board_state) if x == cellState.kEmpty]
     return [np.random.choice(pos_moves)], [1.0]
-
 
 def convert_to_xo(str_board):
     """
@@ -347,7 +332,6 @@ def convert_to_xo(str_board):
     for p in cellState.white_pieces:
         str_board = str_board.replace(p, cellState.kWhite)
     return str_board
-
 
 def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.State:
     """
@@ -375,7 +359,6 @@ def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.Stat
             white_loc += 1
     return game_state
 
-
 def convert_os_str(str_board: str, num_cols: int, player: int):
     """
     Convert the board state to pyspiel format.
@@ -392,7 +375,6 @@ def convert_os_str(str_board: str, num_cols: int, player: int):
         else:
             new_board += cellState.kEmpty
     return new_board
-
 
 def convert_os_strategy(strategy: dict, num_cols: int, player: int) -> dict:
     """

@@ -9,7 +9,72 @@ from tkinter import Grid, filedialog, font, messagebox
 
 from utils.cell_state import cellState
 from utils.isomorphic import isomorphic_single
-from utils.util import num_action, save_file, updated_board
+from utils.util import num_action, save_file, updated_board, load_file
+
+
+class gameBuffer:
+    """History buffer for the game to use for rewind and restart."""
+
+    def __init__(self, 
+                 initial_board: str,
+                 num_rows: int,
+                 num_cols: int,
+                 player: int,
+                 include_isomorphic: bool,
+                 stratgen_class) -> None:
+        self.game_info = {
+            "num_rows": num_rows,
+            "num_cols": num_cols,
+            "player": player,
+            "isomorphic": include_isomorphic,
+            "initial_board": initial_board,
+        }
+        self.info_states = []
+        self.moves_and_boards = []
+        self.board = []
+        self.move_stack = []
+        self.given_inputs = []
+        self.stratgen_class = stratgen_class
+        self.add_history_buffer(stratgen_class)
+
+    def add_history_buffer(self, stratgen_class, given_input=None):
+        self.info_states.append(deepcopy(stratgen_class.info_states))
+        self.moves_and_boards.append(deepcopy(stratgen_class.moves_and_boards))
+        self.board.append(deepcopy(stratgen_class.board))
+        self.move_stack.append(deepcopy(stratgen_class.move_stack))
+        if given_input:
+            self.given_inputs.append(given_input)
+
+    def rewind(self) -> str:
+        """Rewinds the game."""
+        if len(self.info_states) > 1:
+            self.info_states.pop()
+            self.moves_and_boards.pop()
+            self.board.pop()
+            self.move_stack.pop()
+            self.given_inputs.pop()
+        else:
+            return "Cannot rewind anymore.\n"
+        self.stratgen_class.info_states = deepcopy(self.info_states[-1])
+        self.stratgen_class.moves_and_boards = deepcopy(self.moves_and_boards[-1])
+        self.stratgen_class.board = deepcopy(self.board[-1])
+        self.stratgen_class.move_stack = deepcopy(self.move_stack[-1])
+        return "Rewinded to the previous state.\n"
+
+    def restart(self) -> str:
+        """Restarts the game."""
+        self.info_states = self.info_states[:1]
+        self.moves_and_boards = self.moves_and_boards[:1]
+        self.board = self.board[:1]
+        self.move_stack = self.move_stack[:1]
+        self.given_inputs = self.given_inputs[:1]
+
+        self.stratgen_class.info_states = deepcopy(self.info_states[0])
+        self.stratgen_class.moves_and_boards = deepcopy(self.moves_and_boards[0])
+        self.stratgen_class.board = deepcopy(self.board[0])
+        self.stratgen_class.move_stack = deepcopy(self.move_stack[0])
+        return "Restarted the game.\n"
+
 
 colors = {
     "black": "#000000",
@@ -197,6 +262,7 @@ class StrategyGeneratorGUI:
         # create a pulldown menu, and add it to the menu bar
         gamemenu = tk.Menu(menu, tearoff=0)
         gamemenu.add_command(label="New game", command=self._init_new_game)
+        gamemenu.add_command(label="Load game", command=self._init_load_game)
         gamemenu.add_command(label="Exit", command=self.root.quit)
         menu.add_cascade(label="Game", menu=gamemenu)
 
@@ -256,6 +322,37 @@ class StrategyGeneratorGUI:
         self.ent_row.grid(row=1, column=1, padx=5, pady=5)
         self.ent_col.grid(row=1, column=3, padx=5, pady=5)
         btn_ok.grid(row=3, column=0, padx=10, pady=10, sticky="ewsn", columnspan=4)
+
+    def _init_load_game(self) -> None:
+        """Choose a history file to load the game from."""
+        path = filedialog.askopenfilename(
+            initialdir=os.path.join(os.getcwd(), "data"),
+            title="Select a history file",
+            filetypes=(("History files", "*.pkl"), ("All files", "*.*")),
+        )
+        if not path:
+            # Failed, update the log.
+            self.txt_log.insert(
+                tk.END,
+                "Failed to load the game.\n",
+                ("error", "error"),
+            )
+            return
+        # Load the history file.
+        history = load_file(path)
+        self.load_game(history)
+        # Update the and the board.
+        self.txt_log.insert(
+            tk.END,
+            "Loaded the game from {}.\n".format(path),
+            ("info", "info"),
+        )
+        self.txt_log.see(tk.END)
+        self.draw_board(self.strat_gen.board)
+        self.ent_input.focus()
+        # delete the entry and replace with the latest entry from history.
+        self.ent_input.delete(0, tk.END)
+        self.ent_input.insert(0, self.strat_gen.history_buffer.given_inputs[-1])
 
     def _init_end_game(self) -> None:
         """Pop up window to choose a location to save the file.
@@ -371,7 +468,7 @@ class StrategyGeneratorGUI:
         if end_game:
             self._init_end_game()
 
-    def _save_to(self, filename) -> str:
+    def _save_to(self, path) -> str:
         data = {
             "num_cols": self.nc,
             "num_rows": self.nr,
@@ -381,11 +478,9 @@ class StrategyGeneratorGUI:
             "strategy": self.strat_gen.info_states,
         }
         # save the file
-        if filename:
-            if not filename.endswith(".pkl"):
-                filename += ".pkl"
-            save_file(data, filename)
-        return filename
+        save_file(data, path + "/game_info.pkl")
+        save_file(self.strat_gen.history_buffer, path + "/history.pkl")
+        return path
 
     def save_file_default(self) -> None:
         """Saves the file to the default location."""
@@ -399,8 +494,9 @@ class StrategyGeneratorGUI:
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
         # save the file
-        filename = self._save_to(os.path.join(data_dir, "game_info.pkl"))
-        self.txt_log.insert(tk.END, "File saved to " + filename + "\n")
+        path = self._save_to(data_dir)
+        self.txt_log.insert(tk.END, "File saved to " + path + "/game_info.pkl\n")
+        self.txt_log.insert(tk.END, "History buffer saved to " + path + "/history.pkl\n")
         self.txt_log.see(tk.END)
         self.save_win.destroy()
 
@@ -408,13 +504,14 @@ class StrategyGeneratorGUI:
         # get the file name
         # start from the current directory
         cur_dir = os.getcwd()
-        filename = filedialog.asksaveasfilename(
+        path = filedialog.asksaveasfilename(
             initialdir=cur_dir + "/data/",
-            title="Select a File",
-            filetypes=(("Pickle files", "*.pkl*"), ("all files", "*.*")),
+            title="Select a Folder",
+            filetypes=(("all files", "*.*")),
         )
-        filename = self._save_to(filename)
-        self.txt_log.insert(tk.END, "File saved to " + filename + "\n")
+        path = self._save_to(path)
+        self.txt_log.insert(tk.END, "File saved to " + path + "/game_info.pkl\n")
+        self.txt_log.insert(tk.END, "History file saved to " + path + "/history.pkl\n")
         self.txt_log.see(tk.END)
         self.save_win.destroy()
 
@@ -423,6 +520,10 @@ class StrategyGeneratorGUI:
         self.txt_log.insert(tk.END, log)
         self.txt_log.see(tk.END)
         self.draw_board(self.strat_gen.board)
+        self.ent_input.delete(0, "end")
+        if len(self.strat_gen.history_buffer.given_inputs) > 0:
+            old_input = self.strat_gen.history_buffer.given_inputs[-1]
+            self.ent_input.insert(0, old_input)
 
     def restart(self) -> None:
         log = self.strat_gen.history_buffer.restart()
@@ -459,51 +560,15 @@ class StrategyGeneratorGUI:
         # Draw the board.
         self.draw_board(self.strat_gen.board)
 
-
-class gameBuffer:
-    """History buffer for the game to use for rewind and restart."""
-
-    def __init__(self, stratgen_class) -> None:
-        self.info_states = []
-        self.moves_and_boards = []
-        self.board = []
-        self.move_stack = []
-        self.stratgen_class = stratgen_class
-        self.add_history_buffer(stratgen_class)
-
-    def add_history_buffer(self, stratgen_class):
-        self.info_states.append(deepcopy(stratgen_class.info_states))
-        self.moves_and_boards.append(deepcopy(stratgen_class.moves_and_boards))
-        self.board.append(deepcopy(stratgen_class.board))
-        self.move_stack.append(deepcopy(stratgen_class.move_stack))
-
-    def rewind(self) -> str:
-        """Rewinds the game."""
-        if len(self.info_states) > 1:
-            self.info_states.pop()
-            self.moves_and_boards.pop()
-            self.board.pop()
-            self.move_stack.pop()
-        else:
-            return "Cannot rewind anymore.\n"
-        self.stratgen_class.info_states = deepcopy(self.info_states[-1])
-        self.stratgen_class.moves_and_boards = deepcopy(self.moves_and_boards[-1])
-        self.stratgen_class.board = deepcopy(self.board[-1])
-        self.stratgen_class.move_stack = deepcopy(self.move_stack[-1])
-        return "Rewinded to the previous state.\n"
-
-    def restart(self) -> str:
-        """Restarts the game."""
-        self.info_states = self.info_states[:1]
-        self.moves_and_boards = self.moves_and_boards[:1]
-        self.board = self.board[:1]
-        self.move_stack = self.move_stack[:1]
-
-        self.stratgen_class.info_states = deepcopy(self.info_states[0])
-        self.stratgen_class.moves_and_boards = deepcopy(self.moves_and_boards[0])
-        self.stratgen_class.board = deepcopy(self.board[0])
-        self.stratgen_class.move_stack = deepcopy(self.move_stack[0])
-        return "Restarted the game.\n"
+    def load_game(self, history: gameBuffer):
+        """Given history, sets up the StrategyGenerator and gameBuffers."""
+        self._setup_game(
+            history.game_info["initial_board"],
+            history.game_info["num_rows"],
+            history.game_info["num_cols"],
+            history.game_info["player"],
+            history.game_info["isomorphic"])
+        self.strat_gen.load_game(history)
 
 
 class StrategyGenerator:
@@ -518,7 +583,7 @@ class StrategyGenerator:
         self.num_cols = num_cols
         self.num_rows = num_rows
         self.p = player
-        self.o = 1 if player == 0 else 0
+        self.o = 1 - self.p
         self.include_isomorphic = include_isomorphic
 
         # Perform Checks to see if initial values are valid
@@ -531,7 +596,7 @@ class StrategyGenerator:
         self.move_stack = []
 
         # set history buffer
-        self.history_buffer = gameBuffer(self)
+        self.history_buffer = gameBuffer(initial_board, num_rows, num_cols, player, include_isomorphic, self)
 
     def iterate_board(self, given_input: str) -> None:
         """Iterate the board with the given action.
@@ -585,7 +650,7 @@ class StrategyGenerator:
             # if not was_terminal:
             #     return False, f'Error while getting the board from stack.\n', self.board
             # else:
-            self.history_buffer.add_history_buffer(self)
+            self.history_buffer.add_history_buffer(self, given_input)
             return (
                 True,
                 log + f"Game has ended. No more moves to make.\n",
@@ -593,7 +658,7 @@ class StrategyGenerator:
                 True,
             )
         self.board = self.move_stack.pop()
-        self.history_buffer.add_history_buffer(self)
+        self.history_buffer.add_history_buffer(self, given_input)
         return True, log + "Move performed succeded.\n", self.board, False
 
     def is_valid_moves(
@@ -718,6 +783,18 @@ class StrategyGenerator:
                 return True
         return False
 
+    def load_game(self, history: gameBuffer):
+        """Load a game from a history buffer."""
+        self.num_cols = history.game_info["num_cols"]
+        self.num_rows = history.game_info["num_rows"]
+        self.p = history.game_info["player"]
+        self.o = 1 - self.p
+        self.history_buffer = history
+        self.history_buffer.stratgen_class = self
+        self.board = history.board[-1]
+        self.move_stack = history.move_stack[-1]
+        self.moves_and_boards = history.moves_and_boards[-1]
+        self.info_states = history.info_states[-1]
 
 def is_valid_board(board: str, num_rows: int, num_cols: int) -> bool:
     """Check if the given board is valid."""
