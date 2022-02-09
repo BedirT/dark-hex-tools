@@ -32,11 +32,14 @@ def isomorphic(board_strategy):
 
 def isomorphic_single(dh_board, actions, probs):
     # find isomorphic placements
-    new_board = [cellState.kEmpty] * len(dh_board)
-    for i in range(len(dh_board)):
-        iso_index = len(dh_board) - 1 - i
-        new_board[iso_index] = convert_piece(dh_board[i])
     new_moves = []
     for action, prob in zip(actions, probs):
         new_moves.append((len(dh_board) - 1 - action, prob))
-    return "".join(new_board), new_moves
+    return isomorphic_board(dh_board), new_moves
+
+def isomorphic_board(board):
+    new_board = [cellState.kEmpty] * len(board)
+    for i in range(len(board)):
+        iso_index = len(board) - 1 - i
+        new_board[iso_index] = convert_piece(board[i])
+    return "".join(new_board)

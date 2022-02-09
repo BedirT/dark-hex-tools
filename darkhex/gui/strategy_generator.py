@@ -9,7 +9,7 @@ from tkinter import Grid, filedialog, font, messagebox
 
 from utils.cell_state import cellState
 from utils.isomorphic import isomorphic_single
-from utils.util import num_action, save_file, updated_board, load_file
+from utils.util import num_action, save_file, updated_board, load_file, convert_to_xo
 
 
 class gameBuffer:
@@ -55,10 +55,7 @@ class gameBuffer:
             self.given_inputs.pop()
         else:
             return "Cannot rewind anymore.\n"
-        self.stratgen_class.info_states = deepcopy(self.info_states[-1])
-        self.stratgen_class.moves_and_boards = deepcopy(self.moves_and_boards[-1])
-        self.stratgen_class.board = deepcopy(self.board[-1])
-        self.stratgen_class.move_stack = deepcopy(self.move_stack[-1])
+        self._update_game(-1)
         return "Rewinded to the previous state.\n"
 
     def restart(self) -> str:
@@ -67,14 +64,43 @@ class gameBuffer:
         self.moves_and_boards = self.moves_and_boards[:1]
         self.board = self.board[:1]
         self.move_stack = self.move_stack[:1]
-        self.given_inputs = self.given_inputs[:1]
-
-        self.stratgen_class.info_states = deepcopy(self.info_states[0])
-        self.stratgen_class.moves_and_boards = deepcopy(self.moves_and_boards[0])
-        self.stratgen_class.board = deepcopy(self.board[0])
-        self.stratgen_class.move_stack = deepcopy(self.move_stack[0])
+        self.given_inputs = []
+        self._update_game(0)
         return "Restarted the game.\n"
 
+    def search_history(self, info_state):
+        """Search the history buffer for the given info state."""
+        for idx, board in enumerate(self.board):
+            if board == info_state:
+                return idx
+        return -1
+
+    def _revert(self, idx):
+        self.info_states = self.info_states[:idx+1]
+        self.moves_and_boards = self.moves_and_boards[:idx+1]
+        self.board = self.board[:idx+1]
+        self.move_stack = self.move_stack[:idx+1]
+        self.given_inputs = self.given_inputs[:idx+1]
+        self._update_game(idx)
+
+    def _update_game(self, idx):
+        self.stratgen_class.info_states = deepcopy(self.info_states[idx])
+        self.stratgen_class.moves_and_boards = deepcopy(self.moves_and_boards[idx])
+        self.stratgen_class.board = deepcopy(self.board[idx])
+        self.stratgen_class.move_stack = deepcopy(self.move_stack[idx])
+
+    def revert_to_state(self, idx=None, state=None):
+        if idx and state:
+            raise ValueError("Cannot use both idx and state.")
+        if idx:
+            self._revert(idx)
+        elif state:
+            idx = self.search_history(state)
+            if idx != -1:
+                self._revert(idx)
+            else:
+                raise ValueError("State not found.")
+       
 
 colors = {
     "black": "#000000",
@@ -263,6 +289,7 @@ class StrategyGeneratorGUI:
         gamemenu = tk.Menu(menu, tearoff=0)
         gamemenu.add_command(label="New game", command=self._init_new_game)
         gamemenu.add_command(label="Load game", command=self._init_load_game)
+        gamemenu.add_command(label="Search in History", command=self._init_search_history)
         gamemenu.add_command(label="Exit", command=self.root.quit)
         menu.add_cascade(label="Game", menu=gamemenu)
 
@@ -380,6 +407,62 @@ class StrategyGeneratorGUI:
         button_save.grid(row=1, column=0, padx=25, pady=25, sticky="ewsn")
         button_default_save.grid(row=1, column=1, padx=25, pady=25, sticky="ewsn")
         button_cancel.grid(row=1, column=2, padx=25, pady=25, sticky="ewsn")
+
+    def _init_search_history(self) -> None:
+        """Pop up window to search information states in the history buffer
+        Shows a list of all the states in the history buffer, and allows the user
+        to search for a specific state, or pick from the list."""
+        self.search_win = tk.Toplevel(self.root)
+        self.search_win.title("Search history")
+        self.search_win.resizable(False, False)
+
+        # Create the widgets.
+        lbl_search = tk.Label(self.search_win, text="Search:", anchor="e")
+        self.ent_search = tk.Entry(self.search_win, width=25)
+        self.list_search_result = tk.Listbox(self.search_win, width=25)
+        self.fill_search_list('')
+        btn_search = tk.Button(self.search_win, text="Search", command=self.search_history)
+        self.ent_search.bind("<KeyRelease>", self.search_history) # bind to key release
+
+        btn_select = tk.Button(self.search_win, text="Select", command=self.select_history)
+        btn_cancel = tk.Button(self.search_win, text="Cancel", command=self.search_win.destroy)
+        # add a scrollbar to the listbox
+        scrollbar = tk.Scrollbar(self.search_win)
+        scrollbar.config(command=self.list_search_result.yview)
+        self.list_search_result.config(yscrollcommand=scrollbar.set)
+
+        # Place the widgets.
+        lbl_search.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
+        self.ent_search.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+        btn_search.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
+        self.list_search_result.grid(row=1, column=0, padx=5, pady=5, sticky="ew", columnspan=3)
+        btn_select.grid(row=2, column=0, padx=5, pady=5, sticky="ew", columnspan=2)
+        btn_cancel.grid(row=2, column=2, padx=5, pady=5, sticky="ew")
+
+    def search_history(self, _=None):
+        """Update the listbox with the search results."""
+        self.fill_search_list(self.ent_search.get())
+
+    def fill_search_list(self, search_phrase):
+        """Fill the listbox with the history buffer."""
+        self.list_search_result.delete(0, tk.END)
+        for board in self.strat_gen.history_buffer.board:
+            if search_phrase in board or search_phrase == '':
+                self.list_search_result.insert(tk.END, board)
+
+    def select_history(self):
+        """Selects the selected item in the listbox, gets it's id and reverts the game
+        to that state."""
+        selected_item_str = self.list_search_result.get(self.list_search_result.curselection())
+        if selected_item_str:
+            self.strat_gen.history_buffer.revert_to_state(state=selected_item_str)
+            self.draw_board(self.strat_gen.board)
+            self.ent_input.delete(0, tk.END)
+            try:
+                self.ent_input.insert(0, self.strat_gen.history_buffer.given_inputs[-1])
+            except IndexError:
+                pass
+            self.search_win.destroy()
 
     def _calculate_board_locations(self) -> None:
         """Calculates every coordinates needed, to use later on."""
