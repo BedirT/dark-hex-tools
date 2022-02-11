@@ -6,7 +6,7 @@ from utils.util import load_file
 
 
 def main():
-    file_name = "4x3_1_empty_board"
+    file_name = "4x3_1_empty_2"
     file_path = f"data/strategy_data/{file_name}/"
     data = load_file(file_path + "game_info.pkl")
     game = pyspiel.load_game(
