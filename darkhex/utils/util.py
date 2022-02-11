@@ -364,7 +364,7 @@ def convert_os_str(str_board: str, num_cols: int, player: int):
     Convert the board state to pyspiel format.
     ie. P{player} firstrow\nsecondrow
     """
-    new_board = "P" + str(player) + " "
+    new_board = ""
     for i, cell in enumerate(str_board):
         if i % num_cols == 0 and i != 0:
             new_board += "\n"
@@ -374,7 +374,7 @@ def convert_os_str(str_board: str, num_cols: int, player: int):
             new_board += cellState.kWhite
         else:
             new_board += cellState.kEmpty
-    return new_board
+    return new_board + " " + str(player)
 
 def convert_os_strategy(strategy: dict, num_cols: int, player: int) -> dict:
     """
@@ -384,3 +384,26 @@ def convert_os_strategy(strategy: dict, num_cols: int, player: int) -> dict:
     for board_state, actions in strategy.items():
         new_strat[convert_os_str(board_state, num_cols, player)] = actions
     return new_strat
+
+class dotdict(dict):
+    """dict with dot access"""
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+def safe_normalize(y, out=None):
+    """
+    Returns +y+/||+y+||_1 or indmax y if ||+y+||_1 = 0.
+
+    Assumes that +y+ >= 0.
+    """
+    if out is None:
+        out = y.copy()
+    z = np.sum(y)
+    if z > 0:
+        out[:] = y / z
+    else:
+        a = y.argmax()
+        out[:] = 0
+        out[a] = 1.
+    return out
