@@ -364,7 +364,7 @@ def convert_os_str(str_board: str, num_cols: int, player: int):
     Convert the board state to pyspiel format.
     ie. P{player} firstrow\nsecondrow
     """
-    new_board = ""
+    new_board = f"P{player} "
     for i, cell in enumerate(str_board):
         if i % num_cols == 0 and i != 0:
             new_board += "\n"
@@ -374,7 +374,7 @@ def convert_os_str(str_board: str, num_cols: int, player: int):
             new_board += cellState.kWhite
         else:
             new_board += cellState.kEmpty
-    return new_board + " " + str(player)
+    return new_board
 
 def convert_os_strategy(strategy: dict, num_cols: int, player: int) -> dict:
     """
