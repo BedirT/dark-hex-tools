@@ -286,18 +286,16 @@ def greedify(strategy, multiple_actions_allowed=False):
         ]
     return greedy_strategy
 
-def calculate_turn(game_state):
+def calculate_turn(state: str):
     """
-    Calculates which player's turn it is.
+    Calculates which player's turn it is given board state.
     """
-    log.debug(f'Calculating turn for board {game_state["board"]}')
-    game_board = game_state["board"]
     num_black = 0
     num_white = 0
-    for i in range(len(game_board)):
-        if game_board[i] in cellState.black_pieces:
+    for cell in state:
+        if cell in cellState.black_pieces:
             num_black += 1
-        if game_board[i] in cellState.white_pieces:
+        elif cell in cellState.white_pieces:
             num_white += 1
     return 1 if num_black > num_white else 0
 
@@ -359,12 +357,15 @@ def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.Stat
             white_loc += 1
     return game_state
 
-def convert_os_str(str_board: str, num_cols: int, player: int):
+def convert_os_str(str_board: str, num_cols: int, player: int = -1):
     """
     Convert the board state to pyspiel format.
     ie. P{player} firstrow\nsecondrow
     """
-    new_board = f"P{player} "
+    if player == -1:
+        new_board = ""
+    else:
+        new_board = f"P{player} "
     for i, cell in enumerate(str_board):
         if i % num_cols == 0 and i != 0:
             new_board += "\n"

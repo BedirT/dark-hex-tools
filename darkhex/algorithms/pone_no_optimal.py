@@ -1,9 +1,7 @@
 import typing
-
 import pyspiel
 
-
-class PONE:
+class PoneNoOptimal:
     """
     pONE implementation. Uses pyspiel. Calculates the definite
     win states for either players by traversing full tree.
@@ -38,11 +36,10 @@ class PONE:
         a definite win for player 1, and -1 otherwise.
         """
         cur_player = state.current_player()
-        best_case = cur_player - 1
+        best_case = 1 - cur_player # opponent
         for action in state.legal_actions():
             info_state = state.information_state_string()
-            new_state = state.clone()
-            new_state.apply_action(action)
+            new_state = state.child(action)
             if new_state.is_terminal():
                 self.state_oracle[info_state] = cur_player
                 return cur_player
