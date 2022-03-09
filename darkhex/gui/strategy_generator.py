@@ -7,9 +7,9 @@ from collections import Counter
 from copy import deepcopy
 from tkinter import Grid, filedialog, font, messagebox
 
-from utils.cell_state import cellState
-from utils.isomorphic import isomorphic_single
-from utils.util import num_action, save_file, updated_board, load_file, convert_to_xo
+from darkhex.utils.cell_state import cellState
+from darkhex.utils.isomorphic import isomorphic_single
+from darkhex.utils.util import num_action, save_file, updated_board, load_file, convert_to_xo
 
 
 class gameBuffer:
@@ -201,6 +201,14 @@ class StrategyGeneratorGUI:
         self.ent_input = tk.Entry(frm, font="Helvetica 14")
         self.ent_input.grid(row=0, column=1, sticky="nsew")
 
+        btn_random = tk.Button(
+            frm,
+            text="Random",
+            command=self.random_input,
+            height=2,
+            font="Helvetica 14 bold",
+        )
+
         # Add a button to the frame
         btn_submit = tk.Button(
             frm,
@@ -214,10 +222,13 @@ class StrategyGeneratorGUI:
         self.ent_input.bind("<Return>", lambda event: self.enter())
 
         btn_submit.grid(row=0, column=2, sticky="e")
+        btn_random.grid(row=0, column=3, sticky="e")
 
         Grid.columnconfigure(frm, 0, weight=1)
         Grid.columnconfigure(frm, 1, weight=7)
         Grid.columnconfigure(frm, 2, weight=1)
+        Grid.columnconfigure(frm, 3, weight=1)
+
         Grid.rowconfigure(frm, 0, weight=1)
 
         return frm
@@ -524,32 +535,36 @@ class StrategyGeneratorGUI:
                 width=4,
             )
         # Draw the cell id.
+        # convert cell_id to alphanumeric id
+        text_id = chr(ord("a") + cell_id % self.nc) + str(cell_id // self.nc + 1)
         self.canvas.create_text(
-            self.loc_cen[cell_id], text=str(cell_id), fill=colors["white"]
+            self.loc_cen[cell_id], text=str(text_id), fill=colors["white"]
         )
 
     def enter(self) -> None:
         the_in = self.ent_input.get()
         # run the strategy generator
         success, log, new_board, end_game = self.strat_gen.iterate_board(the_in)
-        if success:
-            log = "Move succeeded.\n" + log
-            # clear the log and add the new log
-            # self.txt_log.delete("1.0", tk.END)
-            self.txt_log.insert(tk.END, log + "\n")
-            # auto scroll to the bottom
-            self.txt_log.see(tk.END)
-        else:
-            log = "Move failed.\n" + log
-            # clear the log and add the new log
-            # self.txt_log.delete("1.0", tk.END)
-            self.txt_log.insert(tk.END, log + "\n")
-            # auto scroll to the bottom
-            self.txt_log.see(tk.END)
+        
+        log = "Move succeeded.\n" + log if success else "Move failed.\n" + log
+        self.txt_log.insert(tk.END, log + "\n")
+        self.txt_log.see(tk.END)
         self.draw_board(new_board)
         self.ent_input.delete(0, "end")
         if end_game:
             self._init_end_game()
+
+    def random_input(self) -> None:
+        success, log, new_board, end_game = self.strat_gen.iterate_board("random_roll")
+        
+        log = "Random roll succeded \n" + log if success else "Random roll failed.\n" + log
+        self.txt_log.insert(tk.END, log + "\n")
+        self.txt_log.see(tk.END)
+        self.draw_board(new_board)
+        self.ent_input.delete(0, "end")
+        if end_game:
+            self._init_end_game()
+
 
     def _save_to(self, path) -> str:
         data = {
@@ -588,9 +603,9 @@ class StrategyGeneratorGUI:
         # start from the current directory
         cur_dir = os.getcwd()
         path = filedialog.asksaveasfilename(
-            initialdir=cur_dir + "/data/",
+            initialdir=cur_dir + "darkhex/data/",
             title="Select a Folder",
-            filetypes=(("all files", "*.*")),
+            filetypes=(("all files", "*.*"), ("python files", "*.pkl")),
         )
         path = self._save_to(path)
         self.txt_log.insert(tk.END, "File saved to " + path + "/game_info.pkl\n")
@@ -678,6 +693,9 @@ class StrategyGenerator:
         self.moves_and_boards = {}
         self.move_stack = []
 
+        self.random_roll = False # if true, take actions until the terminal state.
+        self.target_stack_board = None
+
         # set history buffer
         self.history_buffer = gameBuffer(initial_board, num_rows, num_cols, player, include_isomorphic, self)
 
@@ -690,7 +708,6 @@ class StrategyGenerator:
         success, actions, probs, log = self.is_valid_moves(self.board, given_input)
         if not success:
             return False, log, self.board, False
-
         # log the move type
         log = f"{log}\n{actions} / {given_input}\n"
         self.info_states[self.board] = self._action_probs(actions, probs)
@@ -717,22 +734,22 @@ class StrategyGenerator:
                 self.info_states[iso_state] = ls
 
         collusion_possible = self._is_collusion_possible()
+        addition = 0
         for action in actions:
+            new_board = self.moves_and_boards[f"{action}{self.p}"]
+            if self._is_terminal(new_board):
+                log += f"Terminal state reached with action {action}\n"
+            elif new_board not in self.info_states:
+                self.move_stack.append(new_board)
+                addition += 1
             if collusion_possible:
                 new_board = self.moves_and_boards[f"{action}{self.o}"]
                 if self._is_terminal(new_board):
                     log += f"Terminal state reached with action {action}\n"
                 elif new_board not in self.info_states:
                     self.move_stack.append(new_board)
-            new_board = self.moves_and_boards[f"{action}{self.p}"]
-            if self._is_terminal(new_board):
-                log += f"Terminal state reached with action {action}\n"
-            elif new_board not in self.info_states:
-                self.move_stack.append(new_board)
+                    addition += 1
         if len(self.move_stack) == 0:
-            # if not was_terminal:
-            #     return False, f'Error while getting the board from stack.\n', self.board
-            # else:
             self.history_buffer.add_history_buffer(self, given_input)
             return (
                 True,
@@ -742,12 +759,21 @@ class StrategyGenerator:
             )
         self.board = self.move_stack.pop()
         self.history_buffer.add_history_buffer(self, given_input)
+        print(self.move_stack, addition, self.board)
+        if self.random_roll:
+            self.random_roll = False
+            self.target_stack_board = deepcopy(self.move_stack[-addition])
+        if self.target_stack_board:
+            if self.target_stack_board == self.board:
+                self.target_stack_board = None
+            else:
+                self.iterate_board("random_roll")
         return True, log + "Move performed succeded.\n", self.board, False
 
     def is_valid_moves(
         self, board: str, given_input: str
     ) -> typing.Tuple[bool, typing.List[int], typing.List[float]]:
-        success, moves, probs = self._get_moves(given_input)
+        success, moves, probs = self._get_moves(board, given_input)
         if not success:
             return False, None, None, f"Invalid move: {moves}"
         # Check if the moves are valid. Save the new board states for each move.
@@ -766,17 +792,22 @@ class StrategyGenerator:
             self.moves_and_boards[f"{move}{self.o}"] = new_board
             self.moves_and_boards[f"{move}{self.p}"] = new_board_2
         # check if sum of probs is 1
-        if sum(probs) != 1:
-            return False, None, None, f"Values don't add up to one: {probs}"
+        if abs(sum(probs)-1) > 0.0000001: # python float comparison
+            return False, None, None, f"Values don't add up to one: {probs}->{sum(probs)}"
         return True, moves, probs, "Values processed successfully."
 
-    def _get_moves(self, given_input: str):
+    def _get_moves(self, board:str, given_input: str):
         if len(given_input) < 1:
             return False, "No action given.", None
         action_probs = given_input.strip().split(" ")
+        if action_probs[0] == "random_roll":
+            if self.target_stack_board is None:
+                self.random_roll = True
+            move = board.find('.')
+            return True, [move], [1]
         if len(action_probs) == 1:
             a = num_action(action_probs[0], self.num_cols)
-            if a:
+            if isinstance(a, int):
                 moves = [a]
                 probs = [1]
             else:
