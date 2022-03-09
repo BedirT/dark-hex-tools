@@ -1,5 +1,5 @@
 import gi
-from utils.util import load_file
+from darkhex.utils.util import load_file
 
 gi.require_version("Gtk", "3.0")
 
@@ -24,7 +24,7 @@ class TreeRun(xdot.DotWindow):
         return True
 
     def tree_run(self):
-        dotcode = load_file(f"data/strategy_data/{self.file_name}/tree.dot")
+        dotcode = load_file(f"darkhex/data/strategy_data/{self.file_name}/tree.dot")
 
         dotcode = dotcode.encode("UTF-8")
 

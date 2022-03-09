@@ -4,7 +4,7 @@ from copy import deepcopy
 import dill
 import numpy as np
 import pyspiel
-from utils.cell_state import cellState
+from darkhex.utils.cell_state import cellState
 
 
 def cell_connections(cell, num_cols, num_rows):
@@ -312,10 +312,10 @@ def num_action(action, num_cols):
         row = int(action[1:]) - 1
         # for column a -> 0, b -> 1 ...
         col = ord(action[0]) - ord("a")
+        return pos_by_coord(num_cols, row, col)
     except ValueError:
         log.error("Invalid action: {}".format(action))
         return False
-    return pos_by_coord(num_cols, row, col)
 
 def random_selection(board_state):
     pos_moves = [i for i, x in enumerate(board_state) if x == cellState.kEmpty]

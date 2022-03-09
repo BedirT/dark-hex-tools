@@ -3,7 +3,7 @@ Converts a given darkhex board strategy in the form
 of a dictionry (information_state: [actions]) with its
 isomorphic equivalent.
 """
-from utils.cell_state import cellState
+from darkhex.utils.cell_state import cellState
 
 
 def convert_piece(given_piece):

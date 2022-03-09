@@ -9,8 +9,8 @@ import numpy as np
 import pandas as pd
 import pyspiel
 import seaborn as sns
-from algorithms.pone_optimal import PoneOptimal
-from utils.util import save_file, convert_os_str, calculate_turn
+from darkhex.algorithms.pone_optimal import PoneOptimal
+from darkhex.utils.util import save_file, convert_os_str, calculate_turn
 
 
 def report_results(
@@ -46,28 +46,39 @@ def plot(num_rows: int, num_cols: int, definite_wins: typing.Dict[str, int]) -> 
     plt.xlabel("Number of empty cells")
     plt.ylabel("Number of definite wins")
     # save the plot
-    plt.savefig(f"data/definite_wins/{num_rows}x{num_cols}.png")
+    plt.savefig(f"darkhex/data/definite_wins/{num_rows}x{num_cols}.png")
     plt.show()
 
 
 def find_p1_wins(num_cols: int, num_rows: int) -> None:
-    pone = PoneOptimal([num_rows, num_cols])
-    # get definite win states
-    print(f"Finding definite wins for {num_rows}x{num_cols}")
+    pone = PoneOptimal(num_rows, num_cols, 1)
+    res = pone.search()
     definite_wins = {}
-    for h in pone.state_results:
-        for state, result in h.items():
-            if result != '=':
-                definite_wins[state] = 0 if result == 'x' else 1
-    print(definite_wins)
+    for h in res:
+        for state, val in h.items():
+            if val >= 0:
+                definite_wins[state] = val
+    pone = PoneOptimal(num_rows, num_cols, 0)
+    res = pone.search()
+    intersection = {}
+    for h in res:
+        for state, val in h.items():
+            if val >= 0:
+                if state in definite_wins:
+                    intersection[state] = val
+                else:
+                    definite_wins[state] = val
+    # print(definite_wins)
     print(f"Found {len(definite_wins)} definite wins")
+    # print(intersection)
+    print(f"Found {len(intersection)} definite wins in intersection")
 
     # save to file
-    save_file(definite_wins, f"data/{num_rows}x{num_cols}.pkl")
+    save_file(definite_wins, f"darkhex/data/dw_{num_rows}x{num_cols}.pkl")
 
     # report_results(num_rows, num_cols, definite_wins)
     # plot(num_rows, num_cols, definite_wins)
 
 
 if __name__ == "__main__":
-    find_p1_wins(2, 2)
+    find_p1_wins(3, 3)

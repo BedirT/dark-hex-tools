@@ -9,7 +9,7 @@ from copy import deepcopy
 
 import pydot
 import pyspiel
-from utils.util import (
+from darkhex.utils.util import (
     conv_alphapos,
     convert_os_strategy,
     get_open_spiel_state,
@@ -23,7 +23,7 @@ class TreeGenerator:
         self.file_name = file_name
 
         # Load the game information
-        self.game_info = load_file(f"data/strategy_data/{self.file_name}/game_info.pkl")
+        self.game_info = load_file(f"darkhex/data/strategy_data/{self.file_name}/game_info.pkl")
         player = self.game_info["player"]
 
         self.strategies = {
@@ -32,7 +32,7 @@ class TreeGenerator:
             ),
             1
             - player: load_file(
-                f"data/strategy_data/{self.file_name}/opp_strategy.pkl"
+                f"darkhex/data/strategy_data/{self.file_name}/opp_strategy.pkl"
             ),
         }
 
@@ -109,6 +109,9 @@ class TreeGenerator:
             fontsize="12",
             fontcolor="black",
             rankdir="TB",
+            ratio="fill",
+            size="8.3,11.7!",
+            margin=0,
         )
         # Add the root node's children
         self._add_children(self.game_state)
@@ -133,10 +136,11 @@ class TreeGenerator:
         )
 
         # Save the dot file
-        save_file(output_raw_dot, f"data/strategy_data/{self.file_name}/tree.dot")
+        save_file(output_raw_dot, f"darkhex/data/strategy_data/{self.file_name}/tree.dot")
 
         # Save the tree
-        self.tree.write_png(f"data/strategy_data/{self.file_name}/tree.png")
+        self.tree.write_svg(f"darkhex/data/strategy_data/{self.file_name}/tree.svg")
+        self.tree.write_pdf(f"darkhex/data/strategy_data/{self.file_name}/tree.pdf")
 
     def _add_children(self, game_state, parent=None):
         """

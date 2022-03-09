@@ -6,7 +6,7 @@ import typing
 from collections import defaultdict
 
 import pyspiel
-from utils.util import convert_os_strategy, get_open_spiel_state, greedify, save_file
+from darkhex.utils.util import convert_os_strategy, get_open_spiel_state, greedify, save_file
 
 
 class BestResponse:

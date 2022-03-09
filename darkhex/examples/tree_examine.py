@@ -1,11 +1,11 @@
 """
 Sample file for using tree_run.py
 """
-from algorithms.tree_run import TreeRun
+from darkhex.algorithms.tree_run import TreeRun
 
 
 def main():
-    file_name = "4x3_boundsOver7"
+    file_name = "4x3_0_def"
     tree_run = TreeRun(file_name)
     tree_run.tree_run()
 

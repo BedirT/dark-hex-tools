@@ -1,13 +1,13 @@
 import pyspiel
-from algorithms.best_response import BestResponse
-from algorithms.tree_generator import TreeGenerator
-from algorithms.tree_run import TreeRun
-from utils.util import load_file
+from darkhex.algorithms.best_response import BestResponse
+from darkhex.algorithms.tree_generator import TreeGenerator
+from darkhex.algorithms.tree_run import TreeRun
+from darkhex.utils.util import load_file
 
 
 def main():
-    file_name = "4x3_1_empty_2"
-    file_path = f"data/strategy_data/{file_name}/"
+    file_name = "4x3_0_def"
+    file_path = f"darkhex/data/strategy_data/{file_name}/"
     data = load_file(file_path + "game_info.pkl")
     game = pyspiel.load_game(
         f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]})'

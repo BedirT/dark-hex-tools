@@ -2,13 +2,13 @@
 Sampe file to generate a strategy tree using tree_generator.py
 """
 import pyspiel
-from algorithms.tree_generator import TreeGenerator
-from utils.util import load_file
+from darkhex.algorithms.tree_generator import TreeGenerator
+from darkhex.utils.util import load_file
 
 
 def main():
-    file_name = "4x3_boundsOver7"
-    game_info = load_file(f"data/strategy_data/{file_name}/game_info.pkl")
+    file_name = "4x3_0_def"
+    game_info = load_file(f"darkhex/data/strategy_data/{file_name}/game_info.pkl")
 
     # Load the game
     game = pyspiel.load_game(
