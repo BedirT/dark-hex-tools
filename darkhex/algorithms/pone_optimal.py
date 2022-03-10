@@ -11,35 +11,38 @@
 import math
 import numpy as np
 import pyspiel
-import open_spiel.python.algorithms.get_all_states as pyspiel_get_all_states
+import darkhex.algorithms.gel_all_information_states as gel
 from darkhex.utils.cell_state import cellState
 
 
 class PoneOptimal:
-    def __init__(self, num_rows, num_cols, player=0):
+    def __init__(self, num_rows, num_cols):
         self.num_rows = num_rows
         self.num_cols = num_cols
         self.num_cells = self.num_rows * self.num_cols
 
-        self.player = player
-        self.opponent = 1 - player
-
         self.game = pyspiel.load_game(f"dark_hex_ir(num_cols={num_cols},num_rows={num_rows})")
         
+        self.reset_data()
+
+        print("Generating all states...")
+        self.all_info_states = gel.get_all_information_states(self.game, True)
+        print(f"All States gathered: {len(self.all_info_states)}")
+
+    def reset_data(self) -> None:
         self.legal_actions = {}
         self.legal_states = [{} for _ in range(self.num_cells)]
         self.empty_states = [set() for _ in range(self.num_cells+1)]  # pyspiel.State
 
-        print("Generating all states...")
-        self.setup_legal_states()   # setup the legal states
-        print(self.empty_states)
-
-    def search(self) -> list:
+    def search(self, player) -> list:
         """
         Find all the legal positions, examine every position
         in depth for prob 1 wins for players. It fills the dictionary
         'state results'.
         """
+        self.player = player
+        self.opponent = 1 - player
+        self.setup_legal_states()   # setup the legal states
         for e in range(self.num_cells + 1):             # empty cells
             for h in range(math.ceil(self.num_cells / 2)):    # hidden cells
                 if e + h > self.num_cells:
@@ -126,32 +129,20 @@ class PoneOptimal:
         """
         Setup the legal states for each h and e.
         """
-        all_states = pyspiel_get_all_states.get_all_states(self.game, include_terminals=False, 
-                                                   include_chance_states=False).values()
-        print(f"All States gathered: {len(all_states)}")
-        size_legal_action = 0
-        size_legal_states = 0
-        size_empty_states = 0
-        for state in all_states:
-            info_state = state.information_state_string(self.player)
+        for info_state_pair, data in self.all_info_states.items():
+            info_state = info_state_pair[self.player]
             info_state = self.simplify_state(info_state)
-            h = self._num_hidden_stones(state)
-            e = self._num_empty_cells(state)
-            res = -1
-            if (info_state, h) not in self.legal_actions:
-                self.legal_actions[(info_state, h)] = state.legal_actions(self.player)
-                size_legal_action += 1
-            if state.is_terminal():
-                res = self.player if state.returns()[self.player] > 0 else self.opponent
-            if info_state not in self.legal_states[h]:
-                self.legal_states[h][info_state] = res
-                size_legal_states += 1
-            if info_state not in self.empty_states[e]:
-                self.empty_states[e].add(info_state)
-                size_empty_states += 1
-            print(f"Size of legal states: {size_legal_states} | Size of legal actions: {size_legal_action} | Size of empty states: {size_empty_states}", end="\r")
+            h = self._num_hidden_stones(info_state_pair)
+            e = self._num_empty_cells(info_state)
+            self.legal_actions[(info_state, h)] = data[0][self.player]
+            if info_state in self.legal_states[h]:
+                if data[1] == self.opponent:
+                    self.legal_states[h][info_state] = self.opponent
+            else:
+                self.legal_states[h][info_state] = data[1]
+            self.empty_states[e].add(info_state)
 
-    def _num_hidden_stones(self, state: pyspiel.State) -> int:
+    def _num_hidden_stones(self, info_state_pair: tuple) -> int:
         """
         Get the number of hidden stones in the given state.
 
@@ -160,9 +151,9 @@ class PoneOptimal:
         Returns:
             - int:      Number of hidden stones.
         """
-        player_perspective = self.simplify_state(state.information_state_string(self.player))
+        player_perspective = self.simplify_state(info_state_pair[self.player])
         # count the known opp stones and substract from the real num of opp stones
-        opp_perspective = self.simplify_state(state.information_state_string(self.opponent))
+        opp_perspective = self.simplify_state(info_state_pair[self.opponent])
         opp_stone = cellState.kBlack if self.opponent == 0 else cellState.kWhite
         num_hidden_stones = 0
         for p_cell, o_cell in zip(player_perspective, opp_perspective):
@@ -170,7 +161,7 @@ class PoneOptimal:
                 num_hidden_stones += 1
         return num_hidden_stones
 
-    def _num_empty_cells(self, state: pyspiel.State) -> int:
+    def _num_empty_cells(self, p_info_state: str) -> int:
         """
         Get the number of empty cells in the given state.
 
@@ -179,8 +170,7 @@ class PoneOptimal:
         Returns:
             - int:      Number of empty cells.
         """
-        player_perspective = state.information_state_string(self.player)
-        return player_perspective.count('.')
+        return p_info_state.count('.')
 
     @staticmethod
     def count(info_state: str, player: int) -> int:
