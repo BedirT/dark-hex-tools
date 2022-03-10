@@ -1,21 +1,16 @@
 import pyspiel
-import os, psutil
 
 def get_all_information_states(game: pyspiel.Game, include_terminal_states=True) -> list:
     """Get all information states for the given game."""
     info_states = {}
     state = game.new_initial_state()
     _get_all_info_states(state, info_states, include_terminal_states)
-    process = psutil.Process(os.getpid())
-    print(f"Total Memory used: {process.memory_info().rss / 1024 ** 2}")
     return info_states
 
 def _get_all_info_states(state: pyspiel.State, info_states: dict,
                          include_terminal_states) -> None:
     """Calculate information states recursively for the state. Fill in the
     info_states."""
-    process = psutil.Process(os.getpid())
-    print(f"Total Memory used: {process.memory_info().rss / 1024 ** 2}", end="\r")
     r = -1
     if state.is_terminal():
         if include_terminal_states:
