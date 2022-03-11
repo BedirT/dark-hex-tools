@@ -23,6 +23,8 @@ def _get_all_info_states(state: pyspiel.State, info_states: dict,
                                     # if 0 its not a terminal state
     if info_tuple not in info_states:
         info_states[info_tuple] = data
+    else:
+        return
     if state.is_terminal():
         return
     for action in state.legal_actions():
