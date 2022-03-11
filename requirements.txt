@@ -1,6 +1,5 @@
 # The locally compiled copy of open_spiel must be used, not the pip version.
 # open_spiel >= 1.0.2
-pytest
 numpy
 typing
 open-spiel

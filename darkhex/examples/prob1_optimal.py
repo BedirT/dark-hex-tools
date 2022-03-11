@@ -7,16 +7,15 @@ import typing
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import math
 import pyspiel
 import seaborn as sns
 from darkhex.algorithms.pone_optimal import PoneOptimal
-from darkhex.utils.util import save_file, convert_os_str, calculate_turn
+from darkhex.utils.util import save_file, convert_os_str, calculate_turn, load_file
 
 
-def report_results(
-    num_rows: int, num_cols: int, definite_wins: typing.Dict[str, int]
-) -> None:
-    print(definite_wins)
+def report_results(num_rows: int, num_cols: int,
+                   definite_wins: typing.Dict[str, int]) -> None:
     p0_wins = [x for x in definite_wins.values() if x == 0]
     print(f"{len(p0_wins)} definite wins for player 0")
     # player 1 wins
@@ -24,9 +23,11 @@ def report_results(
     print(f"{len(p1_wins)} definite wins for player 1")
 
 
-def plot(num_rows: int, num_cols: int, tot_results: typing.List[typing.Dict[str, int]]) -> None:
-    def_wins_by_num_moves_p0 = np.zeros(num_cols * num_rows + 1)
-    def_wins_by_num_moves_p1 = np.zeros(num_cols * num_rows + 1)
+def plot(num_rows: int, num_cols: int,
+         tot_results: typing.List[typing.Dict[str, int]]) -> None:
+    lim = math.ceil((num_cols * num_rows + 1) / 2)
+    def_wins_by_num_moves_p0 = np.zeros(lim)
+    def_wins_by_num_moves_p1 = np.zeros(lim)
     for h, states in enumerate(tot_results):
         for state, val in states.items():
             if val == 0:
@@ -36,12 +37,11 @@ def plot(num_rows: int, num_cols: int, tot_results: typing.List[typing.Dict[str,
     # Plot the results in a bar chart
     df = pd.DataFrame(
         {
-            "h": range(num_cols * num_rows + 1),
+            "h": range(lim),
             "Player 0": def_wins_by_num_moves_p0,
             "Player 1": def_wins_by_num_moves_p1,
-        },
-    )
-    
+        },)
+
     sns.set(style="darkgrid")
     # sns.color_palette("crest", as_cmap=True)
     sns.set_palette("Set2")
@@ -49,9 +49,10 @@ def plot(num_rows: int, num_cols: int, tot_results: typing.List[typing.Dict[str,
     ax.set_xlabel("Number of hidden cells")
     ax.set_ylabel("Number of definite wins")
     ax.set_title(f"Definite wins by number of moves for {num_rows}x{num_cols}")
-    plt.savefig(f"darkhex/data/definite_wins/{num_rows}x{num_cols}/definite_wins.png")
+    plt.savefig(
+        f"darkhex/data/definite_wins/{num_rows}x{num_cols}/definite_wins.png")
     plt.show()
-    
+
 
 def find_p1_wins(num_cols: int, num_rows: int) -> None:
     definite_wins = {}
@@ -77,9 +78,15 @@ def find_p1_wins(num_cols: int, num_rows: int) -> None:
     print(f"Found {len(intersection)} definite wins in intersection")
 
     # save to file
-    save_file(definite_wins, f"darkhex/data/definite_wins/{num_rows}x{num_cols}/definite_wins.pkl")
-    save_file(intersection, f"darkhex/data/definite_wins/{num_rows}x{num_cols}/intersection.pkl")
-    save_file(tot_results, f"darkhex/data/definite_wins/{num_rows}x{num_cols}/results_w_h.pkl")
+    save_file(
+        definite_wins,
+        f"darkhex/data/definite_wins/{num_rows}x{num_cols}/definite_wins.pkl")
+    save_file(
+        intersection,
+        f"darkhex/data/definite_wins/{num_rows}x{num_cols}/intersection.pkl")
+    save_file(
+        tot_results,
+        f"darkhex/data/definite_wins/{num_rows}x{num_cols}/results_w_h.pkl")
 
     # plot the results
     report_results(num_rows, num_cols, definite_wins)
