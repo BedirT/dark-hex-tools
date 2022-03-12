@@ -58,12 +58,15 @@ def find_p1_wins(num_cols: int, num_rows: int) -> None:
     definite_wins = {}
     pone = PoneOptimal(num_rows, num_cols)
     tot_results = [{} for _ in range(num_cols * num_rows + 1)]
+    results_w_p = [[{} for _ in range(num_cols * num_rows + 1)
+                     ] for _ in range(2)] # 2 players
     res_0 = pone.search(0)
     for h, states in enumerate(res_0):
         for state, val in states.items():
             if val >= 0:
                 definite_wins[state] = val
                 tot_results[h][state] = val
+                results_w_p[0][h][state] = val
     res_1 = pone.search(1)
     intersection = {}
     for h, states in enumerate(res_1):
@@ -74,6 +77,7 @@ def find_p1_wins(num_cols: int, num_rows: int) -> None:
                 else:
                     definite_wins[state] = val
                     tot_results[h][state] = val
+                    results_w_p[1][h][state] = val
     print(f"Found {len(definite_wins)} definite wins")
     print(f"Found {len(intersection)} definite wins in intersection")
 
@@ -85,8 +89,21 @@ def find_p1_wins(num_cols: int, num_rows: int) -> None:
         intersection,
         f"darkhex/data/definite_wins/{num_rows}x{num_cols}/intersection.pkl")
     save_file(
-        tot_results,
-        f"darkhex/data/definite_wins/{num_rows}x{num_cols}/results_w_h.pkl")
+        results_w_p,
+        f"darkhex/data/definite_wins/{num_rows}x{num_cols}/results_w_p.pkl")
+
+    new_data = []
+    for player in range(2):
+        for h, p_data in enumerate(results_w_p[player]):
+            for board, res in p_data.items():
+                info_state = convert_to_infostate(board, 2, 2, player)
+                if not game_over(info_state):
+                    print(f"{info_state} {res}")
+                    new_data.append((info_state, res))
+    # dont add the header to the csv
+    df = pd.DataFrame(new_data, columns=["info_state", "res"])
+    df.to_csv(f"darkhex/data/definite_wins/{num_rows}x{num_cols}/results_w_p.csv", 
+               index=False, header=False)
 
     # plot the results
     report_results(num_rows, num_cols, definite_wins)
@@ -94,4 +111,4 @@ def find_p1_wins(num_cols: int, num_rows: int) -> None:
 
 
 if __name__ == "__main__":
-    find_p1_wins(3, 3)
+    find_p1_wins(3, 4)

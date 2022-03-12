@@ -13,11 +13,8 @@ def cell_connections(cell, num_cols, num_rows):
 
     args:
         cell    - The location on the board to check the neighboring cells for.
-                In the format [row, column]
 
     returns:
-        format >> positions
-
         positions   - List of all the neighbouring cells to the cell.
                     Elements are in the format [row, column].
     """
@@ -200,68 +197,6 @@ def conv_alphapos(pos, num_cols):
     row = pos // num_cols
     return "{}{}".format(chr(ord("a") + col), row + 1)
 
-def choose_strategy(choice=None):
-    """
-    User is displayed all the options in strategies
-    and will pick one to run the algorithm for.
-    """
-    i = 0
-    arr = []
-    if choice is None:
-        print("Choose a strategy to run the algorithm for:")
-
-    # Read strategies from Data/strategy_data folder
-    data_folder_names = os.listdir(os.path.join(os.getcwd(), "Data", "strategy_data"))
-    # give the data folders as options to user
-    for data_folder_name in data_folder_names:
-        if choice is None:
-            print("{}. {}".format(i, data_folder_name))
-        # get the
-        arr.append(data_folder_name)
-        i += 1
-
-    # make sure the choice is valid
-    try:
-        if choice is None:
-            choice = int(input("> "))
-        if choice < 0 or choice >= len(arr):
-            raise ValueError
-    except ValueError:
-        print("Invalid choice. Please try again.")
-        return choose_strategy(choice)
-
-    # return the chosen strategy
-    strat = load_file(
-        os.path.join(os.getcwd(), "Data", "strategy_data", arr[choice], "game_info.pkl")
-    )
-    return strat, arr[choice]
-
-def get_game_state(game, opp_strategy=None):
-    game_state = {
-        "board": game["board"]
-        if "board" in game
-        else cellState.kEmpty * (game["num_rows"] * game["num_cols"]),
-        "boards": {
-            game["player"]: game["boards"][game["player"]]
-            if "boards" in game
-            else cellState.kEmpty * (game["num_rows"] * game["num_cols"]),
-            cellState.kWhite
-            if game["player"] == cellState.kBlack
-            else cellState.kBlack: game["boards"][
-                cellState.kWhite if game["player"] == cellState.kBlack else cellState.kBlack
-            ]
-            if "boards" in game
-            else cellState.kEmpty * (game["num_rows"] * game["num_cols"]),
-        },
-        "num_rows": game["num_rows"],
-        "num_cols": game["num_cols"],
-        "player": game["player"],
-        "opponent": cellState.kWhite if game["player"] == cellState.kBlack else cellState.kBlack,
-        "player_strategy": game["strategy"],
-        "opponent_strategy": opp_strategy,
-    }
-    return game_state
-
 def greedify(strategy, multiple_actions_allowed=False):
     """
     Greedifies the given strategy. -1 is the minumum value and 1 is the maximum.
@@ -408,3 +343,23 @@ def safe_normalize(y, out=None):
         out[:] = 0
         out[a] = 1.
     return out
+
+
+def flood_fill(state:list, init_pos:int, num_rows:int, num_cols:int) -> list:
+    player = cellState.kBlack \
+        if state[init_pos] in cellState.black_pieces \
+        else cellState.kWhite
+    flood_stack = [init_pos]
+    while len(flood_stack) > 0:
+        latest_cell = flood_stack.pop()
+        for n in cell_connections(latest_cell, num_cols, num_rows):
+            if state[n] == player:
+                state[n] = state[latest_cell]
+                flood_stack.append(n)
+    return state
+
+
+def convert_to_infostate(board_state: str, player:int) -> str:
+    board_ls = list(board_state)
+    board_ls.insert(0, "P{} ".format(player))
+    return "".join(board_ls)
