@@ -11,7 +11,13 @@ import math
 import pyspiel
 import seaborn as sns
 from darkhex.algorithms.pone_optimal import PoneOptimal
-from darkhex.utils.util import save_file, convert_os_str, calculate_turn, load_file
+from darkhex.utils.util import (
+    save_file, 
+    convert_os_str, 
+    calculate_turn, 
+    load_file, 
+    convert_to_infostate,
+    game_over)
 
 
 def report_results(num_rows: int, num_cols: int,
@@ -54,12 +60,13 @@ def plot(num_rows: int, num_cols: int,
     plt.show()
 
 
-def find_p1_wins(num_cols: int, num_rows: int) -> None:
+def find_p1_wins(num_rows: int, num_cols: int) -> None:
     definite_wins = {}
     pone = PoneOptimal(num_rows, num_cols)
     tot_results = [{} for _ in range(num_cols * num_rows + 1)]
-    results_w_p = [[{} for _ in range(num_cols * num_rows + 1)
-                     ] for _ in range(2)] # 2 players
+    results_w_p = [
+        [{} for _ in range(num_cols * num_rows + 1)] for _ in range(2)
+    ]  # 2 players
     res_0 = pone.search(0)
     for h, states in enumerate(res_0):
         for state, val in states.items():
@@ -96,14 +103,16 @@ def find_p1_wins(num_cols: int, num_rows: int) -> None:
     for player in range(2):
         for h, p_data in enumerate(results_w_p[player]):
             for board, res in p_data.items():
-                info_state = convert_to_infostate(board, 2, 2, player)
+                info_state = convert_to_infostate(board, player)
                 if not game_over(info_state):
-                    print(f"{info_state} {res}")
+                    # print(f"{info_state} {res}")
                     new_data.append((info_state, res))
     # dont add the header to the csv
     df = pd.DataFrame(new_data, columns=["info_state", "res"])
-    df.to_csv(f"darkhex/data/definite_wins/{num_rows}x{num_cols}/results_w_p.csv", 
-               index=False, header=False)
+    df.to_csv(
+        f"darkhex/data/definite_wins/{num_rows}x{num_cols}/results_w_p.csv",
+        index=False,
+        header=False)
 
     # plot the results
     report_results(num_rows, num_cols, definite_wins)
@@ -111,4 +120,4 @@ def find_p1_wins(num_cols: int, num_rows: int) -> None:
 
 
 if __name__ == "__main__":
-    find_p1_wins(3, 4)
+    find_p1_wins(2, 2)
