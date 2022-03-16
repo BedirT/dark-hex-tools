@@ -69,8 +69,10 @@ class PoneOptimal:
         """
         status = self.legal_states[h][info_state]
 
-        if status in [self.player, self.opponent]:
+        if status == self.player:
             return status
+        if status == self.opponent:
+            return -3
 
         if self.turn_info(info_state, h) != self.player:
             if self.check_state(info_state, h + 1) != -2:
