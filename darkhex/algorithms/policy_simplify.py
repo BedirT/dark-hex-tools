@@ -15,6 +15,7 @@ class PolicySimplify:
         num_rows: int,
         num_cols: int,
         player: int,
+        policy_type: str,
         include_isomorphic: bool = True,
     ):
         self.game = game
@@ -23,12 +24,15 @@ class PolicySimplify:
         self.p = player
         self.o = 1 - self.p
 
-        
-        with open("../open_spiel/tmp/dark_hex_mccfr_2x2/dark_hex_mccfr_solver", "rb") as f:
-            solver = pickle.load(f) 
-        self.policy = solver.average_policy()
+        # todo: make the file name dynamic
+        if policy_type == "mccfr":
+            with open(f"../open_spiel/tmp/dark_hex_mccfr_{num_rows}x{num_cols}/dark_hex_mccfr_solver", "rb") as f:
+                solver = pickle.load(f) 
+            self.policy = solver.average_policy()
+        else:
+            raise NotImplementedError(f"Policy type {policy_type} not implemented.")
 
-        self.all_states = load_file("darkhex/data/state_data2x2.pkl")
+        self.all_states = load_file(f"darkhex/data/state_data/{num_rows}x{num_cols}.pkl")
 
         # Perform Checks to see if initial values are valid
         if not is_valid_board(initial_board, num_rows, num_cols):
