@@ -1,17 +1,17 @@
 import pyspiel
 import pickle as pkl
+from darkhex.utils.util import save_file
 
 # todo: use file version if exists
 # todo: make dumping to file optional
 
-def get_all_information_states(game: pyspiel.Game, include_terminal_states=True) -> list:
+def get_all_information_states(game: pyspiel.Game, num_rows, num_cols, include_terminal_states=True) -> list:
     """Get all information states for the given game."""
     info_states = {}
     state_data = {}
     state = game.new_initial_state()
     _get_all_info_states(state, info_states, state_data, include_terminal_states)
-    with open("darkhex/data/state_data2x2.pkl", "wb") as f:
-        pkl.dump(state_data, f)
+    save_file(state_data, f"darkhex/data/state_data/{num_rows}x{num_cols}.pkl")
     return info_states
 
 def _get_all_info_states(state: pyspiel.State, info_states: dict, state_data: dict,
@@ -43,4 +43,6 @@ def _get_all_info_states(state: pyspiel.State, info_states: dict, state_data: di
 
 
 if __name__ == "__main__":
-    get_all_information_states(pyspiel.load_game("dark_hex_ir(num_rows=2,num_cols=2)"))
+    num_rows = 4
+    num_cols = 3
+    get_all_information_states(pyspiel.load_game(f"dark_hex_ir(num_rows={num_rows},num_cols={num_cols})"), num_rows, num_cols)
