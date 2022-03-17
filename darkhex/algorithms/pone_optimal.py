@@ -12,6 +12,7 @@ import math
 import numpy as np
 import pyspiel
 import darkhex.algorithms.gel_all_information_states as gel
+from tqdm import tqdm
 from darkhex.utils.cell_state import cellState
 
 
@@ -45,10 +46,11 @@ class PoneOptimal:
         self.setup_legal_states()   # setup the legal states
         for e in range(self.num_cells + 1):             # empty cells
             for h in range(math.ceil(self.num_cells / 2)):    # hidden cells
+                print(f"Examining {e} empty cells and {h} hidden cells")
                 if e + h > self.num_cells:
                     continue
                 legal_states = self.empty_states[e+h]
-                for info_state in legal_states:
+                for info_state in tqdm(legal_states):
                     res = self.legal_states[h].get(info_state, -2)
                     if res in [-1, 0, 1]:
                         res = self.pone_search(info_state, h)
