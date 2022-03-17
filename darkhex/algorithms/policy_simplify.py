@@ -10,7 +10,6 @@ from darkhex.utils.cell_state import cellState
 class PolicySimplify:
     def __init__(
         self,
-        game,
         initial_board: str,
         num_rows: int,
         num_cols: int,
@@ -18,7 +17,6 @@ class PolicySimplify:
         policy_type: str,
         include_isomorphic: bool = True,
     ):
-        self.game = game
         self.num_cols = num_cols
         self.num_rows = num_rows
         self.p = player
@@ -45,6 +43,8 @@ class PolicySimplify:
     def iterate_board(self, board) -> None:
         """Iterate the board"""
         new_boards = self.set_new_boards(board)
+        if not new_boards:
+            return
         actions = self.info_states[board].keys()
         collusion_possible = self._is_collusion_possible(board)
         for action in actions:
@@ -59,7 +59,10 @@ class PolicySimplify:
                     self.iterate_board(new_board)
 
     def set_new_boards(self, board):
-        self.info_states[board] = self.get_action_probs(board)
+        action_probs = self.get_action_probs(board)
+        if action_probs is None:
+            return {}
+        self.info_states[board] = action_probs
         new_boards = {}
         for a in self.info_states[board].keys():
             o_color = "o" if self.p == 0 else "x"
@@ -79,6 +82,8 @@ class PolicySimplify:
     def get_action_probs(self, board):
         """Get action probabilities for the info_states."""
         state = self.state_for_board(board)
+        if state is None:
+            return None
         action_probs = self.policy.action_probabilities(state)
         # only two actions per state is possible, so keep max 2
         # actions and their probabilities, and renormalize the probabilities
@@ -106,6 +111,9 @@ class PolicySimplify:
         """
         board = convert_os_str(board, self.num_cols, self.p)
         # print(self.all_states)
+        if board not in self.all_states:
+            # illegal
+            return None
         return self.all_states[board]
 
     def _is_collusion_possible(self, board) -> bool:
