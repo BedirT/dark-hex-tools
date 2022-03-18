@@ -23,4 +23,4 @@ def simplify_policy(num_rows, num_cols, player, initial_board, policy_type='mccf
 
 
 if __name__ == "__main__":
-    simplify_policy(4, 3, 1, "............")
+    simplify_policy(4, 3, 0, "............")
