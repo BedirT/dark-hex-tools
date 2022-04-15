@@ -27,7 +27,7 @@ class PoneOptimal:
         self.reset_data()
 
         print("Generating all states...")
-        self.all_info_states = gel.get_all_information_states(self.game, True)
+        self.all_info_states = gel.get_all_information_states(self.game, num_rows, num_cols, True)
         print(f"All States gathered: {len(self.all_info_states)}")
 
     def reset_data(self) -> None:

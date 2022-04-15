@@ -5,6 +5,7 @@ from darkhex.utils.isomorphic import isomorphic_single
 import pickle
 from collections import Counter
 from darkhex.utils.cell_state import cellState
+import numpy as np
 
 
 class PolicySimplify:
@@ -15,16 +16,19 @@ class PolicySimplify:
         num_cols: int,
         player: int,
         policy_type: str,
+        file_path: str,
         include_isomorphic: bool = True,
     ):
         self.num_cols = num_cols
         self.num_rows = num_rows
         self.p = player
         self.o = 1 - self.p
+        self.allowed_num_actions = 2
+        self.epsilon = 0.2
 
         # todo: make the file name dynamic
         if policy_type == "mccfr":
-            with open(f"../open_spiel/tmp/dark_hex_mccfr_{num_rows}x{num_cols}/dark_hex_mccfr_solver", "rb") as f:
+            with open(file_path, "rb") as f:
                 solver = pickle.load(f) 
             self.policy = solver.average_policy()
         else:
@@ -85,23 +89,29 @@ class PolicySimplify:
         if state is None:
             return None
         action_probs = self.policy.action_probabilities(state)
-        # only two actions per state is possible, so keep max 2
+        # only n actions per state is possible, so keep max n
         # actions and their probabilities, and renormalize the probabilities
-        # to sum to 1. All actions must have probabilities greater than 0.09
+        # to sum to 1. All actions must have probabilities greater than epsilon
         # to be considered.
         legal_actions = state.legal_actions(self.p)
-        print(f"Legal actions: {legal_actions}")
+        # print(f"Legal actions: {legal_actions}")
         action_probs = {
             i: action_probs[i]
             for i in legal_actions
-            if action_probs[i] > 0.09
+            if action_probs[i] > self.epsilon
         }
+        if not action_probs:
+            # No actions larger than epsilon
+            # Randomly choose a single action
+            # and greedily choose the action with probability 1.
+            action = np.random.choice(legal_actions)
+            action_probs = {action: 1.0}
         sorted_action_probs = sorted(action_probs.items(), key=lambda x: x[1], reverse=True)
-        sorted_action_probs = sorted_action_probs[:2] 
+        sorted_action_probs = sorted_action_probs[: self.allowed_num_actions]
         action_probs = {k: v for k, v in sorted_action_probs}
         total = sum(action_probs.values())
         action_probs = {k: v / total for k, v in action_probs.items()}
-        print(f"Action probs: {action_probs}")
+        # print(f"Action probs: {action_probs}")
         
         return action_probs
 
