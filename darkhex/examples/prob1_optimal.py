@@ -120,4 +120,4 @@ def find_p1_wins(num_rows: int, num_cols: int) -> None:
 
 
 if __name__ == "__main__":
-    find_p1_wins(4, 3)
+    find_p1_wins(3, 2)
