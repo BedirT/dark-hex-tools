@@ -295,7 +295,7 @@ def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.Stat
 def convert_os_str(str_board: str, num_cols: int, player: int = -1):
     """
     Convert the board state to pyspiel format.
-    ie. P{player} firstrow\nsecondrow
+    ie. P{player} firstrowsecondrow
     """
     if player == -1:
         new_board = ""

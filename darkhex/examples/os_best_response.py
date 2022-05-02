@@ -3,6 +3,7 @@ from open_spiel.python.algorithms import best_response
 from open_spiel.python.algorithms import exploitability
 import pyspiel
 import pickle
+import time
 
 
 class StrategyPolicy(policy.Policy):
@@ -37,7 +38,44 @@ class PolicyWithDefault:
             return [(action, 1.0 / len(legal_actions)) for action in legal_actions]
 
 
-def get_exploitability(policy_folder_path):
+def get_best_response(game, strategy):
+    tabular_policy = pyspiel.PartialTabularPolicy(strategy)
+    root_state = game.new_initial_state()
+
+    # Get best response policy
+    start = time.time()
+    br_computer = best_response.BestResponsePolicy(game, 1, tabular_policy)
+    print(f"Best Response: {br_computer.value(root_state)}")
+    print(f"Time: {time.time() - start}")
+
+
+def get_best_response_mdp(game, strategy):
+    tabular_policy = pyspiel.PartialTabularPolicy(strategy)
+    root_state = game.new_initial_state()
+
+    # Get best response policy
+    start = time.time()
+    br_computer = pyspiel.TabularBestResponseMDP(game, 1, tabular_policy)
+    print(f"Best Response: {br_computer.value(root_state)}")
+    print(f"Time: {time.time() - start}")
+
+
+def get_exploitability(game, strategy):
+    # Convert strategy to pyspiel policy
+    tabular_policy = pyspiel.PartialTabularPolicy(strategy)
+    root_state = game.new_initial_state()
+
+    # Get best response policy
+    start = time.time()
+    results = exploitability.best_response(game, tabular_policy, player_id=1)
+    print(results)
+    # for attr in dir(br_info):
+    #     print("obj.%s = %r" % (attr, getattr(br_info, attr)))
+
+    print(f"Time: {time.time() - start}")
+
+
+def test_methods(policy_folder_path):
     with open(policy_folder_path + "game_info.pkl", "rb") as f:
         game_info = pickle.load(f)
     print(game_info)
@@ -48,36 +86,12 @@ def get_exploitability(policy_folder_path):
     })
     strategy = game_info['strategy']
 
-    # Convert strategy to pyspiel polic
-    pi = PolicyWithDefault(strategy)
-    tabular_policy = policy.tabular_policy_from_callable(game, 
-        lambda state: pi.policy_with_default(state),
-        game_info['player'])
-    tabular_policy = policy.python_policy_to_pyspiel_policy(tabular_policy)
-    print('Done')
-
-    # Get best response policy
-    br_computer = pyspiel.TabularBestResponseMDP(game, tabular_policy)
-    print('Set?')
-    br_info = br_computer.exploitability()
-    # for attr in dir(br_info):
-    #     print("obj.%s = %r" % (attr, getattr(br_info, attr)))
-
-    # save results to file
-    results = {
-        'br_values': br_info.br_values,
-        # 'br_policy': br_info.br_policies,
-        'exploitability': br_info.exploitability,
-        'nash_conv': br_info.nash_conv,
-        'on_policy_values': br_info.on_policy_values,
-    }
-    print(results)
-
-    with open(policy_folder_path + "br_info.pkl", "wb") as f:
-        pickle.dump(results, f)
+    # get_best_response(game, strategy)
+    # get_best_response_mdp(game, strategy)
+    get_exploitability(game, strategy)
 
 def main():
-    get_exploitability("darkhex/data/strategy_data/3x3_0_def/")
+    test_methods("darkhex/data/strategy_data/4x3_0_def/")
 
 if __name__ == "__main__":
     main()
