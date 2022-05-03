@@ -12,6 +12,7 @@ import math
 import numpy as np
 import pyspiel
 import darkhex.algorithms.gel_all_information_states as gel
+from tqdm import tqdm
 from darkhex.utils.cell_state import cellState
 
 
@@ -26,7 +27,7 @@ class PoneOptimal:
         self.reset_data()
 
         print("Generating all states...")
-        self.all_info_states = gel.get_all_information_states(self.game, True)
+        self.all_info_states = gel.get_all_information_states(self.game, num_rows, num_cols, True)
         print(f"All States gathered: {len(self.all_info_states)}")
 
     def reset_data(self) -> None:
@@ -45,10 +46,11 @@ class PoneOptimal:
         self.setup_legal_states()   # setup the legal states
         for e in range(self.num_cells + 1):             # empty cells
             for h in range(math.ceil(self.num_cells / 2)):    # hidden cells
+                print(f"Examining {e} empty cells and {h} hidden cells")
                 if e + h > self.num_cells:
                     continue
                 legal_states = self.empty_states[e+h]
-                for info_state in legal_states:
+                for info_state in tqdm(legal_states):
                     res = self.legal_states[h].get(info_state, -2)
                     if res in [-1, 0, 1]:
                         res = self.pone_search(info_state, h)
@@ -69,8 +71,10 @@ class PoneOptimal:
         """
         status = self.legal_states[h][info_state]
 
-        if status in [self.player, self.opponent]:
+        if status == self.player:
             return status
+        if status == self.opponent:
+            return -3
 
         if self.turn_info(info_state, h) != self.player:
             if self.check_state(info_state, h + 1) != -2:

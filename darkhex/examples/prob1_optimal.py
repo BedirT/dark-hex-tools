@@ -31,7 +31,7 @@ def report_results(num_rows: int, num_cols: int,
 
 def plot(num_rows: int, num_cols: int,
          tot_results: typing.List[typing.Dict[str, int]]) -> None:
-    lim = math.ceil((num_cols * num_rows + 1) / 2)
+    lim = math.ceil((num_cols * num_rows + 1) / 2) + 1
     def_wins_by_num_moves_p0 = np.zeros(lim)
     def_wins_by_num_moves_p1 = np.zeros(lim)
     for h, states in enumerate(tot_results):
@@ -120,4 +120,4 @@ def find_p1_wins(num_rows: int, num_cols: int) -> None:
 
 
 if __name__ == "__main__":
-    find_p1_wins(2, 2)
+    find_p1_wins(3, 2)

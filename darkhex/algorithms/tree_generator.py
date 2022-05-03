@@ -26,9 +26,12 @@ class TreeGenerator:
         self.game_info = load_file(f"darkhex/data/strategy_data/{self.file_name}/game_info.pkl")
         player = self.game_info["player"]
 
+        self.nc = self.game_info["num_cols"]
+        self.nr = self.game_info["num_rows"]
+
         self.strategies = {
             player: convert_os_strategy(
-                self.game_info["strategy"], self.game_info["num_cols"], player
+                self.game_info["strategy"], self.nc, player
             ),
             1
             - player: load_file(
@@ -149,7 +152,7 @@ class TreeGenerator:
         info_state = game_state.information_state_string()
         cur_player = game_state.current_player()
         cur_player_terminal = 0 if cur_player == 0 else 1
-        num_cols = self.game_info["num_cols"]
+        num_cols = self.nc
 
         if parent is None:
             # Add the root node
@@ -214,13 +217,12 @@ class TreeGenerator:
         """
         info_state_str = ""
         line_num = 1
-        for cell in info_state:
-            if cell == " ":
-                info_state_str += "\n"
-            elif cell == "\n":
+        for idx, cell in enumerate(info_state):
+            if idx % self.nc == 0:
                 # add \n and spaces amount of the row number
                 info_state_str += "\n" + " " * line_num
                 line_num += 1
+                info_state_str += cell + " "
             else:
                 info_state_str += cell + " "
         # info_state_str += '\n' + ' ' * line_num + info_state[:2]

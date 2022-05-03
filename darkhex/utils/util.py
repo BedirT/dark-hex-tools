@@ -295,15 +295,13 @@ def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.Stat
 def convert_os_str(str_board: str, num_cols: int, player: int = -1):
     """
     Convert the board state to pyspiel format.
-    ie. P{player} firstrow\nsecondrow
+    ie. P{player} firstrowsecondrow
     """
     if player == -1:
         new_board = ""
     else:
         new_board = f"P{player} "
     for i, cell in enumerate(str_board):
-        if i % num_cols == 0 and i != 0:
-            new_board += "\n"
         if cell in cellState.black_pieces:
             new_board += cellState.kBlack
         elif cell in cellState.white_pieces:

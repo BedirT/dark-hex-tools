@@ -100,8 +100,7 @@ class BestResponse:
         cur_player = cur_state.current_player()
         info_state = cur_state.information_state_string()
         for action, prob in self.strategies[cur_player][info_state]:
-            new_state = cur_state.clone()
-            new_state.apply_action(action)
+            new_state = cur_state.child(action)
             if new_state.is_terminal():
                 value = 1 if cur_player != self.player else 0
             else:
