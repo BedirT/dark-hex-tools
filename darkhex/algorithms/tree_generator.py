@@ -30,11 +30,8 @@ class TreeGenerator:
         self.nr = self.game_info["num_rows"]
 
         self.strategies = {
-            player: convert_os_strategy(
-                self.game_info["strategy"], self.nc, player
-            ),
-            1
-            - player: load_file(
+            player: self.game_info["strategy"],
+            1 - player: load_file(
                 f"darkhex/data/strategy_data/{self.file_name}/opp_strategy.pkl"
             ),
         }

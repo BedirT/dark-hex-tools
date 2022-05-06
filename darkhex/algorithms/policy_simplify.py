@@ -88,7 +88,7 @@ class PolicySimplify:
         state = self.state_for_board(board)
         if state is None:
             return None
-        action_probs = self.policy.action_probabilities(state)
+        action_probs_init = self.policy.action_probabilities(state)
         # only n actions per state is possible, so keep max n
         # actions and their probabilities, and renormalize the probabilities
         # to sum to 1. All actions must have probabilities greater than epsilon
@@ -96,15 +96,17 @@ class PolicySimplify:
         legal_actions = state.legal_actions(self.p)
         # print(f"Legal actions: {legal_actions}")
         action_probs = {
-            i: action_probs[i]
+            i: action_probs_init[i]
             for i in legal_actions
-            if action_probs[i] > self.epsilon
+            if action_probs_init[i] > self.epsilon
         }
         if not action_probs:
             # No actions larger than epsilon
-            # Randomly choose a single action
-            # and greedily choose the action with probability 1.
-            action = np.random.choice(legal_actions)
+            # Choose a single action with the highest probability
+            pos_actions = [
+                i for i in legal_actions if action_probs_init[i] == max(action_probs_init.values())
+            ]
+            action = np.random.choice(pos_actions)
             action_probs = {action: 1.0}
         sorted_action_probs = sorted(action_probs.items(), key=lambda x: x[1], reverse=True)
         sorted_action_probs = sorted_action_probs[: self.allowed_num_actions]
