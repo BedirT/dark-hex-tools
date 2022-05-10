@@ -159,6 +159,8 @@ class TreeGenerator:
         """
         Generates the children of the parent node.
         """
+        info_state_0 = game_state.information_state_string(0)
+        info_state_1 = game_state.information_state_string(1)
         info_state = game_state.information_state_string()
         cur_player = game_state.current_player()
         cur_player_terminal = 0 if cur_player == 0 else 1
@@ -166,7 +168,7 @@ class TreeGenerator:
 
         if parent is None:
             # Add the root node
-            info_state_str = self.tree_info_string(info_state)
+            info_state_str = self.tree_info_string(info_state_0, info_state_1)
             node_label = f"{info_state_str}"
             node = pydot.Node(node_label, **self.attributes["root"])
             self.tree.add_node(node)
@@ -175,15 +177,15 @@ class TreeGenerator:
         # Add an edge for each action
         for action, prob in self.strategies[cur_player][info_state]:
             # Update the game state
-            new_game_state = game_state.clone()
-            new_game_state.apply_action(action)
+            new_game_state = game_state.child(action)
 
             # If terminal add terminal node
             if new_game_state.is_terminal():
                 # Add node
                 info_state_str = self.tree_info_string(
-                    new_game_state.information_state_string(
-                        cur_player_terminal))
+                    new_game_state.information_state_string(0),
+                    new_game_state.information_state_string(1),
+                )
                 terminal_node = pydot.Node(
                     f"{info_state_str}",
                     **self.attributes[f"{cur_player_terminal}-terminal"],
@@ -202,8 +204,9 @@ class TreeGenerator:
                     self.tree.add_edge(edge)
             else:
                 info_state_str = self.tree_info_string(
-                    new_game_state.information_state_string(
-                        cur_player_terminal))
+                    new_game_state.information_state_string(0),
+                    new_game_state.information_state_string(1),
+                )
 
                 # Add the child node
                 node_label = f"{info_state_str}"
@@ -222,19 +225,26 @@ class TreeGenerator:
                 # Add the child's children
                 self._add_children(new_game_state, node)
 
-    def tree_info_string(self, info_state):
-        """
-        Converts the info_state to a string.
-        """
-        info_state_str = ""
+    def tree_info_string(self, info_state_0, info_state_1):
+        """ Converts the info_state to a string. """
+        info_str = ""
         line_num = 1
-        for idx, cell in enumerate(info_state):
-            if idx % self.nc == 0:
+        line_str_0 = ""
+        line_str_1 = ""
+        for idx, (is_0_cell,
+                  is_1_cell) in enumerate(zip(info_state_0, info_state_1)):
+            # if beginning of a new line
+            if idx % self.nc == 0 and idx != 0:
+                # add the strings to the info_str
                 # add \n and spaces amount of the row number
-                info_state_str += "\n" + " " * line_num
+                info_str += f"\n{'':>{line_num-1}}{line_str_0}  {line_str_1}"
                 line_num += 1
-                info_state_str += cell + " "
+                line_str_0 = str(is_0_cell)
+                line_str_1 = str(is_1_cell)
             else:
-                info_state_str += cell + " "
-        # info_state_str += '\n' + ' ' * line_num + info_state[:2]
-        return info_state_str
+                # add the cell to the string
+                line_str_0 += f"{is_0_cell}"
+                line_str_1 += f"{is_1_cell}"
+        # add the last line
+        info_str += f"\n{'':>{line_num-1}}{line_str_0}  {line_str_1}"
+        return info_str
