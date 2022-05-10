@@ -10,7 +10,7 @@ import pyspiel
 from darkhex.utils.util import (convert_os_strategy, get_open_spiel_state,
                                 greedify, save_file, load_file)
 
-ct = 0
+
 class Node:
     """Best response strategy state node. """
 
@@ -82,9 +82,10 @@ class BRTree:
         """ Add a terminal node to the tree. """
         wait_node = len(state.legal_actions(self.br_player)) == 0
         parent_node = self.get_node(parent.node_key)
-        
+
         if parent_node.children[action][int(wait_node)] is not None:
-            parent_node.children[action][int(wait_node)].reach_prob += reach_prob
+            parent_node.children[action][int(
+                wait_node)].reach_prob += reach_prob
         else:
             parent_node.children[action][int(wait_node)] = Node(
                 state.information_state_string(self.br_player) + f':T:{action}',
@@ -145,9 +146,8 @@ class BestResponse:
         full_state = cur_state.information_state_string(0) + \
                      cur_state.information_state_string(1)
         if full_state in self.full_game_state_cache:
-            self.full_game_state_cache[full_state] += 1
-            # return
-        self.full_game_state_cache[full_state] = 1
+            return
+        self.full_game_state_cache[full_state] = True
 
         if cur_player == self.br_player:
             # best response players turn
@@ -155,8 +155,8 @@ class BestResponse:
                 next_state = cur_state.child(action)
                 if next_state.is_terminal():
                     value = self._br_value(next_state.returns()[self.br_player])
-                    br_tree.add_terminal_node(next_state, parent_node, action, reach_prob,
-                                              value)
+                    br_tree.add_terminal_node(next_state, parent_node, action,
+                                              reach_prob, value)
                 else:
                     new_node = br_tree.add_node(next_state, reach_prob,
                                                 parent_node, action)
@@ -167,17 +167,16 @@ class BestResponse:
         for action, prob in self.strategy[info_state]:
             next_state = cur_state.child(action)
             if next_state.is_terminal():
-                value = self._br_value(next_state.returns()[self.br_player]) #* prob
-                br_tree.add_terminal_node(next_state, parent_node, action, reach_prob * prob, value)
+                value = self._br_value(next_state.returns()[self.br_player])
+                br_tree.add_terminal_node(next_state, parent_node, action,
+                                          reach_prob * prob, value)
             else:
                 new_node = br_tree.add_node(next_state, reach_prob * prob,
                                             parent_node, action)
                 self._generate_value_tree(next_state, br_tree, new_node,
                                           reach_prob * prob)
 
-    def _backpropogate_values(self,
-                              br_tree: BRTree,
-                              cur_node: Node = None):
+    def _backpropogate_values(self, br_tree: BRTree, cur_node: Node = None):
         """
         Backpropogate the values from the terminal nodes to the parent nodes.
         """
@@ -189,8 +188,8 @@ class BestResponse:
             return cur_node.value
         tot_value = 0.
         mx_value = -1e9
-        for action, children in cur_node.children.items(): 
-            children_value = 0.           
+        for action, children in cur_node.children.items():
+            children_value = 0.
             for child in children:
                 if child is not None:
                     children_value += self._backpropogate_values(br_tree, child)
@@ -254,9 +253,8 @@ class BestResponse:
         """
         graph = pydot.Dot(graph_type='digraph')
         for node in br_tree.nodes.values():
-            node_id = node.info_state + '\n' + str(node.value)  + '\n' + str(
-                node.reach_prob) + '\n' + str(
-                node.wait_node)
+            node_id = node.info_state + '\n' + str(node.value) + '\n' + str(
+                node.reach_prob) + '\n' + str(node.wait_node)
             if node.wait_node:
                 graph.add_node(
                     pydot.Node(node_id, style='filled', fillcolor='#ff0000'))
@@ -264,16 +262,14 @@ class BestResponse:
                 graph.add_node(pydot.Node(node_id))
         for node in br_tree.nodes.values():
             node_id = node.info_state + '\n' + str(node.value) + '\n' + str(
-                node.reach_prob) + '\n' + str(
-                node.wait_node)
+                node.reach_prob) + '\n' + str(node.wait_node)
             for action, children in node.children.items():
                 for child in children:
                     if child is None:
                         continue
                     ch_info = child.info_state + '\n' + str(
-                        child.value)  + '\n' + str(
-                        child.reach_prob)+ '\n' + str(
-                        child.wait_node)
+                        child.value) + '\n' + str(
+                            child.reach_prob) + '\n' + str(child.wait_node)
                     graph.add_edge(
                         pydot.Edge(node_id, ch_info, label=str(action)))
         graph.write_png(file_path)
