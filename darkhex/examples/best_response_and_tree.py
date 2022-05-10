@@ -11,9 +11,8 @@ def main():
     file_path = f"darkhex/data/strategy_data/{file_name}/"
     data = load_file(file_path + "game_info.pkl")
     game = pyspiel.load_game(
-        f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]},'+
-                      'use_early_terminal=True)'
-    )
+        f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]},'
+        + 'use_early_terminal=True)')
     # create best response object
     br = BestResponse(
         game,
@@ -36,6 +35,7 @@ def main():
     # create tree run object
     tree_run = TreeRun(file_name)
     tree_run.tree_run()
+
 
 if __name__ == "__main__":
     main()
