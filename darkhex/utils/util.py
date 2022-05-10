@@ -36,15 +36,16 @@ def cell_connections(cell, num_cols, num_rows):
             positions.append(pos_by_coord(num_cols, row - 1, col + 1))
     return positions
 
+
 def game_over(board_state):
     """
     Check if the game is over.
 
     - board_state: The current refree board state.
     """
-    return (
-        board_state.count(cellState.kBlackWin) + board_state.count(cellState.kWhiteWin) == 1
-    )
+    return (board_state.count(cellState.kBlackWin) +
+            board_state.count(cellState.kWhiteWin) == 1)
+
 
 def updated_board(board_state, cell, color, num_rows, num_cols):
     """
@@ -59,11 +60,8 @@ def updated_board(board_state, cell, color, num_rows, num_cols):
     # If the move is illegal return false.
     # - Illegal if the move is out of bounds.
     # - Illegal if the move is already taken.
-    if (
-        cell < 0
-        or cell >= len(updated_board_state)
-        or updated_board_state[cell] != cellState.kEmpty
-    ):
+    if (cell < 0 or cell >= len(updated_board_state) or
+            updated_board_state[cell] != cellState.kEmpty):
         return False
     # Update the board state with the move.
     if color == cellState.kBlack:
@@ -124,6 +122,7 @@ def updated_board(board_state, cell, color, num_rows, num_cols):
     # Convert list back to string
     return "".join(updated_board_state)
 
+
 def replace_action(board, action, new_value):
     """
     Replaces the action on the board with the new value.
@@ -132,6 +131,7 @@ def replace_action(board, action, new_value):
     new_board[action] = new_value
     return "".join(new_board)
 
+
 def play_action(game, player, action):
     """
     Plays the action on the game board.
@@ -139,21 +139,19 @@ def play_action(game, player, action):
     new_game = deepcopy(game)
     if new_game["board"][action] != cellState.kEmpty:
         opponent = cellState.kBlack if player == cellState.kWhite else cellState.kWhite
-        new_game["boards"][player] = replace_action(
-            new_game["boards"][player], action, opponent
-        )
+        new_game["boards"][player] = replace_action(new_game["boards"][player],
+                                                    action, opponent)
         return new_game, True
     else:
-        res = updated_board(
-            new_game["board"], action, player, game["num_cols"], game["num_rows"]
-        )
+        res = updated_board(new_game["board"], action, player, game["num_cols"],
+                            game["num_rows"])
         if res == cellState.kBlackWin or res == cellState.kWhiteWin:
             # The game is over.
             return res, False
         new_game["board"] = res
-        new_game["boards"][player] = replace_action(
-            new_game["boards"][player], action, new_game["board"][action]
-        )
+        new_game["boards"][player] = replace_action(new_game["boards"][player],
+                                                    action,
+                                                    new_game["board"][action])
         s = ""
         opponent = cellState.kBlack if player == cellState.kWhite else cellState.kWhite
         for r in new_game["boards"][player]:
@@ -166,6 +164,7 @@ def play_action(game, player, action):
         new_game["boards"][player] = s
         return new_game, False
 
+
 def load_file(filename):
     """
     Loads a file and returns the content.
@@ -174,6 +173,7 @@ def load_file(filename):
         return dill.load(open(filename, "rb"))
     except IOError:
         raise IOError(f"File not found: {filename}")
+
 
 def save_file(content, file_path):
     """
@@ -185,8 +185,10 @@ def save_file(content, file_path):
         os.makedirs(directory)
     dill.dump(content, open(file_path, "wb"))
 
+
 def pos_by_coord(num_cols, r, c):
     return num_cols * r + c
+
 
 def conv_alphapos(pos, num_cols):
     """
@@ -196,6 +198,7 @@ def conv_alphapos(pos, num_cols):
     col = pos % num_cols
     row = pos // num_cols
     return "{}{}".format(chr(ord("a") + col), row + 1)
+
 
 def greedify(strategy, multiple_actions_allowed=False):
     """
@@ -221,6 +224,7 @@ def greedify(strategy, multiple_actions_allowed=False):
         ]
     return greedy_strategy
 
+
 def calculate_turn(state: str):
     """
     Calculates which player's turn it is given board state.
@@ -233,6 +237,7 @@ def calculate_turn(state: str):
         elif cell in cellState.white_pieces:
             num_white += 1
     return 1 if num_black > num_white else 0
+
 
 def num_action(action, num_cols):
     """
@@ -252,9 +257,11 @@ def num_action(action, num_cols):
         log.error("Invalid action: {}".format(action))
         return False
 
+
 def random_selection(board_state):
     pos_moves = [i for i, x in enumerate(board_state) if x == cellState.kEmpty]
     return [np.random.choice(pos_moves)], [1.0]
+
 
 def convert_to_xo(str_board):
     """
@@ -266,7 +273,9 @@ def convert_to_xo(str_board):
         str_board = str_board.replace(p, cellState.kWhite)
     return str_board
 
-def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.State:
+
+def get_open_spiel_state(game: pyspiel.Game,
+                         initial_state: str) -> pyspiel.State:
     """
     Setup the game state, -start is same as given initial state
     """
@@ -292,6 +301,7 @@ def get_open_spiel_state(game: pyspiel.Game, initial_state: str) -> pyspiel.Stat
             white_loc += 1
     return game_state
 
+
 def convert_os_str(str_board: str, num_cols: int, player: int = -1):
     """
     Convert the board state to pyspiel format.
@@ -310,6 +320,7 @@ def convert_os_str(str_board: str, num_cols: int, player: int = -1):
             new_board += cellState.kEmpty
     return new_board
 
+
 def convert_os_strategy(strategy: dict, num_cols: int, player: int) -> dict:
     """
     Convert the strategy from open_spiel to the format of the game.
@@ -319,11 +330,13 @@ def convert_os_strategy(strategy: dict, num_cols: int, player: int) -> dict:
         new_strat[convert_os_str(board_state, num_cols, player)] = actions
     return new_strat
 
+
 class dotdict(dict):
     """dict with dot access"""
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+
 
 def safe_normalize(y, out=None):
     """
@@ -343,7 +356,8 @@ def safe_normalize(y, out=None):
     return out
 
 
-def flood_fill(state:list, init_pos:int, num_rows:int, num_cols:int) -> list:
+def flood_fill(state: list, init_pos: int, num_rows: int,
+               num_cols: int) -> list:
     player = cellState.kBlack \
         if state[init_pos] in cellState.black_pieces \
         else cellState.kWhite
@@ -357,7 +371,7 @@ def flood_fill(state:list, init_pos:int, num_rows:int, num_cols:int) -> list:
     return state
 
 
-def convert_to_infostate(board_state: str, player:int) -> str:
+def convert_to_infostate(board_state: str, player: int) -> str:
     board_ls = list(board_state)
     board_ls.insert(0, "P{} ".format(player))
     return "".join(board_ls)

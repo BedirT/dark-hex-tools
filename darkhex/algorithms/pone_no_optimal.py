@@ -1,6 +1,7 @@
 import typing
 import pyspiel
 
+
 class PoneNoOptimal:
     """
     pONE implementation. Uses pyspiel. Calculates the definite
@@ -9,7 +10,8 @@ class PoneNoOptimal:
     state.
     """
 
-    def __init__(self, game: pyspiel.Game, num_rows: int, num_cols: int) -> None:
+    def __init__(self, game: pyspiel.Game, num_rows: int,
+                 num_cols: int) -> None:
         # ? maybe initialize game here instead of taking it as a parameter
         self.game = game
         self.num_rows = num_rows
@@ -36,7 +38,7 @@ class PoneNoOptimal:
         a definite win for player 1, and -1 otherwise.
         """
         cur_player = state.current_player()
-        best_case = 1 - cur_player # opponent
+        best_case = 1 - cur_player  # opponent
         for action in state.legal_actions():
             info_state = state.information_state_string()
             new_state = state.child(action)

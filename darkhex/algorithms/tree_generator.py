@@ -19,28 +19,33 @@ from darkhex.utils.util import (
 
 
 class TreeGenerator:
+
     def __init__(self, game, file_name):
         self.file_name = file_name
 
         # Load the game information
-        self.game_info = load_file(f"darkhex/data/strategy_data/{self.file_name}/game_info.pkl")
-        player = self.game_info["player"]
+        self.game_info = load_file(
+            f"darkhex/data/strategy_data/{self.file_name}/game_info.pkl")
+        self.player = self.game_info["player"]
 
         self.nc = self.game_info["num_cols"]
         self.nr = self.game_info["num_rows"]
 
+        self.strat_color = 'black' if self.player == 0 else 'red'
+        self.br_color = 'black' if self.player == 1 else 'red'
+
         self.strategies = {
-            player: convert_os_strategy(
-                self.game_info["strategy"], self.nc, player
-            ),
-            1
-            - player: load_file(
-                f"darkhex/data/strategy_data/{self.file_name}/opp_strategy.pkl"
-            ),
+            self.player:
+                self.game_info["strategy"],
+            1 - self.player:
+                load_file(
+                    f"darkhex/data/strategy_data/{self.file_name}/br_strategy.pkl"
+                ),
         }
 
         # Match game state to initial_state in game_info
-        self.game_state = get_open_spiel_state(game, self.game_info["initial_board"])
+        self.game_state = get_open_spiel_state(game,
+                                               self.game_info["initial_board"])
 
         # tree componenets attributes
         self.attributes = {
@@ -64,7 +69,11 @@ class TreeGenerator:
                 "width": "1.5",
                 "height": "1.5",
             },
-            "edge": {"fontname": "Monospace", "fontsize": "12", "fontcolor": "black"},
+            "edge": {
+                "fontname": "Monospace",
+                "fontsize": "12",
+                "fontcolor": "black"
+            },
             "0-terminal": {
                 "shape": "doublecircle",
                 "style": "filled",
@@ -128,22 +137,23 @@ class TreeGenerator:
             style = "filled";
             color = "lightgrey";
             node [style=filled,color=white];
-            a0 [label="x", shape=hexagon, color=black, style=filled, fontcolor=white];
-            a1 [label="o", shape=hexagon, color=red, style=filled, fontcolor=white];
-        }"""
+            a0 [label="Strat_P", shape=hexagon, color=%s, style=filled, fontcolor=white];
+            a1 [label="BR_P", shape=hexagon, color=%s, style=filled, fontcolor=white];
+        }""" % (self.strat_color, self.br_color)
         # add the legend to the dotcode
-        output_raw_dot = (
-            output_raw_dot[: idx + len(self.tree_name) + 2]
-            + legend_string
-            + output_raw_dot[idx + len(self.tree_name) + 2 :]
-        )
+        output_raw_dot = (output_raw_dot[:idx + len(self.tree_name) + 2] +
+                          legend_string +
+                          output_raw_dot[idx + len(self.tree_name) + 2:])
 
         # Save the dot file
-        save_file(output_raw_dot, f"darkhex/data/strategy_data/{self.file_name}/tree.dot")
+        save_file(output_raw_dot,
+                  f"darkhex/data/strategy_data/{self.file_name}/tree.dot")
 
         # Save the tree
-        self.tree.write_svg(f"darkhex/data/strategy_data/{self.file_name}/tree.svg")
-        self.tree.write_pdf(f"darkhex/data/strategy_data/{self.file_name}/tree.pdf")
+        self.tree.write_svg(
+            f"darkhex/data/strategy_data/{self.file_name}/tree.svg")
+        self.tree.write_pdf(
+            f"darkhex/data/strategy_data/{self.file_name}/tree.pdf")
 
     def _add_children(self, game_state, parent=None):
         """
@@ -172,8 +182,8 @@ class TreeGenerator:
             if new_game_state.is_terminal():
                 # Add node
                 info_state_str = self.tree_info_string(
-                    new_game_state.information_state_string(cur_player_terminal)
-                )
+                    new_game_state.information_state_string(
+                        cur_player_terminal))
                 terminal_node = pydot.Node(
                     f"{info_state_str}",
                     **self.attributes[f"{cur_player_terminal}-terminal"],
@@ -192,8 +202,8 @@ class TreeGenerator:
                     self.tree.add_edge(edge)
             else:
                 info_state_str = self.tree_info_string(
-                    new_game_state.information_state_string(cur_player_terminal)
-                )
+                    new_game_state.information_state_string(
+                        cur_player_terminal))
 
                 # Add the child node
                 node_label = f"{info_state_str}"
@@ -203,9 +213,10 @@ class TreeGenerator:
                 # Add the edge if it doesnt already exist
                 edge_label = f"{conv_alphapos(action, num_cols)}: {prob:.2f}"
                 if not self.tree.get_edge(parent, node):
-                    edge = pydot.Edge(
-                        parent, node, label=edge_label, **self.attributes["edge"]
-                    )
+                    edge = pydot.Edge(parent,
+                                      node,
+                                      label=edge_label,
+                                      **self.attributes["edge"])
                     self.tree.add_edge(edge)
 
                 # Add the child's children
