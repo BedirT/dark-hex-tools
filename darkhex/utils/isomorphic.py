@@ -37,6 +37,7 @@ def isomorphic_single(dh_board, actions, probs):
         new_moves.append((len(dh_board) - 1 - action, prob))
     return isomorphic_board(dh_board), new_moves
 
+
 def isomorphic_board(board):
     new_board = [cellState.kEmpty] * len(board)
     for i in range(len(board)):

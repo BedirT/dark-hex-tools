@@ -9,6 +9,7 @@ import numpy as np
 
 
 class PolicySimplify:
+
     def __init__(
         self,
         initial_board: str,
@@ -29,19 +30,21 @@ class PolicySimplify:
         # todo: make the file name dynamic
         if policy_type == "mccfr":
             with open(file_path, "rb") as f:
-                solver = pickle.load(f) 
+                solver = pickle.load(f)
             self.policy = solver.average_policy()
         else:
-            raise NotImplementedError(f"Policy type {policy_type} not implemented.")
+            raise NotImplementedError(
+                f"Policy type {policy_type} not implemented.")
 
-        self.all_states = load_file(f"darkhex/data/state_data/{num_rows}x{num_cols}.pkl")
+        self.all_states = load_file(
+            f"darkhex/data/state_data/{num_rows}x{num_cols}.pkl")
 
         # Perform Checks to see if initial values are valid
         if not is_valid_board(initial_board, num_rows, num_cols):
             raise ValueError("Invalid initial board")
-  
+
         self.info_states = {}
-        
+
         self.iterate_board(initial_board)
 
     def iterate_board(self, board) -> None:
@@ -71,16 +74,14 @@ class PolicySimplify:
         for a in self.info_states[board].keys():
             o_color = "o" if self.p == 0 else "x"
             p_color = "x" if self.p == 0 else "o"
-            new_board = updated_board(
-                board, a, o_color, self.num_rows, self.num_cols
-            )
-            new_board_2 = updated_board(
-                board, a, p_color, self.num_rows, self.num_cols
-            )
+            new_board = updated_board(board, a, o_color, self.num_rows,
+                                      self.num_cols)
+            new_board_2 = updated_board(board, a, p_color, self.num_rows,
+                                        self.num_cols)
             if new_board:
                 new_boards[f"{a}{self.o}"] = new_board
             if new_board_2:
-                new_boards[f"{a}{self.p}"] = new_board_2 
+                new_boards[f"{a}{self.p}"] = new_board_2
         return new_boards
 
     def get_action_probs(self, board):
@@ -104,17 +105,20 @@ class PolicySimplify:
             # No actions larger than epsilon
             # Choose a single action with the highest probability
             pos_actions = [
-                i for i in legal_actions if action_probs_init[i] == max(action_probs_init.values())
+                i for i in legal_actions
+                if action_probs_init[i] == max(action_probs_init.values())
             ]
             action = np.random.choice(pos_actions)
             action_probs = {action: 1.0}
-        sorted_action_probs = sorted(action_probs.items(), key=lambda x: x[1], reverse=True)
-        sorted_action_probs = sorted_action_probs[: self.allowed_num_actions]
+        sorted_action_probs = sorted(action_probs.items(),
+                                     key=lambda x: x[1],
+                                     reverse=True)
+        sorted_action_probs = sorted_action_probs[:self.allowed_num_actions]
         action_probs = {k: v for k, v in sorted_action_probs}
         total = sum(action_probs.values())
         action_probs = {k: v / total for k, v in action_probs.items()}
         # print(f"Action probs: {action_probs}")
-        
+
         return action_probs
 
     def state_for_board(self, board):
@@ -136,18 +140,14 @@ class PolicySimplify:
         count = Counter(board)
         if self.p == 1:
             player_pieces = sum(
-                [s for x, s in count.items() if x in cellState.white_pieces]
-            )
+                [s for x, s in count.items() if x in cellState.white_pieces])
             opponent_pieces = sum(
-                [s for x, s in count.items() if x in cellState.black_pieces]
-            )
+                [s for x, s in count.items() if x in cellState.black_pieces])
             return opponent_pieces <= player_pieces
         player_pieces = sum(
-            [s for x, s in count.items() if x in cellState.black_pieces]
-        )
+            [s for x, s in count.items() if x in cellState.black_pieces])
         opponent_pieces = sum(
-            [s for x, s in count.items() if x in cellState.white_pieces]
-        )
+            [s for x, s in count.items() if x in cellState.white_pieces])
         return opponent_pieces < player_pieces
 
     def _is_terminal(self, board_state):
@@ -156,30 +156,23 @@ class PolicySimplify:
 
         - board_state: The current board state.
         """
-        if (
-            board_state.count(cellState.kBlackWin)
-            + board_state.count(cellState.kWhiteWin)
-            > 0
-        ):
+        if (board_state.count(cellState.kBlackWin) +
+                board_state.count(cellState.kWhiteWin) > 0):
             return True
         ct = Counter(board_state)
         empty_cells = ct[cellState.kEmpty]
         if self.p == 0:
             opponent_pieces = sum(
-                [s for x, s in ct.items() if x in cellState.white_pieces]
-            )
+                [s for x, s in ct.items() if x in cellState.white_pieces])
             player_pieces = sum(
-                [s for x, s in ct.items() if x in cellState.black_pieces]
-            )
+                [s for x, s in ct.items() if x in cellState.black_pieces])
             if opponent_pieces + empty_cells == player_pieces:
                 return True
         else:
             opponent_pieces = sum(
-                [s for x, s in ct.items() if x in cellState.black_pieces]
-            )
+                [s for x, s in ct.items() if x in cellState.black_pieces])
             player_pieces = sum(
-                [s for x, s in ct.items() if x in cellState.white_pieces]
-            )
+                [s for x, s in ct.items() if x in cellState.white_pieces])
             if opponent_pieces + empty_cells == player_pieces + 1:
                 return True
         return False

@@ -11,13 +11,8 @@ import math
 import pyspiel
 import seaborn as sns
 from darkhex.algorithms.pone_optimal import PoneOptimal
-from darkhex.utils.util import (
-    save_file, 
-    convert_os_str, 
-    calculate_turn, 
-    load_file, 
-    convert_to_infostate,
-    game_over)
+from darkhex.utils.util import (save_file, convert_os_str, calculate_turn,
+                                load_file, convert_to_infostate, game_over)
 
 
 def report_results(num_rows: int, num_cols: int,

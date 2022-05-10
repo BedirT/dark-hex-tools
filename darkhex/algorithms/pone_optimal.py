@@ -17,23 +17,27 @@ from darkhex.utils.cell_state import cellState
 
 
 class PoneOptimal:
+
     def __init__(self, num_rows, num_cols):
         self.num_rows = num_rows
         self.num_cols = num_cols
         self.num_cells = self.num_rows * self.num_cols
 
-        self.game = pyspiel.load_game(f"dark_hex_ir(num_cols={num_cols},num_rows={num_rows})")
-        
+        self.game = pyspiel.load_game(
+            f"dark_hex_ir(num_cols={num_cols},num_rows={num_rows})")
+
         self.reset_data()
 
         print("Generating all states...")
-        self.all_info_states = gel.get_all_information_states(self.game, num_rows, num_cols, True)
+        self.all_info_states = gel.get_all_information_states(
+            self.game, num_rows, num_cols, True)
         print(f"All States gathered: {len(self.all_info_states)}")
 
     def reset_data(self) -> None:
         self.legal_actions = {}
         self.legal_states = [{} for _ in range(self.num_cells)]
-        self.empty_states = [set() for _ in range(self.num_cells+1)]  # pyspiel.State
+        self.empty_states = [set() for _ in range(self.num_cells + 1)
+                            ]  # pyspiel.State
 
     def search(self, player) -> list:
         """
@@ -43,13 +47,13 @@ class PoneOptimal:
         """
         self.player = player
         self.opponent = 1 - player
-        self.setup_legal_states()   # setup the legal states
-        for e in range(self.num_cells + 1):             # empty cells
-            for h in range(math.ceil(self.num_cells / 2)):    # hidden cells
+        self.setup_legal_states()  # setup the legal states
+        for e in range(self.num_cells + 1):  # empty cells
+            for h in range(math.ceil(self.num_cells / 2)):  # hidden cells
                 print(f"Examining {e} empty cells and {h} hidden cells")
                 if e + h > self.num_cells:
                     continue
-                legal_states = self.empty_states[e+h]
+                legal_states = self.empty_states[e + h]
                 for info_state in tqdm(legal_states):
                     res = self.legal_states[h].get(info_state, -2)
                     if res in [-1, 0, 1]:
@@ -84,24 +88,26 @@ class PoneOptimal:
             legal_actions = self.legal_actions[(info_state, h)]
             if h == 0:
                 for action in legal_actions:
-                    n_state = self.update_state(info_state, action, self.player, h)
+                    n_state = self.update_state(info_state, action, self.player,
+                                                h)
                     if n_state in self.legal_states[h]:
                         if self.pone_search(n_state, h) == self.player:
                             self.legal_states[h][n_state] = self.player
                             return self.player
             elif h > 0:
                 for action in legal_actions:
-                    n_state_hW = self.update_state(
-                        info_state, action, self.opponent, h - 1
-                    )
+                    n_state_hW = self.update_state(info_state, action,
+                                                   self.opponent, h - 1)
                     if n_state_hW not in self.legal_states[h - 1]:
                         continue
-                    n_state_B = self.update_state(info_state, action, self.player, h)
+                    n_state_B = self.update_state(info_state, action,
+                                                  self.player, h)
                     if n_state_B in self.legal_states[h]:
                         if self.pone_search(n_state_hW, h - 1) == self.player:
                             if self.pone_search(n_state_B, h) == self.player:
                                 self.legal_states[h][n_state_B] = self.player
-                                self.legal_states[h - 1][n_state_hW] = self.player
+                                self.legal_states[h -
+                                                  1][n_state_hW] = self.player
                                 return self.player
         return -3
 
@@ -120,10 +126,12 @@ class PoneOptimal:
             return 0
         return 1
 
-    def update_state(self, info_state: str, action: int, player: int, h: int) -> list:
+    def update_state(self, info_state: str, action: int, player: int,
+                     h: int) -> list:
         """New state after the given action"""
         new_state = list(info_state)
-        new_state[action] = cellState.kBlack if player == 0 else cellState.kWhite
+        new_state[
+            action] = cellState.kBlack if player == 0 else cellState.kWhite
         new_state = "".join(new_state)
         if self.check_state(new_state, h) != -2:
             return new_state
@@ -197,4 +205,3 @@ class PoneOptimal:
         for cell in cellState.white_pieces:
             info_state = info_state.replace(cell, cellState.kWhite)
         return info_state
-        

@@ -26,7 +26,7 @@ def get_exploitability(game, strategy, folder_path):
     print("On_policy values:", br_info.on_policy_values)
     print("NashConv:", br_info.nash_conv)
     print("Exploitability:", br_info.exploitability)
-    
+
     # Save results
     results = {
         "br_values": br_info.br_values,
@@ -45,11 +45,12 @@ def test_methods(policy_folder_path):
     with open(policy_folder_path + "game_info.pkl", "rb") as f:
         game_info = pickle.load(f)
     # print(game_info)
-    game = pyspiel.load_game("dark_hex_ir", {
-        "num_rows": game_info['num_rows'],
-        "num_cols": game_info['num_cols'],
-        "use_early_terminal": True,
-    })
+    game = pyspiel.load_game(
+        "dark_hex_ir", {
+            "num_rows": game_info['num_rows'],
+            "num_cols": game_info['num_cols'],
+            "use_early_terminal": True,
+        })
     strategy = game_info['strategy']
 
     # get_best_response(game, strategy)
@@ -60,7 +61,10 @@ def test_methods(policy_folder_path):
 if __name__ == "__main__":
     # Take folder path as argument from command line
     parser = argparse.ArgumentParser()
-    parser.add_argument("folder_path", type=str, help="Path to folder containing game_info.pkl and strategy.pkl")
+    parser.add_argument(
+        "folder_path",
+        type=str,
+        help="Path to folder containing game_info.pkl and strategy.pkl")
     args = parser.parse_args()
     print(args.folder_path)
     test_methods(args.folder_path)

@@ -4,10 +4,16 @@ EMPTY_CELL = '.'
 ILLEGAL = 'i'
 TIE = '='
 
+
 class Hex:
 
-    def __init__(self, board_size, board, legality_check=False,
-                 b_early_w=False, w_early_w=False, h=0):
+    def __init__(self,
+                 board_size,
+                 board,
+                 legality_check=False,
+                 b_early_w=False,
+                 w_early_w=False,
+                 h=0):
         self.num_rows = board_size[0]
         self.num_cols = board_size[1]
         self.num_cells = self.num_rows * self.num_cols
@@ -21,7 +27,7 @@ class Hex:
         self.w_early_w = w_early_w
         self.h = h
         self.CHECK = False
-        
+
     def _checkEdge(self, color, node):
         if (color == C_PLAYER2 and self._find_col(node) == self.num_cols-1) or \
            (color == C_PLAYER1 and self._find_row(node) == self.num_rows-1):
@@ -52,7 +58,7 @@ class Hex:
             if col + 1 < self.num_cols:
                 positions.append(self._pos_by_coord(row - 1, col + 1))
         return positions
-    
+
     def _pos_by_coord(self, r, c):
         return self.num_cols * r + c
 
@@ -75,7 +81,7 @@ class Hex:
                 return ILLEGAL
 
         # checking for black
-        self.CHECK_BOARD = [False for _ in range(self.num_cells)] 
+        self.CHECK_BOARD = [False for _ in range(self.num_cells)]
         for i in range(self.num_cols):
             pos = self._pos_by_coord(0, i)
             if self.board[pos] == C_PLAYER1:
@@ -94,7 +100,7 @@ class Hex:
                 if self.done:
                     self.done = False
                     return C_PLAYER2
-        return TIE 
+        return TIE
 
     def _check_connections(self, connections, color):
         '''
@@ -120,7 +126,7 @@ class Hex:
         if (self.h + bNum + wNum > self.num_cells) or \
            (bNum - (wNum + self.h) > 1 or (wNum + self.h) > bNum):
             return False
-        
+
         # white wins with removing a white stone
         if self.w_early_w and self.check_early_win(C_PLAYER2):
             return False
@@ -129,14 +135,16 @@ class Hex:
             return False
 
         return True
-            
+
     def check_early_win(self, color):
         for c in range(len(self.board)):
             if self.board[c] in [C_PLAYER1, C_PLAYER2]:
                 continue
             temp = self.board[c]
-            self.board[c] = EMPTY_CELL; self.legality_check = False
+            self.board[c] = EMPTY_CELL
+            self.legality_check = False
             res = self.game_status()
-            self.board[c] = temp; self.legality_check = True
+            self.board[c] = temp
+            self.legality_check = True
             if res == color:
-                return True     
+                return True

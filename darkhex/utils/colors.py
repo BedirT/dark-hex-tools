@@ -1,6 +1,6 @@
 class colors:
     TITLE = '\033[35m'
-    MIDTEXT ='\033[32m'
+    MIDTEXT = '\033[32m'
     QUESTIONS = '\033[94m'
     C_PLAYER1 = '\033[96m'
     C_PLAYER2 = '\033[35m'

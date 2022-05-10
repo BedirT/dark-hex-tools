@@ -1,5 +1,6 @@
 import enlighten
 
+
 def pit(it, *pargs, **nargs):
     global __pit_man__
     try:
@@ -15,7 +16,11 @@ def pit(it, *pargs, **nargs):
         ctr = None
         for i, e in enumerate(it):
             if i == 0:
-                ctr = man.counter(*pargs, **{**dict(leave = False, total = it_len), **nargs})
+                ctr = man.counter(
+                    *pargs, **{
+                        **dict(leave=False, total=it_len),
+                        **nargs
+                    })
             yield e
             ctr.update()
     finally:

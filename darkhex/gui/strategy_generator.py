@@ -15,13 +15,8 @@ from darkhex.utils.util import num_action, save_file, updated_board, load_file, 
 class gameBuffer:
     """History buffer for the game to use for rewind and restart."""
 
-    def __init__(self, 
-                 initial_board: str,
-                 num_rows: int,
-                 num_cols: int,
-                 player: int,
-                 include_isomorphic: bool,
-                 stratgen_class) -> None:
+    def __init__(self, initial_board: str, num_rows: int, num_cols: int,
+                 player: int, include_isomorphic: bool, stratgen_class) -> None:
         self.game_info = {
             "num_rows": num_rows,
             "num_cols": num_cols,
@@ -76,16 +71,17 @@ class gameBuffer:
         return -1
 
     def _revert(self, idx):
-        self.info_states = self.info_states[:idx+1]
-        self.moves_and_boards = self.moves_and_boards[:idx+1]
-        self.board = self.board[:idx+1]
-        self.move_stack = self.move_stack[:idx+1]
-        self.given_inputs = self.given_inputs[:idx+1]
+        self.info_states = self.info_states[:idx + 1]
+        self.moves_and_boards = self.moves_and_boards[:idx + 1]
+        self.board = self.board[:idx + 1]
+        self.move_stack = self.move_stack[:idx + 1]
+        self.given_inputs = self.given_inputs[:idx + 1]
         self._update_game(idx)
 
     def _update_game(self, idx):
         self.stratgen_class.info_states = deepcopy(self.info_states[idx])
-        self.stratgen_class.moves_and_boards = deepcopy(self.moves_and_boards[idx])
+        self.stratgen_class.moves_and_boards = deepcopy(
+            self.moves_and_boards[idx])
         self.stratgen_class.board = deepcopy(self.board[idx])
         self.stratgen_class.move_stack = deepcopy(self.move_stack[idx])
 
@@ -100,7 +96,7 @@ class gameBuffer:
                 self._revert(idx)
             else:
                 raise ValueError("State not found.")
-       
+
 
 colors = {
     "black": "#000000",
@@ -114,6 +110,7 @@ colors = {
 
 
 class StrategyGeneratorGUI:
+
     def __init__(
         self,
         initial_board: str,
@@ -137,11 +134,13 @@ class StrategyGeneratorGUI:
         Grid.rowconfigure(self.root, 0, weight=1)
         Grid.columnconfigure(self.root, 0, weight=1)
 
-        self._setup_game(initial_board, num_rows, num_cols, player, include_isomorphic)
+        self._setup_game(initial_board, num_rows, num_cols, player,
+                         include_isomorphic)
 
         self.root.mainloop()
 
-    def _setup_game(self, initial_board, nr, nc, player, include_isomorphic) -> None:
+    def _setup_game(self, initial_board, nr, nc, player,
+                    include_isomorphic) -> None:
         self.nr = nr
         self.nc = nc
         self.player = player
@@ -166,17 +165,18 @@ class StrategyGeneratorGUI:
         self.menu = self._init_menu()
         self.root.config(menu=self.menu)
 
-        self.strat_gen = StrategyGenerator(
-            initial_board, self.nr, self.nc, player, include_isomorphic
-        )
+        self.strat_gen = StrategyGenerator(initial_board, self.nr, self.nc,
+                                           player, include_isomorphic)
 
     def _init_menu_frame(self) -> tk.Frame:
         frm = tk.Frame(padx=10, pady=10)
 
         # Add a button to the frame
-        btn_rewind = tk.Button(
-            frm, text="Rewind", command=self.rewind, height=2, font="Helvetica 14 bold"
-        )
+        btn_rewind = tk.Button(frm,
+                               text="Rewind",
+                               command=self.rewind,
+                               height=2,
+                               font="Helvetica 14 bold")
         btn_restart = tk.Button(
             frm,
             text="Restart",
@@ -235,7 +235,9 @@ class StrategyGeneratorGUI:
 
     def _init_board_frame(self) -> tk.Frame:
         self.loc_cen = [(0, 0) for _ in range(self.nr * self.nc)]
-        self.coord_cells = [(0 for __ in range(6)) for _ in range(self.nr * self.nc)]
+        self.coord_cells = [
+            (0 for __ in range(6)) for _ in range(self.nr * self.nc)
+        ]
         self.loc_circle = [(0, 0, 0, 0) for _ in range(self.nr * self.nc)]
         self._calculate_board_locations()
 
@@ -300,7 +302,8 @@ class StrategyGeneratorGUI:
         gamemenu = tk.Menu(menu, tearoff=0)
         gamemenu.add_command(label="New game", command=self._init_new_game)
         gamemenu.add_command(label="Load game", command=self._init_load_game)
-        gamemenu.add_command(label="Search in History", command=self._init_search_history)
+        gamemenu.add_command(label="Search in History",
+                             command=self._init_search_history)
         gamemenu.add_command(label="Exit", command=self.root.quit)
         menu.add_cascade(label="Game", menu=gamemenu)
 
@@ -321,7 +324,9 @@ class StrategyGeneratorGUI:
         self.new_init_win.resizable(False, False)
 
         # Create the widgets.
-        lbl_board_txt = tk.Label(self.new_init_win, text="Board in text:", anchor="e")
+        lbl_board_txt = tk.Label(self.new_init_win,
+                                 text="Board in text:",
+                                 anchor="e")
         lbl_row = tk.Label(self.new_init_win, text="Row size:", anchor="e")
         lbl_col = tk.Label(self.new_init_win, text="Column size:", anchor="e")
         # Ckeckbox for player 0 or 1.
@@ -348,7 +353,9 @@ class StrategyGeneratorGUI:
         self.ent_row = tk.Entry(self.new_init_win, width=5)
         self.ent_col = tk.Entry(self.new_init_win, width=5)
         self.ent_player = tk.Entry(self.new_init_win, width=5)
-        btn_ok = tk.Button(self.new_init_win, text="OK", command=self.new_init_start)
+        btn_ok = tk.Button(self.new_init_win,
+                           text="OK",
+                           command=self.new_init_start)
 
         # Place the widgets.
         lbl_board_txt.grid(row=0, column=0, padx=5, pady=5)
@@ -359,7 +366,12 @@ class StrategyGeneratorGUI:
         self.ent_board_txt.grid(row=0, column=1, padx=5, pady=5, columnspan=3)
         self.ent_row.grid(row=1, column=1, padx=5, pady=5)
         self.ent_col.grid(row=1, column=3, padx=5, pady=5)
-        btn_ok.grid(row=3, column=0, padx=10, pady=10, sticky="ewsn", columnspan=4)
+        btn_ok.grid(row=3,
+                    column=0,
+                    padx=10,
+                    pady=10,
+                    sticky="ewsn",
+                    columnspan=4)
 
     def _init_load_game(self) -> None:
         """Choose a history file to load the game from."""
@@ -401,22 +413,31 @@ class StrategyGeneratorGUI:
         self.save_win.resizable(False, False)
 
         # center the text
-        label_file_explorer = tk.Label(
-            self.save_win, text="Do you want to save the strategy?", anchor="center"
-        )
-        button_save = tk.Button(self.save_win, text="Save", command=self.save_files)
-        button_default_save = tk.Button(
-            self.save_win, text="Save to default", command=self.save_file_default
-        )
-        button_cancel = tk.Button(
-            self.save_win, text="Cancel", command=self.save_win.destroy
-        )
+        label_file_explorer = tk.Label(self.save_win,
+                                       text="Do you want to save the strategy?",
+                                       anchor="center")
+        button_save = tk.Button(self.save_win,
+                                text="Save",
+                                command=self.save_files)
+        button_default_save = tk.Button(self.save_win,
+                                        text="Save to default",
+                                        command=self.save_file_default)
+        button_cancel = tk.Button(self.save_win,
+                                  text="Cancel",
+                                  command=self.save_win.destroy)
 
-        label_file_explorer.grid(
-            row=0, column=0, padx=25, pady=25, columnspan=3, sticky="ewsn"
-        )
+        label_file_explorer.grid(row=0,
+                                 column=0,
+                                 padx=25,
+                                 pady=25,
+                                 columnspan=3,
+                                 sticky="ewsn")
         button_save.grid(row=1, column=0, padx=25, pady=25, sticky="ewsn")
-        button_default_save.grid(row=1, column=1, padx=25, pady=25, sticky="ewsn")
+        button_default_save.grid(row=1,
+                                 column=1,
+                                 padx=25,
+                                 pady=25,
+                                 sticky="ewsn")
         button_cancel.grid(row=1, column=2, padx=25, pady=25, sticky="ewsn")
 
     def _init_search_history(self) -> None:
@@ -432,11 +453,18 @@ class StrategyGeneratorGUI:
         self.ent_search = tk.Entry(self.search_win, width=25)
         self.list_search_result = tk.Listbox(self.search_win, width=25)
         self.fill_search_list('')
-        btn_search = tk.Button(self.search_win, text="Search", command=self.search_history)
-        self.ent_search.bind("<KeyRelease>", self.search_history) # bind to key release
+        btn_search = tk.Button(self.search_win,
+                               text="Search",
+                               command=self.search_history)
+        self.ent_search.bind("<KeyRelease>",
+                             self.search_history)  # bind to key release
 
-        btn_select = tk.Button(self.search_win, text="Select", command=self.select_history)
-        btn_cancel = tk.Button(self.search_win, text="Cancel", command=self.search_win.destroy)
+        btn_select = tk.Button(self.search_win,
+                               text="Select",
+                               command=self.select_history)
+        btn_cancel = tk.Button(self.search_win,
+                               text="Cancel",
+                               command=self.search_win.destroy)
         # add a scrollbar to the listbox
         scrollbar = tk.Scrollbar(self.search_win)
         scrollbar.config(command=self.list_search_result.yview)
@@ -446,8 +474,18 @@ class StrategyGeneratorGUI:
         lbl_search.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.ent_search.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         btn_search.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
-        self.list_search_result.grid(row=1, column=0, padx=5, pady=5, sticky="ew", columnspan=3)
-        btn_select.grid(row=2, column=0, padx=5, pady=5, sticky="ew", columnspan=2)
+        self.list_search_result.grid(row=1,
+                                     column=0,
+                                     padx=5,
+                                     pady=5,
+                                     sticky="ew",
+                                     columnspan=3)
+        btn_select.grid(row=2,
+                        column=0,
+                        padx=5,
+                        pady=5,
+                        sticky="ew",
+                        columnspan=2)
         btn_cancel.grid(row=2, column=2, padx=5, pady=5, sticky="ew")
 
     def search_history(self, _=None):
@@ -464,13 +502,16 @@ class StrategyGeneratorGUI:
     def select_history(self):
         """Selects the selected item in the listbox, gets it's id and reverts the game
         to that state."""
-        selected_item_str = self.list_search_result.get(self.list_search_result.curselection())
+        selected_item_str = self.list_search_result.get(
+            self.list_search_result.curselection())
         if selected_item_str:
-            self.strat_gen.history_buffer.revert_to_state(state=selected_item_str)
+            self.strat_gen.history_buffer.revert_to_state(
+                state=selected_item_str)
             self.draw_board(self.strat_gen.board)
             self.ent_input.delete(0, tk.END)
             try:
-                self.ent_input.insert(0, self.strat_gen.history_buffer.given_inputs[-1])
+                self.ent_input.insert(
+                    0, self.strat_gen.history_buffer.given_inputs[-1])
             except IndexError:
                 pass
             self.search_win.destroy()
@@ -536,16 +577,17 @@ class StrategyGeneratorGUI:
             )
         # Draw the cell id.
         # convert cell_id to alphanumeric id
-        text_id = chr(ord("a") + cell_id % self.nc) + str(cell_id // self.nc + 1)
-        self.canvas.create_text(
-            self.loc_cen[cell_id], text=str(text_id), fill=colors["white"]
-        )
+        text_id = chr(ord("a") + cell_id % self.nc) + str(cell_id // self.nc +
+                                                          1)
+        self.canvas.create_text(self.loc_cen[cell_id],
+                                text=str(text_id),
+                                fill=colors["white"])
 
     def enter(self) -> None:
         the_in = self.ent_input.get()
         # run the strategy generator
         success, log, new_board, end_game = self.strat_gen.iterate_board(the_in)
-        
+
         log = "Move succeeded.\n" + log if success else "Move failed.\n" + log
         self.txt_log.insert(tk.END, log + "\n")
         self.txt_log.see(tk.END)
@@ -555,8 +597,9 @@ class StrategyGeneratorGUI:
             self._init_end_game()
 
     def random_input(self) -> None:
-        success, log, new_board, end_game = self.strat_gen.iterate_board("random_roll")
-        
+        success, log, new_board, end_game = self.strat_gen.iterate_board(
+            "random_roll")
+
         log = "Random roll succeded \n" + log if success else "Random roll failed.\n" + log
         self.txt_log.insert(tk.END, log + "\n")
         self.txt_log.see(tk.END)
@@ -564,7 +607,6 @@ class StrategyGeneratorGUI:
         self.ent_input.delete(0, "end")
         if end_game:
             self._init_end_game()
-
 
     def _save_to(self, path) -> str:
         data = {
@@ -593,8 +635,10 @@ class StrategyGeneratorGUI:
             os.makedirs(data_dir)
         # save the file
         path = self._save_to(data_dir)
-        self.txt_log.insert(tk.END, "File saved to " + path + "/game_info.pkl\n")
-        self.txt_log.insert(tk.END, "History buffer saved to " + path + "/history.pkl\n")
+        self.txt_log.insert(tk.END,
+                            "File saved to " + path + "/game_info.pkl\n")
+        self.txt_log.insert(
+            tk.END, "History buffer saved to " + path + "/history.pkl\n")
         self.txt_log.see(tk.END)
         self.save_win.destroy()
 
@@ -608,8 +652,10 @@ class StrategyGeneratorGUI:
             filetypes=(("all files", "*.*"), ("python files", "*.pkl")),
         )
         path = self._save_to(path)
-        self.txt_log.insert(tk.END, "File saved to " + path + "/game_info.pkl\n")
-        self.txt_log.insert(tk.END, "History file saved to " + path + "/history.pkl\n")
+        self.txt_log.insert(tk.END,
+                            "File saved to " + path + "/game_info.pkl\n")
+        self.txt_log.insert(tk.END,
+                            "History file saved to " + path + "/history.pkl\n")
         self.txt_log.see(tk.END)
         self.save_win.destroy()
 
@@ -647,7 +693,8 @@ class StrategyGeneratorGUI:
             messagebox.showwarning("Warning", "Please input the board.")
             return
         if not row or not col:
-            messagebox.showwarning("Warning", "Please input the row and column size.")
+            messagebox.showwarning("Warning",
+                                   "Please input the row and column size.")
             return
         # Close the popup window.
         self.new_init_win.destroy()
@@ -660,16 +707,16 @@ class StrategyGeneratorGUI:
 
     def load_game(self, history: gameBuffer):
         """Given history, sets up the StrategyGenerator and gameBuffers."""
-        self._setup_game(
-            history.game_info["initial_board"],
-            history.game_info["num_rows"],
-            history.game_info["num_cols"],
-            history.game_info["player"],
-            history.game_info["isomorphic"])
+        self._setup_game(history.game_info["initial_board"],
+                         history.game_info["num_rows"],
+                         history.game_info["num_cols"],
+                         history.game_info["player"],
+                         history.game_info["isomorphic"])
         self.strat_gen.load_game(history)
 
 
 class StrategyGenerator:
+
     def __init__(
         self,
         initial_board: str,
@@ -693,11 +740,12 @@ class StrategyGenerator:
         self.moves_and_boards = {}
         self.move_stack = []
 
-        self.random_roll = False # if true, take actions until the terminal state.
+        self.random_roll = False  # if true, take actions until the terminal state.
         self.target_stack_board = None
 
         # set history buffer
-        self.history_buffer = gameBuffer(initial_board, num_rows, num_cols, player, include_isomorphic, self)
+        self.history_buffer = gameBuffer(initial_board, num_rows, num_cols,
+                                         player, include_isomorphic, self)
 
     def iterate_board(self, given_input: str) -> None:
         """Iterate the board with the given action.
@@ -705,7 +753,8 @@ class StrategyGenerator:
         Update the information states and the strategy.
         """
         # Check if the given input is valid.
-        success, actions, probs, log = self.is_valid_moves(self.board, given_input)
+        success, actions, probs, log = self.is_valid_moves(
+            self.board, given_input)
         if not success:
             return False, log, self.board, False
         # log the move type
@@ -713,7 +762,8 @@ class StrategyGenerator:
         self.info_states[self.board] = self._action_probs(actions, probs)
 
         if self.include_isomorphic:
-            iso_state, iso_moves_probs = isomorphic_single(self.board, actions, probs)
+            iso_state, iso_moves_probs = isomorphic_single(
+                self.board, actions, probs)
             if iso_state not in self.info_states:
                 self.info_states[iso_state] = iso_moves_probs
             else:
@@ -781,22 +831,20 @@ class StrategyGenerator:
         for move in moves:
             o_color = "o" if self.p == 0 else "x"
             p_color = "x" if self.p == 0 else "o"
-            new_board = updated_board(
-                board, move, o_color, self.num_rows, self.num_cols
-            )
-            new_board_2 = updated_board(
-                board, move, p_color, self.num_rows, self.num_cols
-            )
+            new_board = updated_board(board, move, o_color, self.num_rows,
+                                      self.num_cols)
+            new_board_2 = updated_board(board, move, p_color, self.num_rows,
+                                        self.num_cols)
             if not new_board:
                 return False, None, None, f"Invalid move: {move}"
             self.moves_and_boards[f"{move}{self.o}"] = new_board
             self.moves_and_boards[f"{move}{self.p}"] = new_board_2
         # check if sum of probs is 1
-        if abs(sum(probs)-1) > 0.0000001: # python float comparison
+        if abs(sum(probs) - 1) > 0.0000001:  # python float comparison
             return False, None, None, f"Values don't add up to one: {probs}->{sum(probs)}"
         return True, moves, probs, "Values processed successfully."
 
-    def _get_moves(self, board:str, given_input: str):
+    def _get_moves(self, board: str, given_input: str):
         if len(given_input) < 1:
             return False, "No action given.", None
         action_probs = given_input.strip().split(" ")
@@ -831,9 +879,10 @@ class StrategyGenerator:
         probs = list(map(float, probs))
         return True, moves, probs
 
-    def _action_probs(
-        self, actions: typing.List[int], probs: typing.List[float] = None
-    ) -> typing.List[typing.Tuple[int, float]]:
+    def _action_probs(self,
+                      actions: typing.List[int],
+                      probs: typing.List[float] = None
+                     ) -> typing.List[typing.Tuple[int, float]]:
         """Returns the action probs for the current board."""
         if probs is None:
             probs = [1 / len(actions)] * len(actions)
@@ -849,18 +898,14 @@ class StrategyGenerator:
         count = Counter(self.board)
         if self.p == 1:
             player_pieces = sum(
-                [s for x, s in count.items() if x in cellState.white_pieces]
-            )
+                [s for x, s in count.items() if x in cellState.white_pieces])
             opponent_pieces = sum(
-                [s for x, s in count.items() if x in cellState.black_pieces]
-            )
+                [s for x, s in count.items() if x in cellState.black_pieces])
             return opponent_pieces <= player_pieces
         player_pieces = sum(
-            [s for x, s in count.items() if x in cellState.black_pieces]
-        )
+            [s for x, s in count.items() if x in cellState.black_pieces])
         opponent_pieces = sum(
-            [s for x, s in count.items() if x in cellState.white_pieces]
-        )
+            [s for x, s in count.items() if x in cellState.white_pieces])
         return opponent_pieces < player_pieces
 
     def _is_terminal(self, board_state):
@@ -869,30 +914,23 @@ class StrategyGenerator:
 
         - board_state: The current board state.
         """
-        if (
-            board_state.count(cellState.kBlackWin)
-            + board_state.count(cellState.kWhiteWin)
-            > 0
-        ):
+        if (board_state.count(cellState.kBlackWin) +
+                board_state.count(cellState.kWhiteWin) > 0):
             return True
         ct = Counter(board_state)
         empty_cells = ct[cellState.kEmpty]
         if self.p == 0:
             opponent_pieces = sum(
-                [s for x, s in ct.items() if x in cellState.white_pieces]
-            )
+                [s for x, s in ct.items() if x in cellState.white_pieces])
             player_pieces = sum(
-                [s for x, s in ct.items() if x in cellState.black_pieces]
-            )
+                [s for x, s in ct.items() if x in cellState.black_pieces])
             if opponent_pieces + empty_cells == player_pieces:
                 return True
         else:
             opponent_pieces = sum(
-                [s for x, s in ct.items() if x in cellState.black_pieces]
-            )
+                [s for x, s in ct.items() if x in cellState.black_pieces])
             player_pieces = sum(
-                [s for x, s in ct.items() if x in cellState.white_pieces]
-            )
+                [s for x, s in ct.items() if x in cellState.white_pieces])
             if opponent_pieces + empty_cells == player_pieces + 1:
                 return True
         return False
@@ -909,6 +947,7 @@ class StrategyGenerator:
         self.move_stack = history.move_stack[-1]
         self.moves_and_boards = history.moves_and_boards[-1]
         self.info_states = history.info_states[-1]
+
 
 def is_valid_board(board: str, num_rows: int, num_cols: int) -> bool:
     """Check if the given board is valid."""
