@@ -24,15 +24,18 @@ class TreeGenerator:
 
         # Load the game information
         self.game_info = load_file(f"darkhex/data/strategy_data/{self.file_name}/game_info.pkl")
-        player = self.game_info["player"]
+        self.player = self.game_info["player"]
 
         self.nc = self.game_info["num_cols"]
         self.nr = self.game_info["num_rows"]
 
+        self.strat_color = 'black' if self.player == 0 else 'red'
+        self.br_color = 'black' if self.player == 1 else 'red'
+
         self.strategies = {
-            player: self.game_info["strategy"],
-            1 - player: load_file(
-                f"darkhex/data/strategy_data/{self.file_name}/opp_strategy.pkl"
+            self.player: self.game_info["strategy"],
+            1 - self.player: load_file(
+                f"darkhex/data/strategy_data/{self.file_name}/br_strategy.pkl"
             ),
         }
 
@@ -125,9 +128,9 @@ class TreeGenerator:
             style = "filled";
             color = "lightgrey";
             node [style=filled,color=white];
-            a0 [label="x", shape=hexagon, color=black, style=filled, fontcolor=white];
-            a1 [label="o", shape=hexagon, color=red, style=filled, fontcolor=white];
-        }"""
+            a0 [label="Strat_P", shape=hexagon, color=%s, style=filled, fontcolor=white];
+            a1 [label="BR_P", shape=hexagon, color=%s, style=filled, fontcolor=white];
+        }""" % (self.strat_color, self.br_color)
         # add the legend to the dotcode
         output_raw_dot = (
             output_raw_dot[: idx + len(self.tree_name) + 2]
