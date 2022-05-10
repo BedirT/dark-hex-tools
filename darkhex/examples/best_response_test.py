@@ -10,21 +10,20 @@ from darkhex.utils.util import load_file, get_open_spiel_state, save_file, conve
 def main(folder_path):
     data = load_file(folder_path + "game_info.pkl")
     game = pyspiel.load_game(
-        f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]})'
+        f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]},use_early_terminal=True)'
     )
 
     strategy = data["strategy"]
     initial_state = data["initial_board"]
 
     # create best response object
-    player = 0 if data["player"] == "x" else 1
     br = BestResponse(
         game,
-        player,
+        data["player"],
         initial_state,
         data["num_cols"],
         strategy,
-        folder_path + "opponent_strategy.pkl",
+        folder_path + "br_strategy.pkl",
     )
 
     # calculate best response value
@@ -44,5 +43,5 @@ def test():
 
 
 if __name__ == "__main__":
-    # main("darkhex/data/strategy_data/simplified_4x3_mccfr_p1/")
-    test()
+    main("darkhex/data/strategy_data/simplified_4x3_mccfr_p1/")
+    # test()

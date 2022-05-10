@@ -7,16 +7,13 @@ import time
 
 
 def main():
-    file_name = "simplified_4x3_mccfr_p1_3"
+    file_name = "simplified_4x3_mccfr_p1"
     file_path = f"darkhex/data/strategy_data/{file_name}/"
     data = load_file(file_path + "game_info.pkl")
     game = pyspiel.load_game(
         f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]},'+
                       'use_early_terminal=True)'
     )
-    print(game)
-    print(data['strategy'])
-
     # create best response object
     br = BestResponse(
         game,
@@ -24,7 +21,7 @@ def main():
         data["initial_board"],
         data["num_cols"],
         data["strategy"],
-        file_path + "opp_strategy.pkl",
+        file_path + "br_strategy.pkl",
     )
 
     start = time.time()
