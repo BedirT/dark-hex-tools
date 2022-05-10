@@ -3,9 +3,11 @@ from Projects.base.agent.Agent import Agent
 from numpy import random
 import copy
 
+
 class PolicyPerRound:
-    def __init__(self, policy, children=[], children_prob = []):
-        self.board_size = [3,4]
+
+    def __init__(self, policy, children=[], children_prob=[]):
+        self.board_size = [3, 4]
         self.policy = policy
         self.children = children
         self.children_prob = children_prob
@@ -31,8 +33,9 @@ class PolicyPerRound:
     def _valid_children_wProb(self, state):
         valid = []
         valid_prob = []
-        for i,ch in enumerate(self.children):
-            if any(x in self._policy_elements(ch.policy) for x in self._occupied_cells(state)):
+        for i, ch in enumerate(self.children):
+            if any(x in self._policy_elements(ch.policy)
+                   for x in self._occupied_cells(state)):
                 continue
             elif self.children_prob[i] == -1:
                 # prioritize and change the prob
@@ -47,7 +50,8 @@ class PolicyPerRound:
         # might need change
         valid = []
         for ch in self.children:
-            if any(x in self._policy_elements(ch.policy) for x in self._occupied_cells(board_state)):
+            if any(x in self._policy_elements(ch.policy)
+                   for x in self._occupied_cells(board_state)):
                 continue
             else:
                 valid.append(ch)
@@ -58,7 +62,7 @@ class PolicyPerRound:
         for i in range(len(board)):
             for j in range(len(board[i])):
                 if board[i][j] != '.':
-                    ls.append(self._convert_move([i,j]))
+                    ls.append(self._convert_move([i, j]))
         return ls
 
     def _add_children(self, new_children):
@@ -67,10 +71,12 @@ class PolicyPerRound:
     def _convert_move(self, m):
         return m[0] * self.board_size[1] + m[1]
 
+
 class FixedPolicyAgent_wTree(Agent):
+
     def __init__(self, color, pos_moves):
         super().__init__(color)
-        self.board_size = [3,4] # r, c
+        self.board_size = [3, 4]  # r, c
         self.opp_color = 'B' if color == 'W' else 'W'
         self.policy = self._create_policy_tree()
         self.pos_moves = copy.deepcopy(pos_moves)
@@ -78,39 +84,55 @@ class FixedPolicyAgent_wTree(Agent):
 
     def _create_policy_tree(self):
         # ISO 1
-        z0 = PolicyPerRound([0, 0, 0, 0,     0, 0, 0, .5,     0, 0, 0, .5])
-        z1 = PolicyPerRound([0, 0, 0, 0,     0, 0, 0, 0,     0, .5, .5, 0], children=[z0])
-        z1 = PolicyPerRound([0, 0, 0, 0,     0, 0, 0, 0,     0, .5, .5, 0], children=[z1])
-        
-        y1 = PolicyPerRound([0, 0, .5, .5,     0, 0, 0, 0,     0, 0, 0, 0])
-        y1 = PolicyPerRound([0, 0, .5, .5,     0, 0, 0, 0,     0, 0, 0, 0], children=[y1])
-        
-        # if C2 was empty
-        x0 = PolicyPerRound([0, 0, 0, 0,     0, 0, 0, 0,     0, 0, .5, .5])
-        x0 = PolicyPerRound([0, 0, 0, 0,     0, 0, 0, 0,     0, 0, .5, .5],  children=[x0])
-        x = PolicyPerRound([0, 0, 0, .5,     0, 0, 0, .5,     0, 0, 0, 0])
-        x = PolicyPerRound([0, 0, 0, 0,     0, 0, 1, 0,     0, 0, 0, 0],    children=[x, x0])
+        z0 = PolicyPerRound([0, 0, 0, 0, 0, 0, 0, .5, 0, 0, 0, .5])
+        z1 = PolicyPerRound([0, 0, 0, 0, 0, 0, 0, 0, 0, .5, .5, 0],
+                            children=[z0])
+        z1 = PolicyPerRound([0, 0, 0, 0, 0, 0, 0, 0, 0, .5, .5, 0],
+                            children=[z1])
 
-        x = PolicyPerRound([0, 0, 0, 0,     .5, 0, 0, 0,    .5, 0, 0, 0],   children=[x, y1, z1], children_prob=[-1, 0.5, 0.5])
-        xx = PolicyPerRound([0, 0, 0, 0,     0, 1, 0, 0,     0, 0, 0, 0],    children=[x])
+        y1 = PolicyPerRound([0, 0, .5, .5, 0, 0, 0, 0, 0, 0, 0, 0])
+        y1 = PolicyPerRound([0, 0, .5, .5, 0, 0, 0, 0, 0, 0, 0, 0],
+                            children=[y1])
+
+        # if C2 was empty
+        x0 = PolicyPerRound([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, .5, .5])
+        x0 = PolicyPerRound([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, .5, .5],
+                            children=[x0])
+        x = PolicyPerRound([0, 0, 0, .5, 0, 0, 0, .5, 0, 0, 0, 0])
+        x = PolicyPerRound([0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                           children=[x, x0])
+
+        x = PolicyPerRound([0, 0, 0, 0, .5, 0, 0, 0, .5, 0, 0, 0],
+                           children=[x, y1, z1],
+                           children_prob=[-1, 0.5, 0.5])
+        xx = PolicyPerRound([0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0], children=[x])
 
         # ISO 2
-        z0 = PolicyPerRound([.5, 0, 0, 0,     .5, 0, 0, 0,     0, 0, 0, 0])
-        z1 = PolicyPerRound([0, .5, .5, 0,     0, 0, 0, 0,     0, 0, 0, 0], children=[z0])
-        z1 = PolicyPerRound([0, .5, .5, 0,     0, 0, 0, 0,     0, 0, 0, 0], children=[z1])
-        
-        y1 = PolicyPerRound([0, 0, 0, 0,     0, 0, 0, 0,     .5, .5, 0, 0])
-        y1 = PolicyPerRound([0, 0, 0, 0,     0, 0, 0, 0,     .5, .5, 0, 0], children=[y1])
-        
-        # # if C2 was empty
-        x0 = PolicyPerRound([.5, .5, 0, 0,     0, 0, 0, 0,     0, 0, 0, 0])
-        x0 = PolicyPerRound([.5, .5, 0, 0,     0, 0, 0, 0,     0, 0, 0, 0],  children=[x0])
-        x  = PolicyPerRound([0, 0, 0, 0,       .5, 0, 0, 0,    .5, 0, 0, 0])
-        x  = PolicyPerRound([0, 0, 0, 0,       0, 1, 0, 0,     0, 0, 0, 0],    children=[x, x0])
+        z0 = PolicyPerRound([.5, 0, 0, 0, .5, 0, 0, 0, 0, 0, 0, 0])
+        z1 = PolicyPerRound([0, .5, .5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            children=[z0])
+        z1 = PolicyPerRound([0, .5, .5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            children=[z1])
 
-        x = PolicyPerRound([0, 0, 0, .5,    0, 0, 0, .5,    0, 0, 0, 0],   children=[x, y1, z1], children_prob=[-1, 0.5, 0.5])
-        x = PolicyPerRound([0, 0, 0, 0,     0, 0, 1, 0,     0, 0, 0, 0],    children=[x])
-        root = PolicyPerRound(policy=[], children=[x, xx], children_prob=[.5, .5])
+        y1 = PolicyPerRound([0, 0, 0, 0, 0, 0, 0, 0, .5, .5, 0, 0])
+        y1 = PolicyPerRound([0, 0, 0, 0, 0, 0, 0, 0, .5, .5, 0, 0],
+                            children=[y1])
+
+        # # if C2 was empty
+        x0 = PolicyPerRound([.5, .5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        x0 = PolicyPerRound([.5, .5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            children=[x0])
+        x = PolicyPerRound([0, 0, 0, 0, .5, 0, 0, 0, .5, 0, 0, 0])
+        x = PolicyPerRound([0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                           children=[x, x0])
+
+        x = PolicyPerRound([0, 0, 0, .5, 0, 0, 0, .5, 0, 0, 0, 0],
+                           children=[x, y1, z1],
+                           children_prob=[-1, 0.5, 0.5])
+        x = PolicyPerRound([0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], children=[x])
+        root = PolicyPerRound(policy=[],
+                              children=[x, xx],
+                              children_prob=[.5, .5])
 
         return root
 
@@ -135,7 +157,7 @@ class FixedPolicyAgent_wTree(Agent):
                 suc = True
             elif p[i] < 0:
                 p[i] = 0
-        return suc # return if there is any positive values 
+        return suc  # return if there is any positive values
 
     def _convert_move(self, m):
         return m[0] * self.board_size[1] + m[1]
@@ -145,49 +167,53 @@ class FixedPolicyAgent_wTree(Agent):
             if not success:
                 v = self._policy_update(observation)
                 if not v:
-                    self.count+=1
+                    self.count += 1
                     self._next_policy(observation)
-                # move 
-            else:            
+                # move
+            else:
                 self.count = 0
                 self._next_policy(observation)
-            action = self.pos_moves[random.choice(range(len(self.pos_moves)), p=self.policy.policy)]
+            action = self.pos_moves[random.choice(range(len(self.pos_moves)),
+                                                  p=self.policy.policy)]
             return action
         except:
             p = [1 / (self.board_size[0] * self.board_size[1])] \
                  * (self.board_size[0] * self.board_size[1])
-            action = self.pos_moves[random.choice(range(len(self.pos_moves)), p=p)]
+            action = self.pos_moves[random.choice(range(len(self.pos_moves)),
+                                                  p=p)]
             return action
 
+
 class FixedPolicyAgent(Agent):
+
     def __init__(self, color):
         super().__init__(color)
-        self.board_size = [3,4] # r, c
+        self.board_size = [3, 4]  # r, c
         self.opp_color = 'B' if color == 'W' else 'W'
         self.pos_moves = self._pos_moves()
 
         # Each entry must have as many elements as the self.pos_moves
         self.policy = [
             [
-                [0, 0, 0, 0,        0, 1, 0, 0,     0, 0, 0, 0], 
-            ], # policies for round 1
+                [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            ],  # policies for round 1
             [
-                [0, 0, 0, 0,        .5, 0, 0, 0,     .5, 0, 0, 0],
-            ], # round 2
+                [0, 0, 0, 0, .5, 0, 0, 0, .5, 0, 0, 0],
+            ],  # round 2
             [
-                [0, 0, 0, 0,        0, 0, 1, 0,     0, 0, 0, 0],
-                [0, 0, .25, .25,    0, 0, 0, 0,     0, .25, .25, 0],
-            ], # round 3
+                [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                [0, 0, .25, .25, 0, 0, 0, 0, 0, .25, .25, 0],
+            ],  # round 3
             [
-                [0, 0, .25, .25,    0, 0, 0, 0,     0, 0, 0, 0],
-            ] # round 4
+                [0, 0, .25, .25, 0, 0, 0, 0, 0, 0, 0, 0],
+            ]  # round 4
         ]
         self.games = [  # the strategies used by the player
-                        # for each round
+            # for each round
             [[0], [0], [1], [0]],
             [[0], [0], [0], [1]],
         ]
-        self.policies_followed = [] # correct it
+        self.policies_followed = []  # correct it
 
     def _pos_moves(self):
         moves = []
@@ -211,7 +237,7 @@ class FixedPolicyAgent(Agent):
             if flag:
                 valid_games.append(game)
         return valid_games
-        
+
     def _policy(self, round, history):
         games = self._get_valid_games()
         game = games[random.choice(range(len(games)))]
@@ -251,11 +277,12 @@ class FixedPolicyAgent(Agent):
     def step(self, round, history):
         print(round)
         if round > len(self.policy):
-            raise Exception("Given policy is not complete: {} rounds of policies implemented, the function is trying to execute {}. round.".format(
-                    len(self.policy), round
-                ))
+            raise Exception(
+                "Given policy is not complete: {} rounds of policies implemented, the function is trying to execute {}. round."
+                .format(len(self.policy), round))
         policy = self._policy(round, history)
-        action = self.pos_moves[random.choice(range(len(self.pos_moves)), p=policy)]
+        action = self.pos_moves[random.choice(range(len(self.pos_moves)),
+                                              p=policy)]
         # update policies followed. Fixx this
         self.policies_followed.append(action)
         return action
