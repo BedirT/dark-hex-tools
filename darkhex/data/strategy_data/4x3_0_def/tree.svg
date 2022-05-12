@@ -5,558 +5,918 @@
  -->
 <!-- Title: Strategy_Tree Pages: 1 -->
 <svg width="598pt" height="841pt"
- viewBox="0.00 0.00 598.00 840.50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(3.05 3.05) rotate(0) translate(4 2556.38)">
+ viewBox="0.00 0.00 598.00 840.89" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(4.31 4.31) rotate(0) translate(4 3620.09)">
 <title>Strategy_Tree</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-2556.38 1817.66,-2556.38 1817.66,4 -4,4"/>
-<!-- P 0 \n. . . \n . . . \n &#160;. . . \n &#160;&#160;. . .  -->
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-3620.09 2573.27,-3620.09 2573.27,4 -4,4"/>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node1" class="node">
-<title>P 0 \n. . . \n . . . \n &#160;. . . \n &#160;&#160;. . . </title>
-<polygon fill="darkgrey" stroke="black" points="751.66,-2498 718.86,-2552 653.24,-2552 620.44,-2498 653.24,-2444 718.86,-2444 751.66,-2498"/>
-<text text-anchor="middle" x="686.05" y="-2520.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="686.05" y="-2507.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="686.05" y="-2494.9" font-family="Monospace" font-size="12.00" fill="white"> . . . </text>
-<text text-anchor="middle" x="686.05" y="-2481.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
-<text text-anchor="middle" x="686.05" y="-2468.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="darkgrey" stroke="black" points="1490.8,-3545 1450.46,-3616.07 1369.8,-3616.07 1329.46,-3545 1369.8,-3473.93 1450.46,-3473.93 1490.8,-3545"/>
+<text text-anchor="middle" x="1410.13" y="-3560.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1410.13" y="-3547.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="1410.13" y="-3534.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="1410.13" y="-3521.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1410.13" y="-3508.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . .  -->
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node2" class="node">
-<title>P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="751.66,-2341 718.86,-2395 653.24,-2395 620.44,-2341 653.24,-2287 718.86,-2287 751.66,-2341"/>
-<text text-anchor="middle" x="686.05" y="-2363.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="686.05" y="-2350.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="686.05" y="-2337.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="686.05" y="-2324.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
-<text text-anchor="middle" x="686.05" y="-2311.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1336.8,-3354 1296.46,-3425.07 1215.8,-3425.07 1175.46,-3354 1215.8,-3282.93 1296.46,-3282.93 1336.8,-3354"/>
+<text text-anchor="middle" x="1256.13" y="-3369.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1256.13" y="-3356.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="1256.13" y="-3343.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="1256.13" y="-3330.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="1256.13" y="-3317.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 0 \n. . . \n . . . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . .  -->
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="edge1" class="edge">
-<title>P 0 \n. . . \n . . . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M686.05,-2443.66C686.05,-2431.29 686.05,-2418.01 686.05,-2405.26"/>
-<polygon fill="black" stroke="black" points="689.55,-2405.18 686.05,-2395.18 682.55,-2405.18 689.55,-2405.18"/>
-<text text-anchor="middle" x="716.55" y="-2416.9" font-family="Monospace" font-size="12.00">b2: 1.00</text>
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1362.88,-3486.01C1346.18,-3465.51 1327.27,-3442.31 1310.06,-3421.19"/>
+<polygon fill="black" stroke="black" points="1312.59,-3418.75 1303.56,-3413.21 1307.16,-3423.17 1312.59,-3418.75"/>
+<text text-anchor="middle" x="1368.63" y="-3446.9" font-family="Monospace" font-size="12.00">b3: 0.50</text>
 </g>
-<!-- P 1 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . .  -->
-<g id="node3" class="node">
-<title>P 1 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . . </title>
-<polygon fill="red" stroke="black" points="751.66,-2184 718.86,-2238 653.24,-2238 620.44,-2184 653.24,-2130 718.86,-2130 751.66,-2184"/>
-<text text-anchor="middle" x="686.05" y="-2206.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="686.05" y="-2193.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="686.05" y="-2180.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="686.05" y="-2167.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
-<text text-anchor="middle" x="686.05" y="-2154.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . .  -->
-<g id="edge2" class="edge">
-<title>P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M686.05,-2286.66C686.05,-2274.29 686.05,-2261.01 686.05,-2248.26"/>
-<polygon fill="black" stroke="black" points="689.55,-2248.18 686.05,-2238.18 682.55,-2248.18 689.55,-2248.18"/>
-<text text-anchor="middle" x="716.55" y="-2259.9" font-family="Monospace" font-size="12.00">b2: 1.00</text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . .  -->
-<g id="node4" class="node">
-<title>P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . </title>
-<polygon fill="red" stroke="black" points="751.66,-2027 718.86,-2081 653.24,-2081 620.44,-2027 653.24,-1973 718.86,-1973 751.66,-2027"/>
-<text text-anchor="middle" x="686.05" y="-2049.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="686.05" y="-2036.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="686.05" y="-2023.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="686.05" y="-2010.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o . </text>
-<text text-anchor="middle" x="686.05" y="-1997.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . .  -->
-<g id="edge3" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M686.05,-2129.66C686.05,-2117.29 686.05,-2104.01 686.05,-2091.26"/>
-<polygon fill="black" stroke="black" points="689.55,-2091.18 686.05,-2081.18 682.55,-2091.18 689.55,-2091.18"/>
-<text text-anchor="middle" x="716.55" y="-2102.9" font-family="Monospace" font-size="12.00">b3: 1.00</text>
-</g>
-<!-- P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;. . .  -->
-<g id="node5" class="node">
-<title>P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="345.66,-1870 312.86,-1924 247.24,-1924 214.44,-1870 247.24,-1816 312.86,-1816 345.66,-1870"/>
-<text text-anchor="middle" x="280.05" y="-1892.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="280.05" y="-1879.9" font-family="Monospace" font-size="12.00" fill="white">. x . </text>
-<text text-anchor="middle" x="280.05" y="-1866.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="280.05" y="-1853.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
-<text text-anchor="middle" x="280.05" y="-1840.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;. . .  -->
-<g id="edge4" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M632.97,-2005.74C558.1,-1977.15 421.75,-1925.1 342.23,-1894.74"/>
-<polygon fill="black" stroke="black" points="343.41,-1891.44 332.82,-1891.15 340.91,-1897.98 343.41,-1891.44"/>
-<text text-anchor="middle" x="526.55" y="-1945.9" font-family="Monospace" font-size="12.00">b1: 0.14</text>
-</g>
-<!-- P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;. . .  -->
-<g id="node10" class="node">
-<title>P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="638.66,-1870 605.86,-1924 540.24,-1924 507.44,-1870 540.24,-1816 605.86,-1816 638.66,-1870"/>
-<text text-anchor="middle" x="573.05" y="-1892.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="573.05" y="-1879.9" font-family="Monospace" font-size="12.00" fill="white">. . x </text>
-<text text-anchor="middle" x="573.05" y="-1866.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="573.05" y="-1853.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
-<text text-anchor="middle" x="573.05" y="-1840.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;. . .  -->
-<g id="edge10" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M650.3,-1976.96C638.95,-1961.4 626.32,-1944.06 614.6,-1927.99"/>
-<polygon fill="black" stroke="black" points="617.29,-1925.74 608.57,-1919.72 611.64,-1929.87 617.29,-1925.74"/>
-<text text-anchor="middle" x="663.55" y="-1945.9" font-family="Monospace" font-size="12.00">c1: 0.14</text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;x . .  -->
-<g id="node13" class="node">
-<title>P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;x . . </title>
-<polygon fill="black" stroke="black" points="930.66,-1870 897.86,-1924 832.24,-1924 799.44,-1870 832.24,-1816 897.86,-1816 930.66,-1870"/>
-<text text-anchor="middle" x="865.05" y="-1892.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="865.05" y="-1879.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="865.05" y="-1866.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="865.05" y="-1853.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
-<text text-anchor="middle" x="865.05" y="-1840.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;x . .  -->
-<g id="edge16" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;x . . </title>
-<path fill="none" stroke="black" d="M728.93,-1988.87C754.63,-1966.62 787.44,-1938.2 814.41,-1914.85"/>
-<polygon fill="black" stroke="black" points="816.95,-1917.28 822.22,-1908.09 812.37,-1911.99 816.95,-1917.28"/>
-<text text-anchor="middle" x="811.55" y="-1945.9" font-family="Monospace" font-size="12.00">a4: 0.36</text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. . x \n &#160;&#160;. . .  -->
-<g id="node17" class="node">
-<title>P 0 \n. . . \n . x . \n &#160;. . x \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="1222.66,-1870 1189.86,-1924 1124.24,-1924 1091.44,-1870 1124.24,-1816 1189.86,-1816 1222.66,-1870"/>
-<text text-anchor="middle" x="1157.05" y="-1892.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1157.05" y="-1879.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1157.05" y="-1866.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="1157.05" y="-1853.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . x </text>
-<text text-anchor="middle" x="1157.05" y="-1840.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. . x \n &#160;&#160;. . .  -->
-<g id="edge24" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. . x \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M740.54,-2008.07C828.13,-1979.24 999.83,-1922.74 1093.09,-1892.05"/>
-<polygon fill="black" stroke="black" points="1094.28,-1895.34 1102.69,-1888.89 1092.1,-1888.69 1094.28,-1895.34"/>
-<text text-anchor="middle" x="966.55" y="-1945.9" font-family="Monospace" font-size="12.00">c3: 0.36</text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="node6" class="node">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . </title>
-<polygon fill="red" stroke="black" points="782.66,-1713 749.86,-1767 684.24,-1767 651.44,-1713 684.24,-1659 749.86,-1659 782.66,-1713"/>
-<text text-anchor="middle" x="717.05" y="-1735.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="717.05" y="-1722.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="717.05" y="-1709.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="717.05" y="-1696.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="717.05" y="-1683.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge5" class="edge">
-<title>P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M333.64,-1849.99C414.51,-1821.31 567.43,-1767.07 653.7,-1736.47"/>
-<polygon fill="black" stroke="black" points="655.12,-1739.68 663.37,-1733.04 652.78,-1733.08 655.12,-1739.68"/>
-<text text-anchor="middle" x="542.55" y="-1788.9" font-family="Monospace" font-size="12.00">a3: 1.00</text>
-</g>
-<!-- P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;x . .  -->
-<g id="node7" class="node">
-<title>P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;x . . </title>
-<polygon fill="black" stroke="black" points="193.66,-1430 160.86,-1484 95.24,-1484 62.44,-1430 95.24,-1376 160.86,-1376 193.66,-1430"/>
-<text text-anchor="middle" x="128.05" y="-1452.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="128.05" y="-1439.9" font-family="Monospace" font-size="12.00" fill="white">. x . </text>
-<text text-anchor="middle" x="128.05" y="-1426.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="128.05" y="-1413.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
-<text text-anchor="middle" x="128.05" y="-1400.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;x . .  -->
-<g id="edge6" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;x . . </title>
-<path fill="none" stroke="black" d="M653.06,-1710.01C536.87,-1705.22 297.11,-1689.65 231.05,-1641.5 182.76,-1606.3 155.98,-1542.2 141.92,-1493.94"/>
-<polygon fill="black" stroke="black" points="145.26,-1492.9 139.19,-1484.21 138.52,-1494.79 145.26,-1492.9"/>
-<text text-anchor="middle" x="261.55" y="-1631.9" font-family="Monospace" font-size="12.00">a4: 0.50</text>
-</g>
-<!-- P 0 \n. x . \n . x . \n &#160;. . x \n &#160;&#160;. . .  -->
-<g id="node9" class="node">
-<title>P 0 \n. x . \n . x . \n &#160;. . x \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="429.66,-1178 396.86,-1232 331.24,-1232 298.44,-1178 331.24,-1124 396.86,-1124 429.66,-1178"/>
-<text text-anchor="middle" x="364.05" y="-1200.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="364.05" y="-1187.9" font-family="Monospace" font-size="12.00" fill="white">. x . </text>
-<text text-anchor="middle" x="364.05" y="-1174.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="364.05" y="-1161.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . x </text>
-<text text-anchor="middle" x="364.05" y="-1148.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. x . \n . x . \n &#160;. . x \n &#160;&#160;. . .  -->
-<g id="edge8" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. x . \n . x . \n &#160;. . x \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M657.94,-1702.06C603.44,-1689.79 524.2,-1663.58 478.05,-1610 387.1,-1504.4 367.7,-1334.13 364.18,-1242.4"/>
-<polygon fill="black" stroke="black" points="367.67,-1242.03 363.85,-1232.15 360.68,-1242.26 367.67,-1242.03"/>
-<text text-anchor="middle" x="508.55" y="-1552.9" font-family="Monospace" font-size="12.00">c3: 0.50</text>
-</g>
-<!-- P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . .  -->
-<g id="node11" class="node">
-<title>P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . . </title>
-<polygon fill="black" stroke="black" points="651.66,-1430 618.86,-1484 553.24,-1484 520.44,-1430 553.24,-1376 618.86,-1376 651.66,-1430"/>
-<text text-anchor="middle" x="586.05" y="-1452.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="586.05" y="-1439.9" font-family="Monospace" font-size="12.00" fill="white">. . x </text>
-<text text-anchor="middle" x="586.05" y="-1426.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="586.05" y="-1413.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
-<text text-anchor="middle" x="586.05" y="-1400.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . .  -->
-<g id="edge12" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . . </title>
-<path fill="none" stroke="black" d="M658.1,-1701.92C623.17,-1692.59 581.64,-1674.86 560.05,-1641.5 531.81,-1597.87 542.62,-1538.36 557.99,-1493.75"/>
-<polygon fill="black" stroke="black" points="561.34,-1494.77 561.44,-1484.18 554.76,-1492.4 561.34,-1494.77"/>
-<text text-anchor="middle" x="590.55" y="-1631.9" font-family="Monospace" font-size="12.00">a4: 0.50</text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . .  -->
-<g id="edge22" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . . </title>
-<path fill="none" stroke="black" d="M692.26,-1658.82C670.38,-1611.88 638.45,-1543.41 615.32,-1493.79"/>
-<polygon fill="black" stroke="black" points="618.36,-1492.03 610.97,-1484.44 612.02,-1494.99 618.36,-1492.03"/>
-<text text-anchor="middle" x="714.55" y="-1631.9" font-family="Monospace" font-size="12.00">c1: 0.20</text>
-</g>
-<!-- P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . .  -->
-<g id="node12" class="node">
-<title>P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="1035.66,-1178 1002.86,-1232 937.24,-1232 904.44,-1178 937.24,-1124 1002.86,-1124 1035.66,-1178"/>
-<text text-anchor="middle" x="970.05" y="-1200.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="970.05" y="-1187.9" font-family="Monospace" font-size="12.00" fill="white">. . x </text>
-<text text-anchor="middle" x="970.05" y="-1174.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="970.05" y="-1161.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . x </text>
-<text text-anchor="middle" x="970.05" y="-1148.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . .  -->
-<g id="edge14" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M742.23,-1658.95C789.25,-1559.9 890.14,-1347.34 940.38,-1241.52"/>
-<polygon fill="black" stroke="black" points="943.66,-1242.77 944.78,-1232.24 937.33,-1239.77 943.66,-1242.77"/>
-<text text-anchor="middle" x="847.55" y="-1552.9" font-family="Monospace" font-size="12.00">c3: 0.50</text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . .  -->
-<g id="edge37" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M770.58,-1692.32C807.58,-1675.93 854.88,-1648.94 882.05,-1610 960.22,-1497.98 972.12,-1332.11 972.19,-1242.31"/>
-<polygon fill="black" stroke="black" points="975.69,-1242.26 972.15,-1232.27 968.69,-1242.29 975.69,-1242.26"/>
-<text text-anchor="middle" x="965.55" y="-1552.9" font-family="Monospace" font-size="12.00">c1: 0.20</text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;x . .  -->
-<g id="node14" class="node">
-<title>P 0 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;x . . </title>
-<polygon fill="black" stroke="black" points="1327.66,-1556 1294.86,-1610 1229.24,-1610 1196.44,-1556 1229.24,-1502 1294.86,-1502 1327.66,-1556"/>
-<text text-anchor="middle" x="1262.05" y="-1578.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1262.05" y="-1565.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1262.05" y="-1552.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="1262.05" y="-1539.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o . </text>
-<text text-anchor="middle" x="1262.05" y="-1526.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;x . .  -->
-<g id="edge18" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;x . . </title>
-<path fill="none" stroke="black" d="M774.07,-1698.48C830.25,-1684.93 918.4,-1663.03 994.05,-1641.5 1064.29,-1621.51 1144.01,-1596.01 1198.12,-1578.27"/>
-<polygon fill="black" stroke="black" points="1199.5,-1581.5 1207.91,-1575.05 1197.32,-1574.85 1199.5,-1581.5"/>
-<text text-anchor="middle" x="1069.55" y="-1631.9" font-family="Monospace" font-size="12.00">b3: 0.80</text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. o x \n &#160;&#160;. . .  -->
-<g id="node18" class="node">
-<title>P 0 \n. . . \n . x . \n &#160;. o x \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="1620.66,-1556 1587.86,-1610 1522.24,-1610 1489.44,-1556 1522.24,-1502 1587.86,-1502 1620.66,-1556"/>
-<text text-anchor="middle" x="1555.05" y="-1578.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1555.05" y="-1565.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1555.05" y="-1552.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="1555.05" y="-1539.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
-<text text-anchor="middle" x="1555.05" y="-1526.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. o x \n &#160;&#160;. . .  -->
-<g id="edge26" class="edge">
-<title>P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;. o x \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M777.18,-1703.65C888.25,-1687.88 1132.88,-1651.55 1337.05,-1610 1388.39,-1599.55 1445.97,-1585.45 1489.06,-1574.42"/>
-<polygon fill="black" stroke="black" points="1490.04,-1577.78 1498.85,-1571.9 1488.3,-1571 1490.04,-1577.78"/>
-<text text-anchor="middle" x="1266.55" y="-1631.9" font-family="Monospace" font-size="12.00">b3: 0.80</text>
-</g>
-<!-- P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="node8" class="node">
-<title>P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . . </title>
-<ellipse fill="red" stroke="black" cx="701.05" cy="-886" rx="59.3" ry="59.3"/>
-<ellipse fill="none" stroke="black" cx="701.05" cy="-886" rx="63.29" ry="63.29"/>
-<text text-anchor="middle" x="701.05" y="-908.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="701.05" y="-895.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="701.05" y="-882.9" font-family="Monospace" font-size="12.00" fill="white"> . x O </text>
-<text text-anchor="middle" x="701.05" y="-869.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="701.05" y="-856.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge7" class="edge">
-<title>P 0 \n. x . \n . x . \n &#160;. . . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M135.79,-1376C147.25,-1311.62 173.52,-1201.97 228.05,-1124 323.66,-987.28 521.72,-925.26 628.71,-900.77"/>
-<polygon fill="black" stroke="black" points="629.78,-904.11 638.78,-898.51 628.25,-897.28 629.78,-904.11"/>
-<text text-anchor="middle" x="258.55" y="-1174.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
-</g>
-<!-- P 0 \n. x . \n . x . \n &#160;. . x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge9" class="edge">
-<title>P 0 \n. x . \n . x . \n &#160;. . x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M383.15,-1123.71C399.26,-1084.88 425.57,-1033.15 462.05,-998 509.18,-952.6 578.25,-923.28 630.03,-906.25"/>
-<polygon fill="black" stroke="black" points="631.37,-909.49 639.82,-903.1 629.23,-902.83 631.37,-909.49"/>
-<text text-anchor="middle" x="492.55" y="-1048.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
-</g>
-<!-- P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge11" class="edge">
-<title>P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M612.4,-1826.65C630.34,-1807.33 651.72,-1784.32 670.46,-1764.15"/>
-<polygon fill="black" stroke="black" points="673.26,-1766.28 677.5,-1756.57 668.13,-1761.52 673.26,-1766.28"/>
-<text text-anchor="middle" x="680.55" y="-1788.9" font-family="Monospace" font-size="12.00">a3: 1.00</text>
-</g>
-<!-- P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge13" class="edge">
-<title>P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M587.89,-1375.77C590.88,-1314.43 598.56,-1210.89 618.05,-1124 631.22,-1065.3 654.31,-1001.02 672.8,-954.23"/>
-<polygon fill="black" stroke="black" points="676.1,-955.4 676.55,-944.82 669.59,-952.81 676.1,-955.4"/>
-<text text-anchor="middle" x="648.55" y="-1174.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
-</g>
-<!-- P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge23" class="edge">
-<title>P 0 \n. . x \n . x . \n &#160;. . . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M617.89,-1375.89C639.26,-1337.38 665.83,-1283.27 679.05,-1232 702.73,-1140.19 705.56,-1030.31 704.26,-959.62"/>
-<polygon fill="black" stroke="black" points="707.75,-959.41 704.04,-949.49 700.76,-959.56 707.75,-959.41"/>
-<text text-anchor="middle" x="728.55" y="-1174.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
-</g>
-<!-- P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge15" class="edge">
-<title>P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M928.63,-1137.69C918.18,-1127.51 907.09,-1116.46 897.05,-1106 844.96,-1051.7 787.84,-987.29 748.78,-942.43"/>
-<polygon fill="black" stroke="black" points="751.39,-940.1 742.18,-934.85 746.1,-944.69 751.39,-940.1"/>
-<text text-anchor="middle" x="927.55" y="-1048.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
-</g>
-<!-- P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge38" class="edge">
-<title>P 0 \n. . x \n . x . \n &#160;. . x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M980.21,-1123.62C984.47,-1085.25 983.57,-1034.12 958.05,-998 915.68,-938.02 833.81,-910.18 773.81,-897.43"/>
-<polygon fill="black" stroke="black" points="774.5,-894 764.01,-895.44 773.11,-900.86 774.5,-894"/>
-<text text-anchor="middle" x="1013.55" y="-1048.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge17" class="edge">
-<title>P 0 \n. . . \n . x . \n &#160;. . . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M825,-1827.05C806.17,-1807.33 783.59,-1783.69 763.96,-1763.13"/>
-<polygon fill="black" stroke="black" points="766.31,-1760.53 756.88,-1755.71 761.25,-1765.36 766.31,-1760.53"/>
-<text text-anchor="middle" x="826.55" y="-1788.9" font-family="Monospace" font-size="12.00">a3: 1.00</text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;x . .  -->
-<g id="node15" class="node">
-<title>P 0 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;x . . </title>
-<polygon fill="black" stroke="black" points="1327.66,-1304 1294.86,-1358 1229.24,-1358 1196.44,-1304 1229.24,-1250 1294.86,-1250 1327.66,-1304"/>
-<text text-anchor="middle" x="1262.05" y="-1326.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1262.05" y="-1313.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1262.05" y="-1300.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="1262.05" y="-1287.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="1262.05" y="-1274.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;x . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;x . .  -->
-<g id="edge19" class="edge">
-<title>P 0 \n. . . \n . x . \n &#160;. o . \n &#160;&#160;x . . &#45;&gt;P 0 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;x . . </title>
-<path fill="none" stroke="black" d="M1262.05,-1501.98C1262.05,-1463 1262.05,-1409.86 1262.05,-1368.59"/>
-<polygon fill="black" stroke="black" points="1265.55,-1368.37 1262.05,-1358.37 1258.55,-1368.37 1265.55,-1368.37"/>
-<text text-anchor="middle" x="1292.55" y="-1426.9" font-family="Monospace" font-size="12.00">a3: 1.00</text>
-</g>
-<!-- P 0 \nx . . \n . x . \n &#160;o o . \n &#160;&#160;x . .  -->
-<g id="node16" class="node">
-<title>P 0 \nx . . \n . x . \n &#160;o o . \n &#160;&#160;x . . </title>
-<polygon fill="black" stroke="black" points="1327.66,-1052 1294.86,-1106 1229.24,-1106 1196.44,-1052 1229.24,-998 1294.86,-998 1327.66,-1052"/>
-<text text-anchor="middle" x="1262.05" y="-1074.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1262.05" y="-1061.9" font-family="Monospace" font-size="12.00" fill="white">x . . </text>
-<text text-anchor="middle" x="1262.05" y="-1048.9" font-family="Monospace" font-size="12.00" fill="white"> . x . </text>
-<text text-anchor="middle" x="1262.05" y="-1035.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="1262.05" y="-1022.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;x . . &#45;&gt;P 0 \nx . . \n . x . \n &#160;o o . \n &#160;&#160;x . .  -->
-<g id="edge20" class="edge">
-<title>P 0 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;x . . &#45;&gt;P 0 \nx . . \n . x . \n &#160;o o . \n &#160;&#160;x . . </title>
-<path fill="none" stroke="black" d="M1262.05,-1249.98C1262.05,-1211 1262.05,-1157.86 1262.05,-1116.59"/>
-<polygon fill="black" stroke="black" points="1265.55,-1116.37 1262.05,-1106.37 1258.55,-1116.37 1265.55,-1116.37"/>
-<text text-anchor="middle" x="1292.55" y="-1174.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
-</g>
-<!-- P 0 \nx . . \n . x . \n &#160;o o . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge21" class="edge">
-<title>P 0 \nx . . \n . x . \n &#160;o o . \n &#160;&#160;x . . &#45;&gt;P 1 \n. . . \n . x O \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M1207.55,-1033.42C1153.52,-1016.14 1068.29,-989.26 994.05,-967.5 918.4,-945.33 831.24,-921.61 771.77,-905.71"/>
-<polygon fill="black" stroke="black" points="772.67,-902.33 762.11,-903.13 770.87,-909.09 772.67,-902.33"/>
-<text text-anchor="middle" x="1061.55" y="-970.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. . x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge25" class="edge">
-<title>P 0 \n. . . \n . x . \n &#160;. . x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x . \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M1103.1,-1849.99C1021.48,-1821.24 866.97,-1766.81 780.22,-1736.25"/>
-<polygon fill="black" stroke="black" points="781.35,-1732.94 770.76,-1732.92 779.03,-1739.54 781.35,-1732.94"/>
-<text text-anchor="middle" x="981.55" y="-1788.9" font-family="Monospace" font-size="12.00">a3: 1.00</text>
-</g>
-<!-- P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. . .  -->
-<g id="node19" class="node">
-<title>P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="1620.66,-1304 1587.86,-1358 1522.24,-1358 1489.44,-1304 1522.24,-1250 1587.86,-1250 1620.66,-1304"/>
-<text text-anchor="middle" x="1555.05" y="-1326.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1555.05" y="-1313.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1555.05" y="-1300.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1555.05" y="-1287.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
-<text text-anchor="middle" x="1555.05" y="-1274.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
-</g>
-<!-- P 0 \n. . . \n . x . \n &#160;. o x \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. . .  -->
-<g id="edge27" class="edge">
-<title>P 0 \n. . . \n . x . \n &#160;. o x \n &#160;&#160;. . . &#45;&gt;P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M1555.05,-1501.98C1555.05,-1463 1555.05,-1409.86 1555.05,-1368.59"/>
-<polygon fill="black" stroke="black" points="1558.55,-1368.37 1555.05,-1358.37 1551.55,-1368.37 1558.55,-1368.37"/>
-<text text-anchor="middle" x="1585.55" y="-1426.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
-</g>
-<!-- P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. . .  -->
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node20" class="node">
-<title>P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. . . </title>
-<polygon fill="red" stroke="black" points="1620.66,-1052 1587.86,-1106 1522.24,-1106 1489.44,-1052 1522.24,-998 1587.86,-998 1620.66,-1052"/>
-<text text-anchor="middle" x="1555.05" y="-1074.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="1555.05" y="-1061.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1555.05" y="-1048.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1555.05" y="-1035.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="1555.05" y="-1022.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1644.8,-3354 1604.46,-3425.07 1523.8,-3425.07 1483.46,-3354 1523.8,-3282.93 1604.46,-3282.93 1644.8,-3354"/>
+<text text-anchor="middle" x="1564.13" y="-3369.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1564.13" y="-3356.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="1564.13" y="-3343.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1564.13" y="-3330.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1564.13" y="-3317.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. . .  -->
-<g id="edge28" class="edge">
-<title>P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M1555.05,-1249.98C1555.05,-1211 1555.05,-1157.86 1555.05,-1116.59"/>
-<polygon fill="black" stroke="black" points="1558.55,-1116.37 1555.05,-1106.37 1551.55,-1116.37 1558.55,-1116.37"/>
-<text text-anchor="middle" x="1585.55" y="-1174.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge25" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1457.38,-3486.01C1474.08,-3465.51 1492.99,-3442.31 1510.2,-3421.19"/>
+<polygon fill="black" stroke="black" points="1513.1,-3423.17 1516.7,-3413.21 1507.67,-3418.75 1513.1,-3423.17"/>
+<text text-anchor="middle" x="1522.63" y="-3446.9" font-family="Monospace" font-size="12.00">b2: 0.50</text>
 </g>
-<!-- P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o .  -->
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node3" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="1490.8,-3163 1450.46,-3234.07 1369.8,-3234.07 1329.46,-3163 1369.8,-3091.93 1450.46,-3091.93 1490.8,-3163"/>
+<text text-anchor="middle" x="1410.13" y="-3178.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="1410.13" y="-3165.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o . </text>
+<text text-anchor="middle" x="1410.13" y="-3152.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="1410.13" y="-3139.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1410.13" y="-3126.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge2" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1303.38,-3295.01C1320.08,-3274.51 1338.99,-3251.31 1356.2,-3230.19"/>
+<polygon fill="black" stroke="black" points="1359.1,-3232.17 1362.7,-3222.21 1353.67,-3227.75 1359.1,-3232.17"/>
+<text text-anchor="middle" x="1368.63" y="-3254.9" font-family="Monospace" font-size="12.00">b1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x .  -->
+<g id="node4" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . </title>
+<polygon fill="black" stroke="black" points="906.8,-2812 866.46,-2883.07 785.8,-2883.07 745.46,-2812 785.8,-2740.93 866.46,-2740.93 906.8,-2812"/>
+<text text-anchor="middle" x="826.13" y="-2827.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="826.13" y="-2814.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="826.13" y="-2801.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="826.13" y="-2788.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="826.13" y="-2775.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. x . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x .  -->
+<g id="edge3" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . </title>
+<path fill="none" stroke="black" d="M1340.18,-3143.98C1288.35,-3129.07 1216.97,-3105.2 1159.13,-3073.5 1054.91,-3016.37 949.31,-2927.3 885.77,-2869.54"/>
+<polygon fill="black" stroke="black" points="887.98,-2866.82 878.23,-2862.66 883.26,-2871.99 887.98,-2866.82"/>
+<text text-anchor="middle" x="1189.63" y="-3063.9" font-family="Monospace" font-size="12.00">b4: 0.14</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . .  -->
+<g id="node10" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . . </title>
+<polygon fill="black" stroke="black" points="1191.8,-2812 1151.46,-2883.07 1070.8,-2883.07 1030.46,-2812 1070.8,-2740.93 1151.46,-2740.93 1191.8,-2812"/>
+<text text-anchor="middle" x="1111.13" y="-2827.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1111.13" y="-2814.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="1111.13" y="-2801.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="1111.13" y="-2788.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="1111.13" y="-2775.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;x . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . .  -->
+<g id="edge10" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . . </title>
+<path fill="none" stroke="black" d="M1343.98,-3137.31C1299.29,-3117.71 1241.79,-3086.36 1204.13,-3043.04 1166.91,-3000.23 1143.38,-2940.6 1129.29,-2892.77"/>
+<polygon fill="black" stroke="black" points="1132.63,-2891.72 1126.52,-2883.07 1125.9,-2893.65 1132.63,-2891.72"/>
+<text text-anchor="middle" x="1264.63" y="-3063.9" font-family="Monospace" font-size="12.00">a4: 0.14</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node12" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1912.8,-2972 1872.46,-3043.07 1791.8,-3043.07 1751.46,-2972 1791.8,-2900.93 1872.46,-2900.93 1912.8,-2972"/>
+<text text-anchor="middle" x="1832.13" y="-2987.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1832.13" y="-2974.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . x </text>
+<text text-anchor="middle" x="1832.13" y="-2961.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="1832.13" y="-2948.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="1832.13" y="-2935.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge14" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1483.24,-3149.2C1546.25,-3136.17 1638.3,-3112.3 1711.13,-3073.5 1732.85,-3061.93 1754.27,-3046.05 1772.92,-3030.33"/>
+<polygon fill="black" stroke="black" points="1775.43,-3032.78 1780.73,-3023.61 1770.87,-3027.48 1775.43,-3032.78"/>
+<text text-anchor="middle" x="1759.63" y="-3063.9" font-family="Monospace" font-size="12.00">c1: 0.36</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node17" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="621.8,-2812 581.46,-2883.07 500.8,-2883.07 460.46,-2812 500.8,-2740.93 581.46,-2740.93 621.8,-2812"/>
+<text text-anchor="middle" x="541.13" y="-2827.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="541.13" y="-2814.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="541.13" y="-2801.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
+<text text-anchor="middle" x="541.13" y="-2788.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="541.13" y="-2775.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge19" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1336.01,-3151.14C1238.44,-3135.25 1062.81,-3101.05 922.13,-3043.04 803.83,-2994.25 679.13,-2912.31 605.83,-2860.53"/>
+<polygon fill="black" stroke="black" points="607.77,-2857.61 597.59,-2854.68 603.72,-2863.32 607.77,-2857.61"/>
+<text text-anchor="middle" x="1035.63" y="-3063.9" font-family="Monospace" font-size="12.00">a2: 0.36</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node21" class="node">
-<title>P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o . </title>
-<polygon fill="red" stroke="black" points="1620.66,-886 1587.86,-940 1522.24,-940 1489.44,-886 1522.24,-832 1587.86,-832 1620.66,-886"/>
-<text text-anchor="middle" x="1555.05" y="-908.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="1555.05" y="-895.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1555.05" y="-882.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1555.05" y="-869.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="1555.05" y="-856.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. o . </text>
+<title>\n P 0 &#160;&#160;\n &#160;. o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1374.8,-2972 1334.46,-3043.07 1253.8,-3043.07 1213.46,-2972 1253.8,-2900.93 1334.46,-2900.93 1374.8,-2972"/>
+<text text-anchor="middle" x="1294.13" y="-2987.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1294.13" y="-2974.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o . </text>
+<text text-anchor="middle" x="1294.13" y="-2961.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1294.13" y="-2948.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1294.13" y="-2935.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o .  -->
-<g id="edge29" class="edge">
-<title>P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o . </title>
-<path fill="none" stroke="black" d="M1555.05,-997.75C1555.05,-982.64 1555.05,-966.03 1555.05,-950.38"/>
-<polygon fill="black" stroke="black" points="1558.55,-950.26 1555.05,-940.26 1551.55,-950.26 1558.55,-950.26"/>
-<text text-anchor="middle" x="1585.55" y="-970.9" font-family="Monospace" font-size="12.00">b4: 1.00</text>
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge27" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1368.41,-3094.03C1359.56,-3079.61 1350.16,-3064.3 1341.13,-3049.58"/>
+<polygon fill="black" stroke="black" points="1344.08,-3047.69 1335.86,-3041 1338.11,-3051.35 1344.08,-3047.69"/>
+<text text-anchor="middle" x="1386.63" y="-3063.9" font-family="Monospace" font-size="12.00">b1: 0.14</text>
 </g>
-<!-- P 0 \n. . x \n . x x \n &#160;. o x \n &#160;&#160;. . .  -->
-<g id="node22" class="node">
-<title>P 0 \n. . x \n . x x \n &#160;. o x \n &#160;&#160;. . . </title>
-<polygon fill="black" stroke="black" points="1458.66,-720 1425.86,-774 1360.24,-774 1327.44,-720 1360.24,-666 1425.86,-666 1458.66,-720"/>
-<text text-anchor="middle" x="1393.05" y="-742.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1393.05" y="-729.9" font-family="Monospace" font-size="12.00" fill="white">. . x </text>
-<text text-anchor="middle" x="1393.05" y="-716.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1393.05" y="-703.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
-<text text-anchor="middle" x="1393.05" y="-690.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<!-- \n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node33" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="2219.8,-2972 2179.46,-3043.07 2098.8,-3043.07 2058.46,-2972 2098.8,-2900.93 2179.46,-2900.93 2219.8,-2972"/>
+<text text-anchor="middle" x="2139.13" y="-2987.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="2139.13" y="-2974.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . x </text>
+<text text-anchor="middle" x="2139.13" y="-2961.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="2139.13" y="-2948.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="2139.13" y="-2935.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o . &#45;&gt;P 0 \n. . x \n . x x \n &#160;. o x \n &#160;&#160;. . .  -->
-<g id="edge30" class="edge">
-<title>P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o . &#45;&gt;P 0 \n. . x \n . x x \n &#160;. o x \n &#160;&#160;. . . </title>
-<path fill="none" stroke="black" d="M1514.59,-844.04C1492.17,-821.34 1464.16,-792.99 1440.69,-769.22"/>
-<polygon fill="black" stroke="black" points="1443.08,-766.66 1433.56,-762.01 1438.1,-771.58 1443.08,-766.66"/>
-<text text-anchor="middle" x="1504.55" y="-794.9" font-family="Monospace" font-size="12.00">c1: 0.50</text>
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge40" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1482.29,-3147.36C1581.89,-3126.66 1766.8,-3086.51 1922.13,-3043.04 1969.07,-3029.9 2021.05,-3013.2 2062.37,-2999.4"/>
+<polygon fill="black" stroke="black" points="2063.73,-3002.63 2072.1,-2996.14 2061.5,-2996 2063.73,-3002.63"/>
+<text text-anchor="middle" x="1882.63" y="-3063.9" font-family="Monospace" font-size="12.00">c1: 0.14</text>
 </g>
-<!-- P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o .  -->
-<g id="node24" class="node">
-<title>P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o . </title>
-<polygon fill="black" stroke="black" points="1750.66,-720 1717.86,-774 1652.24,-774 1619.44,-720 1652.24,-666 1717.86,-666 1750.66,-720"/>
-<text text-anchor="middle" x="1685.05" y="-742.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1685.05" y="-729.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1685.05" y="-716.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1685.05" y="-703.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
-<text text-anchor="middle" x="1685.05" y="-690.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. o . </text>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . .  -->
+<g id="node40" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . . </title>
+<polygon fill="black" stroke="black" points="1603.8,-2652 1563.46,-2723.07 1482.8,-2723.07 1442.46,-2652 1482.8,-2580.93 1563.46,-2580.93 1603.8,-2652"/>
+<text text-anchor="middle" x="1523.13" y="-2667.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1523.13" y="-2654.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="1523.13" y="-2641.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1523.13" y="-2628.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1523.13" y="-2615.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;x . . </text>
 </g>
-<!-- P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o . &#45;&gt;P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o .  -->
-<g id="edge32" class="edge">
-<title>P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o . &#45;&gt;P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o . </title>
-<path fill="none" stroke="black" d="M1591.96,-838.44C1607.46,-818.88 1625.61,-795.99 1641.75,-775.63"/>
-<polygon fill="black" stroke="black" points="1644.58,-777.68 1648.05,-767.67 1639.1,-773.34 1644.58,-777.68"/>
-<text text-anchor="middle" x="1657.55" y="-794.9" font-family="Monospace" font-size="12.00">b4: 0.50</text>
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . .  -->
+<g id="edge49" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . . </title>
+<path fill="none" stroke="black" d="M1425.72,-3091.76C1446.56,-2997.9 1483.4,-2831.96 1505.31,-2733.26"/>
+<polygon fill="black" stroke="black" points="1508.76,-2733.86 1507.51,-2723.34 1501.93,-2732.34 1508.76,-2733.86"/>
+<text text-anchor="middle" x="1497.63" y="-2968.9" font-family="Monospace" font-size="12.00">a4: 0.36</text>
 </g>
-<!-- P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o O  -->
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node43" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1770.8,-2812 1730.46,-2883.07 1649.8,-2883.07 1609.46,-2812 1649.8,-2740.93 1730.46,-2740.93 1770.8,-2812"/>
+<text text-anchor="middle" x="1690.13" y="-2827.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1690.13" y="-2814.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="1690.13" y="-2801.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1690.13" y="-2788.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . x </text>
+<text text-anchor="middle" x="1690.13" y="-2775.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge54" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1468.66,-3123.31C1498.1,-3101.95 1532.99,-3073.6 1559.13,-3043.04 1597.98,-2997.6 1631.17,-2938.94 1654.42,-2892.23"/>
+<polygon fill="black" stroke="black" points="1657.66,-2893.58 1658.94,-2883.06 1651.38,-2890.49 1657.66,-2893.58"/>
+<text text-anchor="middle" x="1571.63" y="-3063.9" font-family="Monospace" font-size="12.00">c3: 0.36</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node5" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="1036.8,-2461 996.46,-2532.07 915.8,-2532.07 875.46,-2461 915.8,-2389.93 996.46,-2389.93 1036.8,-2461"/>
+<text text-anchor="middle" x="956.13" y="-2476.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="956.13" y="-2463.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o o </text>
+<text text-anchor="middle" x="956.13" y="-2450.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="956.13" y="-2437.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="956.13" y="-2424.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge4" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M826.5,-2740.91C829.04,-2693.91 836.93,-2631.58 859.13,-2580.96 868.55,-2559.48 882.96,-2538.71 897.81,-2520.7"/>
+<polygon fill="black" stroke="black" points="900.86,-2522.52 904.65,-2512.62 895.52,-2517.99 900.86,-2522.52"/>
+<text text-anchor="middle" x="889.63" y="-2648.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x .  -->
+<g id="node6" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . </title>
+<polygon fill="black" stroke="black" points="836.8,-2270 796.46,-2341.07 715.8,-2341.07 675.46,-2270 715.8,-2198.93 796.46,-2198.93 836.8,-2270"/>
+<text text-anchor="middle" x="756.13" y="-2285.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="756.13" y="-2272.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . o </text>
+<text text-anchor="middle" x="756.13" y="-2259.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="756.13" y="-2246.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="756.13" y="-2233.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. x . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x .  -->
+<g id="edge5" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . </title>
+<path fill="none" stroke="black" d="M903.84,-2410.59C876.86,-2385.09 843.82,-2353.86 815.83,-2327.42"/>
+<polygon fill="black" stroke="black" points="818.13,-2324.77 808.46,-2320.45 813.32,-2329.86 818.13,-2324.77"/>
+<text text-anchor="middle" x="892.63" y="-2361.9" font-family="Monospace" font-size="12.00">c1: 0.50</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x .  -->
+<g id="node9" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . </title>
+<polygon fill="black" stroke="black" points="1036.8,-2109 996.46,-2180.07 915.8,-2180.07 875.46,-2109 915.8,-2037.93 996.46,-2037.93 1036.8,-2109"/>
+<text text-anchor="middle" x="956.13" y="-2124.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="956.13" y="-2111.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="956.13" y="-2098.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
+<text text-anchor="middle" x="956.13" y="-2085.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="956.13" y="-2072.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. x . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x .  -->
+<g id="edge8" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . </title>
+<path fill="none" stroke="black" d="M956.13,-2389.59C956.13,-2332.04 956.13,-2250.64 956.13,-2190.51"/>
+<polygon fill="black" stroke="black" points="959.63,-2190.29 956.13,-2180.29 952.63,-2190.29 959.63,-2190.29"/>
+<text text-anchor="middle" x="986.63" y="-2361.9" font-family="Monospace" font-size="12.00">a2: 0.50</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . x  -->
+<g id="node11" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . x </title>
+<polygon fill="black" stroke="black" points="1606.8,-2109 1566.46,-2180.07 1485.8,-2180.07 1445.46,-2109 1485.8,-2037.93 1566.46,-2037.93 1606.8,-2109"/>
+<text text-anchor="middle" x="1526.13" y="-2124.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1526.13" y="-2111.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="1526.13" y="-2098.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="1526.13" y="-2085.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="1526.13" y="-2072.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;x . x </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . x  -->
+<g id="edge12" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . x </title>
+<path fill="none" stroke="black" d="M1015.88,-2423.6C1041.61,-2407.78 1071.97,-2388.91 1099.13,-2371.5 1215.88,-2296.66 1240.01,-2269.99 1359.13,-2198.96 1389.81,-2180.67 1424.56,-2161.86 1454.39,-2146.28"/>
+<polygon fill="black" stroke="black" points="1456.22,-2149.27 1463.48,-2141.55 1452.99,-2143.06 1456.22,-2149.27"/>
+<text text-anchor="middle" x="1149.63" y="-2361.9" font-family="Monospace" font-size="12.00">c4: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x x . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node18" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x x . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="607.8,-2109 567.46,-2180.07 486.8,-2180.07 446.46,-2109 486.8,-2037.93 567.46,-2037.93 607.8,-2109"/>
+<text text-anchor="middle" x="527.13" y="-2124.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="527.13" y="-2111.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="527.13" y="-2098.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x x . </text>
+<text text-anchor="middle" x="527.13" y="-2085.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="527.13" y="-2072.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x x . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge21" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x x . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M884.68,-2444.3C821.45,-2427.47 729.62,-2395.52 666.13,-2341.04 618.49,-2300.15 582.62,-2238.7 559.26,-2189.45"/>
+<polygon fill="black" stroke="black" points="562.29,-2187.68 554.9,-2180.09 555.95,-2190.63 562.29,-2187.68"/>
+<text text-anchor="middle" x="735.63" y="-2361.9" font-family="Monospace" font-size="12.00">b2: 0.80</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . .  -->
+<g id="node19" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . . </title>
+<polygon fill="black" stroke="black" points="1321.8,-2109 1281.46,-2180.07 1200.8,-2180.07 1160.46,-2109 1200.8,-2037.93 1281.46,-2037.93 1321.8,-2109"/>
+<text text-anchor="middle" x="1241.13" y="-2124.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1241.13" y="-2111.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="1241.13" y="-2098.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
+<text text-anchor="middle" x="1241.13" y="-2085.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="1241.13" y="-2072.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;x . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . .  -->
+<g id="edge23" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . . </title>
+<path fill="none" stroke="black" d="M1003.51,-2401.81C1054.24,-2339.52 1134.56,-2240.88 1187.55,-2175.8"/>
+<polygon fill="black" stroke="black" points="1190.27,-2178 1193.87,-2168.04 1184.84,-2173.58 1190.27,-2178"/>
+<text text-anchor="middle" x="1064.63" y="-2361.9" font-family="Monospace" font-size="12.00">a4: 0.20</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node23" class="node">
-<title>P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o O </title>
-<ellipse fill="red" stroke="black" cx="1393.05" cy="-553" rx="59.3" ry="59.3"/>
-<ellipse fill="none" stroke="black" cx="1393.05" cy="-553" rx="63.29" ry="63.29"/>
-<text text-anchor="middle" x="1393.05" y="-575.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="1393.05" y="-562.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1393.05" y="-549.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1393.05" y="-536.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="1393.05" y="-523.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. o O </text>
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1876.8,-2270 1836.46,-2341.07 1755.8,-2341.07 1715.46,-2270 1755.8,-2198.93 1836.46,-2198.93 1876.8,-2270"/>
+<text text-anchor="middle" x="1796.13" y="-2285.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1796.13" y="-2272.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1796.13" y="-2259.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1796.13" y="-2246.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1796.13" y="-2233.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 0 \n. . x \n . x x \n &#160;. o x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o O  -->
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge30" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1029.36,-2447.42C1140.34,-2427.82 1357.46,-2387.39 1539.13,-2341.04 1598.99,-2325.76 1666.36,-2307.35 1717.11,-2293.25"/>
+<polygon fill="black" stroke="black" points="1718.33,-2296.54 1727.02,-2290.48 1716.45,-2289.79 1718.33,-2296.54"/>
+<text text-anchor="middle" x="1491.63" y="-2361.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . .  -->
+<g id="node41" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . . </title>
+<polygon fill="black" stroke="black" points="218.8,-1783 178.46,-1854.07 97.8,-1854.07 57.46,-1783 97.8,-1711.93 178.46,-1711.93 218.8,-1783"/>
+<text text-anchor="middle" x="138.13" y="-1798.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="138.13" y="-1785.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x . . </text>
+<text text-anchor="middle" x="138.13" y="-1772.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="138.13" y="-1759.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="138.13" y="-1746.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;x . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . .  -->
+<g id="edge51" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . . </title>
+<path fill="none" stroke="black" d="M879.73,-2453.45C724.79,-2439.07 379.79,-2401.16 279.13,-2341.04 200.89,-2294.3 183.52,-2265.6 152.13,-2180.04 113.97,-2076.02 118.28,-1946.16 126.73,-1864.12"/>
+<polygon fill="black" stroke="black" points="130.21,-1864.43 127.8,-1854.11 123.25,-1863.68 130.21,-1864.43"/>
+<text text-anchor="middle" x="309.63" y="-2266.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. x x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node44" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. x x \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="322.8,-2109 282.46,-2180.07 201.8,-2180.07 161.46,-2109 201.8,-2037.93 282.46,-2037.93 322.8,-2109"/>
+<text text-anchor="middle" x="242.13" y="-2124.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="242.13" y="-2111.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . . </text>
+<text text-anchor="middle" x="242.13" y="-2098.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="242.13" y="-2085.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x x </text>
+<text text-anchor="middle" x="242.13" y="-2072.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. x x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge56" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. x x \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M884.58,-2444.86C816.74,-2429.58 712.49,-2403.66 625.13,-2371.5 498.47,-2324.87 373.45,-2227.17 302.24,-2165.29"/>
+<polygon fill="black" stroke="black" points="304.51,-2162.62 294.68,-2158.67 299.9,-2167.89 304.51,-2162.62"/>
+<text text-anchor="middle" x="655.63" y="-2361.9" font-family="Monospace" font-size="12.00">b3: 0.80</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node45" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1529.8,-2270 1489.46,-2341.07 1408.8,-2341.07 1368.46,-2270 1408.8,-2198.93 1489.46,-2198.93 1529.8,-2270"/>
+<text text-anchor="middle" x="1449.13" y="-2285.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1449.13" y="-2272.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . o </text>
+<text text-anchor="middle" x="1449.13" y="-2259.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1449.13" y="-2246.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . x </text>
+<text text-anchor="middle" x="1449.13" y="-2233.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge58" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1031.79,-2451.54C1108.37,-2440.77 1228.64,-2417.72 1323.13,-2371.5 1346.54,-2360.05 1369.59,-2343.63 1389.45,-2327.37"/>
+<polygon fill="black" stroke="black" points="1391.75,-2330.01 1397.18,-2320.91 1387.26,-2324.63 1391.75,-2330.01"/>
+<text text-anchor="middle" x="1376.63" y="-2361.9" font-family="Monospace" font-size="12.00">c1: 0.20</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x .  -->
+<g id="node7" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . </title>
+<polygon fill="black" stroke="black" points="858.8,-1946 818.46,-2017.07 737.8,-2017.07 697.46,-1946 737.8,-1874.93 818.46,-1874.93 858.8,-1946"/>
+<text text-anchor="middle" x="778.13" y="-1961.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="778.13" y="-1948.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . o </text>
+<text text-anchor="middle" x="778.13" y="-1935.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
+<text text-anchor="middle" x="778.13" y="-1922.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="778.13" y="-1909.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. x . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x .  -->
+<g id="edge6" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . </title>
+<path fill="none" stroke="black" d="M760.93,-2198.73C764.39,-2148.14 769.06,-2079.81 772.66,-2027.1"/>
+<polygon fill="black" stroke="black" points="776.15,-2027.33 773.34,-2017.12 769.16,-2026.85 776.15,-2027.33"/>
+<text text-anchor="middle" x="802.63" y="-2105.9" font-family="Monospace" font-size="12.00">a2: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node8" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<ellipse fill="red" stroke="black" cx="896.13" cy="-1620" rx="70.01" ry="70.01"/>
+<ellipse fill="none" stroke="black" cx="896.13" cy="-1620" rx="74.01" ry="74.01"/>
+<text text-anchor="middle" x="896.13" y="-1635.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="896.13" y="-1622.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;O o o </text>
+<text text-anchor="middle" x="896.13" y="-1609.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="896.13" y="-1596.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="896.13" y="-1583.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge7" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M803.73,-1874.7C822.56,-1822.99 848.16,-1752.7 867.64,-1699.22"/>
+<polygon fill="black" stroke="black" points="870.95,-1700.37 871.08,-1689.78 864.37,-1697.97 870.95,-1700.37"/>
+<text text-anchor="middle" x="892.63" y="-1779.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge9" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. x . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M956.37,-2037.87C955.4,-1958.14 950.02,-1824.44 927.13,-1711.96 926.29,-1707.83 925.31,-1703.62 924.23,-1699.39"/>
+<polygon fill="black" stroke="black" points="927.55,-1698.26 921.54,-1689.53 920.79,-1700.1 927.55,-1698.26"/>
+<text text-anchor="middle" x="986.63" y="-1942.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge11" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1072.8,-2740.73C1069.79,-2734.78 1066.87,-2728.83 1064.13,-2723.04 1035.82,-2663.13 1007.31,-2593.76 986.7,-2541.6"/>
+<polygon fill="black" stroke="black" points="989.87,-2540.08 982.95,-2532.06 983.35,-2542.65 989.87,-2540.08"/>
+<text text-anchor="middle" x="1094.63" y="-2648.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . x &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge13" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . x &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1472.44,-2061.2C1416.36,-2012.76 1325.4,-1935.44 1244.13,-1872 1148.82,-1797.59 1122.3,-1782.55 1024.13,-1711.96 1004.76,-1698.04 983.68,-1683.01 964.32,-1669.25"/>
+<polygon fill="black" stroke="black" points="966.32,-1666.38 956.14,-1663.44 962.26,-1672.08 966.32,-1666.38"/>
+<text text-anchor="middle" x="1454.63" y="-1942.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node13" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="2204.8,-2652 2164.46,-2723.07 2083.8,-2723.07 2043.46,-2652 2083.8,-2580.93 2164.46,-2580.93 2204.8,-2652"/>
+<text text-anchor="middle" x="2124.13" y="-2667.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="2124.13" y="-2654.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
+<text text-anchor="middle" x="2124.13" y="-2641.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="2124.13" y="-2628.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="2124.13" y="-2615.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge15" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1881.66,-2917.06C1933.23,-2860.89 2013.87,-2773.08 2067.82,-2714.32"/>
+<polygon fill="black" stroke="black" points="2070.41,-2716.68 2074.6,-2706.94 2065.25,-2711.94 2070.41,-2716.68"/>
+<text text-anchor="middle" x="2067.63" y="-2808.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node14" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="2260.8,-2461 2220.46,-2532.07 2139.8,-2532.07 2099.46,-2461 2139.8,-2389.93 2220.46,-2389.93 2260.8,-2461"/>
+<text text-anchor="middle" x="2180.13" y="-2476.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="2180.13" y="-2463.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
+<text text-anchor="middle" x="2180.13" y="-2450.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . o </text>
+<text text-anchor="middle" x="2180.13" y="-2437.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="2180.13" y="-2424.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge16" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2144.9,-2580.89C2148.65,-2568.25 2152.58,-2554.99 2156.4,-2542.09"/>
+<polygon fill="black" stroke="black" points="2159.81,-2542.89 2159.3,-2532.31 2153.1,-2540.9 2159.81,-2542.89"/>
+<text text-anchor="middle" x="2183.63" y="-2552.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge42" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2181.85,-2610.53C2196.45,-2597.09 2210.22,-2580.81 2218.13,-2562.5 2221.01,-2555.83 2222.14,-2548.86 2221.97,-2541.83"/>
+<polygon fill="black" stroke="black" points="2225.41,-2541.1 2220.86,-2531.54 2218.45,-2541.85 2225.41,-2541.1"/>
+<text text-anchor="middle" x="2251.63" y="-2552.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . x  -->
+<g id="node15" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . x </title>
+<polygon fill="black" stroke="black" points="2511.8,-2270 2471.46,-2341.07 2390.8,-2341.07 2350.46,-2270 2390.8,-2198.93 2471.46,-2198.93 2511.8,-2270"/>
+<text text-anchor="middle" x="2431.13" y="-2285.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="2431.13" y="-2272.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. . x </text>
+<text text-anchor="middle" x="2431.13" y="-2259.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="2431.13" y="-2246.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. x . </text>
+<text text-anchor="middle" x="2431.13" y="-2233.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . x </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . x  -->
+<g id="edge17" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . x </title>
+<path fill="none" stroke="black" d="M2236.46,-2417.58C2275.13,-2388.46 2326.55,-2349.75 2366.83,-2319.42"/>
+<polygon fill="black" stroke="black" points="2369.1,-2322.09 2374.99,-2313.27 2364.89,-2316.49 2369.1,-2322.09"/>
+<text text-anchor="middle" x="2343.63" y="-2361.9" font-family="Monospace" font-size="12.00">c4: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node34" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="2204.8,-2270 2164.46,-2341.07 2083.8,-2341.07 2043.46,-2270 2083.8,-2198.93 2164.46,-2198.93 2204.8,-2270"/>
+<text text-anchor="middle" x="2124.13" y="-2285.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="2124.13" y="-2272.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x . x </text>
+<text text-anchor="middle" x="2124.13" y="-2259.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="2124.13" y="-2246.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="2124.13" y="-2233.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge43" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2159.36,-2389.89C2155.61,-2377.25 2151.68,-2363.99 2147.86,-2351.09"/>
+<polygon fill="black" stroke="black" points="2151.16,-2349.9 2144.96,-2341.31 2144.45,-2351.89 2151.16,-2349.9"/>
+<text text-anchor="middle" x="2183.63" y="-2361.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. o o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node16" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. o o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<ellipse fill="red" stroke="black" cx="2431.13" cy="-1946" rx="70.01" ry="70.01"/>
+<ellipse fill="none" stroke="black" cx="2431.13" cy="-1946" rx="74.01" ry="74.01"/>
+<text text-anchor="middle" x="2431.13" y="-1961.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="2431.13" y="-1948.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
+<text text-anchor="middle" x="2431.13" y="-1935.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. o o </text>
+<text text-anchor="middle" x="2431.13" y="-1922.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="2431.13" y="-1909.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . x &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. o o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge18" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . x &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. o o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2431.13,-2198.73C2431.13,-2149.2 2431.13,-2082.66 2431.13,-2030.43"/>
+<polygon fill="black" stroke="black" points="2434.63,-2030.19 2431.13,-2020.19 2427.63,-2030.19 2434.63,-2030.19"/>
+<text text-anchor="middle" x="2461.63" y="-2105.9" font-family="Monospace" font-size="12.00">b2: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge20" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M589.16,-2753.66C631.91,-2704.57 697.63,-2633.69 763.13,-2580.96 801.17,-2550.35 847.66,-2521.47 885.48,-2499.83"/>
+<polygon fill="black" stroke="black" points="887.43,-2502.75 894.4,-2494.77 883.98,-2496.66 887.43,-2502.75"/>
+<text text-anchor="middle" x="793.63" y="-2648.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x x . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge22" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x x . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M548.21,-2037.72C564.96,-1988.61 591.48,-1922.95 627.13,-1872 683.34,-1791.64 768.88,-1717.39 828.35,-1670.83"/>
+<polygon fill="black" stroke="black" points="830.82,-1673.34 836.56,-1664.44 826.52,-1667.82 830.82,-1673.34"/>
+<text text-anchor="middle" x="657.63" y="-1942.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge24" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;x . . \n &#160;&#160;&#160;. x . \n &#160;&#160;&#160;&#160;x . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1196.38,-2044.83C1131.43,-1953.15 1011.5,-1783.86 944.55,-1689.35"/>
+<polygon fill="black" stroke="black" points="947.27,-1687.14 938.63,-1681 941.56,-1691.18 947.27,-1687.14"/>
+<text text-anchor="middle" x="1209.63" y="-1942.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge26" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o . \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1516.88,-3295.01C1500.18,-3274.51 1481.27,-3251.31 1464.06,-3230.19"/>
+<polygon fill="black" stroke="black" points="1466.59,-3227.75 1457.56,-3222.21 1461.16,-3232.17 1466.59,-3227.75"/>
+<text text-anchor="middle" x="1522.63" y="-3254.9" font-family="Monospace" font-size="12.00">b1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node22" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1295.8,-2652 1255.46,-2723.07 1174.8,-2723.07 1134.46,-2652 1174.8,-2580.93 1255.46,-2580.93 1295.8,-2652"/>
+<text text-anchor="middle" x="1215.13" y="-2667.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1215.13" y="-2654.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o . </text>
+<text text-anchor="middle" x="1215.13" y="-2641.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1215.13" y="-2628.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1215.13" y="-2615.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge28" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1276.69,-2900.82C1264.38,-2851.25 1247.85,-2784.71 1235.02,-2733.07"/>
+<polygon fill="black" stroke="black" points="1238.4,-2732.14 1232.59,-2723.28 1231.6,-2733.82 1238.4,-2732.14"/>
+<text text-anchor="middle" x="1301.63" y="-2808.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge29" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;x o . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1158.29,-2609.52C1117.81,-2579.98 1063.31,-2540.22 1021.11,-2509.42"/>
+<polygon fill="black" stroke="black" points="1022.98,-2506.45 1012.84,-2503.38 1018.85,-2512.1 1022.98,-2506.45"/>
+<text text-anchor="middle" x="1124.63" y="-2552.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node24" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1927.8,-1783 1887.46,-1854.07 1806.8,-1854.07 1766.46,-1783 1806.8,-1711.93 1887.46,-1711.93 1927.8,-1783"/>
+<text text-anchor="middle" x="1847.13" y="-1798.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1847.13" y="-1785.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1847.13" y="-1772.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x x . </text>
+<text text-anchor="middle" x="1847.13" y="-1759.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1847.13" y="-1746.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="edge31" class="edge">
-<title>P 0 \n. . x \n . x x \n &#160;. o x \n &#160;&#160;. . . &#45;&gt;P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o O </title>
-<path fill="none" stroke="black" d="M1393.05,-665.88C1393.05,-653.35 1393.05,-639.77 1393.05,-626.54"/>
-<polygon fill="black" stroke="black" points="1396.55,-626.51 1393.05,-616.51 1389.55,-626.51 1396.55,-626.51"/>
-<text text-anchor="middle" x="1423.55" y="-637.9" font-family="Monospace" font-size="12.00">c4: 1.00</text>
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1803.52,-2198.74C1812.85,-2109.96 1828.88,-1957.52 1838.69,-1864.25"/>
+<polygon fill="black" stroke="black" points="1842.17,-1864.61 1839.74,-1854.3 1835.21,-1863.88 1842.17,-1864.61"/>
+<text text-anchor="middle" x="1849.63" y="-2105.9" font-family="Monospace" font-size="12.00">a2: 1.00</text>
 </g>
-<!-- P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o x  -->
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node25" class="node">
-<title>P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o x </title>
-<polygon fill="black" stroke="black" points="1750.66,-553 1717.86,-607 1652.24,-607 1619.44,-553 1652.24,-499 1717.86,-499 1750.66,-553"/>
-<text text-anchor="middle" x="1685.05" y="-575.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1685.05" y="-562.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1685.05" y="-549.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1685.05" y="-536.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
-<text text-anchor="middle" x="1685.05" y="-523.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. o x </text>
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="1676.8,-1426 1636.46,-1497.07 1555.8,-1497.07 1515.46,-1426 1555.8,-1354.93 1636.46,-1354.93 1676.8,-1426"/>
+<text text-anchor="middle" x="1596.13" y="-1441.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="1596.13" y="-1428.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1596.13" y="-1415.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. . . </text>
+<text text-anchor="middle" x="1596.13" y="-1402.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1596.13" y="-1389.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o . &#45;&gt;P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o x  -->
-<g id="edge33" class="edge">
-<title>P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o . &#45;&gt;P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o x </title>
-<path fill="none" stroke="black" d="M1685.05,-665.88C1685.05,-650.43 1685.05,-633.39 1685.05,-617.37"/>
-<polygon fill="black" stroke="black" points="1688.55,-617.02 1685.05,-607.02 1681.55,-617.02 1688.55,-617.02"/>
-<text text-anchor="middle" x="1715.55" y="-637.9" font-family="Monospace" font-size="12.00">c4: 1.00</text>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge32" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1803.9,-1716.8C1771.95,-1669.08 1727.08,-1602.99 1686.13,-1546 1674.18,-1529.37 1661.02,-1511.66 1648.55,-1495.12"/>
+<polygon fill="black" stroke="black" points="1651.32,-1492.98 1642.49,-1487.11 1645.73,-1497.2 1651.32,-1492.98"/>
+<text text-anchor="middle" x="1816.63" y="-1616.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
 </g>
-<!-- P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o x  -->
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node26" class="node">
-<title>P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o x </title>
-<polygon fill="red" stroke="black" points="1750.66,-387 1717.86,-441 1652.24,-441 1619.44,-387 1652.24,-333 1717.86,-333 1750.66,-387"/>
-<text text-anchor="middle" x="1685.05" y="-409.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="1685.05" y="-396.9" font-family="Monospace" font-size="12.00" fill="white">. . . </text>
-<text text-anchor="middle" x="1685.05" y="-383.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1685.05" y="-370.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="1685.05" y="-357.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. o x </text>
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="1828.8,-1232 1788.46,-1303.07 1707.8,-1303.07 1667.46,-1232 1707.8,-1160.93 1788.46,-1160.93 1828.8,-1232"/>
+<text text-anchor="middle" x="1748.13" y="-1247.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="1748.13" y="-1234.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1748.13" y="-1221.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
+<text text-anchor="middle" x="1748.13" y="-1208.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1748.13" y="-1195.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o x &#45;&gt;P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o x  -->
-<g id="edge34" class="edge">
-<title>P 0 \n. . . \n . x x \n &#160;. o x \n &#160;&#160;. o x &#45;&gt;P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o x </title>
-<path fill="none" stroke="black" d="M1685.05,-498.75C1685.05,-483.64 1685.05,-467.03 1685.05,-451.38"/>
-<polygon fill="black" stroke="black" points="1688.55,-451.26 1685.05,-441.26 1681.55,-451.26 1688.55,-451.26"/>
-<text text-anchor="middle" x="1715.55" y="-461.9" font-family="Monospace" font-size="12.00">c4: 1.00</text>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge33" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1642.97,-1365.83C1659.45,-1345.02 1678.08,-1321.48 1695.03,-1300.07"/>
+<polygon fill="black" stroke="black" points="1697.98,-1301.99 1701.44,-1291.98 1692.49,-1297.65 1697.98,-1301.99"/>
+<text text-anchor="middle" x="1702.63" y="-1327.9" font-family="Monospace" font-size="12.00">a2: 1.00</text>
 </g>
-<!-- P 1 \no . . \n . x x \n &#160;o o . \n &#160;&#160;. o x  -->
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;O . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node42" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;O . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<ellipse fill="red" stroke="black" cx="1453.13" cy="-1232" rx="70.01" ry="70.01"/>
+<ellipse fill="none" stroke="black" cx="1453.13" cy="-1232" rx="74.01" ry="74.01"/>
+<text text-anchor="middle" x="1453.13" y="-1247.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="1453.13" y="-1234.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1453.13" y="-1221.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;O . . </text>
+<text text-anchor="middle" x="1453.13" y="-1208.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1453.13" y="-1195.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;O . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge53" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;O . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1544.39,-1374.52C1533.52,-1362.82 1522.51,-1350.09 1513.13,-1337.5 1505.88,-1327.77 1498.84,-1317.08 1492.28,-1306.38"/>
+<polygon fill="black" stroke="black" points="1495.28,-1304.57 1487.13,-1297.8 1489.28,-1308.18 1495.28,-1304.57"/>
+<text text-anchor="middle" x="1543.63" y="-1327.9" font-family="Monospace" font-size="12.00">a2: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;O . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge62" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;O . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1587.51,-1354.87C1584.33,-1344.19 1580,-1333.68 1574.13,-1324.5 1561.82,-1305.26 1543.96,-1288.56 1525.73,-1274.88"/>
+<polygon fill="black" stroke="black" points="1527.5,-1271.84 1517.35,-1268.81 1523.39,-1277.51 1527.5,-1271.84"/>
+<text text-anchor="middle" x="1610.63" y="-1327.9" font-family="Monospace" font-size="12.00">a2: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node27" class="node">
-<title>P 1 \no . . \n . x x \n &#160;o o . \n &#160;&#160;. o x </title>
-<polygon fill="red" stroke="black" points="1750.66,-230 1717.86,-284 1652.24,-284 1619.44,-230 1652.24,-176 1717.86,-176 1750.66,-230"/>
-<text text-anchor="middle" x="1685.05" y="-252.9" font-family="Monospace" font-size="12.00" fill="white">P 1 </text>
-<text text-anchor="middle" x="1685.05" y="-239.9" font-family="Monospace" font-size="12.00" fill="white">o . . </text>
-<text text-anchor="middle" x="1685.05" y="-226.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1685.05" y="-213.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;o o . </text>
-<text text-anchor="middle" x="1685.05" y="-200.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. o x </text>
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="1828.8,-1035 1788.46,-1106.07 1707.8,-1106.07 1667.46,-1035 1707.8,-963.93 1788.46,-963.93 1828.8,-1035"/>
+<text text-anchor="middle" x="1748.13" y="-1050.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="1748.13" y="-1037.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1748.13" y="-1024.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x . . </text>
+<text text-anchor="middle" x="1748.13" y="-1011.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;o . . </text>
+<text text-anchor="middle" x="1748.13" y="-998.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o x &#45;&gt;P 1 \no . . \n . x x \n &#160;o o . \n &#160;&#160;. o x  -->
-<g id="edge35" class="edge">
-<title>P 1 \n. . . \n . x x \n &#160;o o . \n &#160;&#160;. o x &#45;&gt;P 1 \no . . \n . x x \n &#160;o o . \n &#160;&#160;. o x </title>
-<path fill="none" stroke="black" d="M1685.05,-332.66C1685.05,-320.29 1685.05,-307.01 1685.05,-294.26"/>
-<polygon fill="black" stroke="black" points="1688.55,-294.18 1685.05,-284.18 1681.55,-294.18 1688.55,-294.18"/>
-<text text-anchor="middle" x="1715.55" y="-304.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge34" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1748.13,-1160.88C1748.13,-1146.42 1748.13,-1131.08 1748.13,-1116.29"/>
+<polygon fill="black" stroke="black" points="1751.63,-1116.16 1748.13,-1106.16 1744.63,-1116.16 1751.63,-1116.16"/>
+<text text-anchor="middle" x="1778.63" y="-1130.9" font-family="Monospace" font-size="12.00">a3: 1.00</text>
 </g>
-<!-- P 0 \n. . X \n . x x \n &#160;. o x \n &#160;&#160;. o x  -->
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="node28" class="node">
-<title>P 0 \n. . X \n . x x \n &#160;. o x \n &#160;&#160;. o x </title>
-<ellipse fill="black" stroke="black" cx="1685.05" cy="-63" rx="59.3" ry="59.3"/>
-<ellipse fill="none" stroke="black" cx="1685.05" cy="-63" rx="63.29" ry="63.29"/>
-<text text-anchor="middle" x="1685.05" y="-85.9" font-family="Monospace" font-size="12.00" fill="white">P 0 </text>
-<text text-anchor="middle" x="1685.05" y="-72.9" font-family="Monospace" font-size="12.00" fill="white">. . X </text>
-<text text-anchor="middle" x="1685.05" y="-59.9" font-family="Monospace" font-size="12.00" fill="white"> . x x </text>
-<text text-anchor="middle" x="1685.05" y="-46.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
-<text text-anchor="middle" x="1685.05" y="-33.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. o x </text>
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1828.8,-841 1788.46,-912.07 1707.8,-912.07 1667.46,-841 1707.8,-769.93 1788.46,-769.93 1828.8,-841"/>
+<text text-anchor="middle" x="1748.13" y="-856.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1748.13" y="-843.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1748.13" y="-830.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x x x </text>
+<text text-anchor="middle" x="1748.13" y="-817.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="1748.13" y="-804.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
 </g>
-<!-- P 1 \no . . \n . x x \n &#160;o o . \n &#160;&#160;. o x &#45;&gt;P 0 \n. . X \n . x x \n &#160;. o x \n &#160;&#160;. o x  -->
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge35" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x . . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1748.13,-963.87C1748.13,-950.47 1748.13,-936.34 1748.13,-922.64"/>
+<polygon fill="black" stroke="black" points="1751.63,-922.26 1748.13,-912.26 1744.63,-922.26 1751.63,-922.26"/>
+<text text-anchor="middle" x="1778.63" y="-933.9" font-family="Monospace" font-size="12.00">c2: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node29" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="1828.8,-650 1788.46,-721.07 1707.8,-721.07 1667.46,-650 1707.8,-578.93 1788.46,-578.93 1828.8,-650"/>
+<text text-anchor="middle" x="1748.13" y="-665.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="1748.13" y="-652.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1748.13" y="-639.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x x . </text>
+<text text-anchor="middle" x="1748.13" y="-626.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;o . . </text>
+<text text-anchor="middle" x="1748.13" y="-613.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . .  -->
 <g id="edge36" class="edge">
-<title>P 1 \no . . \n . x x \n &#160;o o . \n &#160;&#160;. o x &#45;&gt;P 0 \n. . X \n . x x \n &#160;. o x \n &#160;&#160;. o x </title>
-<path fill="none" stroke="black" d="M1685.05,-175.88C1685.05,-163.35 1685.05,-149.77 1685.05,-136.54"/>
-<polygon fill="black" stroke="black" points="1688.55,-136.51 1685.05,-126.51 1681.55,-136.51 1688.55,-136.51"/>
-<text text-anchor="middle" x="1715.55" y="-147.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1748.13,-769.89C1748.13,-757.37 1748.13,-744.25 1748.13,-731.47"/>
+<polygon fill="black" stroke="black" points="1751.63,-731.31 1748.13,-721.31 1744.63,-731.31 1751.63,-731.31"/>
+<text text-anchor="middle" x="1778.63" y="-742.9" font-family="Monospace" font-size="12.00">b2: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node30" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="1828.8,-459 1788.46,-530.07 1707.8,-530.07 1667.46,-459 1707.8,-387.93 1788.46,-387.93 1828.8,-459"/>
+<text text-anchor="middle" x="1748.13" y="-474.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="1748.13" y="-461.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1748.13" y="-448.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x x . </text>
+<text text-anchor="middle" x="1748.13" y="-435.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;o o . </text>
+<text text-anchor="middle" x="1748.13" y="-422.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge37" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1748.13,-578.89C1748.13,-566.37 1748.13,-553.25 1748.13,-540.47"/>
+<polygon fill="black" stroke="black" points="1751.63,-540.31 1748.13,-530.31 1744.63,-540.31 1751.63,-540.31"/>
+<text text-anchor="middle" x="1778.63" y="-551.9" font-family="Monospace" font-size="12.00">b3: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node31" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1828.8,-268 1788.46,-339.07 1707.8,-339.07 1667.46,-268 1707.8,-196.93 1788.46,-196.93 1828.8,-268"/>
+<text text-anchor="middle" x="1748.13" y="-283.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1748.13" y="-270.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1748.13" y="-257.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x x x </text>
+<text text-anchor="middle" x="1748.13" y="-244.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;o . . </text>
+<text text-anchor="middle" x="1748.13" y="-231.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge38" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x . \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1748.13,-387.89C1748.13,-375.37 1748.13,-362.25 1748.13,-349.47"/>
+<polygon fill="black" stroke="black" points="1751.63,-349.31 1748.13,-339.31 1744.63,-349.31 1751.63,-349.31"/>
+<text text-anchor="middle" x="1778.63" y="-360.9" font-family="Monospace" font-size="12.00">a3: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node32" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . . </title>
+<ellipse fill="black" stroke="black" cx="1748.13" cy="-74" rx="70.01" ry="70.01"/>
+<ellipse fill="none" stroke="black" cx="1748.13" cy="-74" rx="74.01" ry="74.01"/>
+<text text-anchor="middle" x="1748.13" y="-89.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1748.13" y="-76.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1748.13" y="-63.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x x x </text>
+<text text-anchor="middle" x="1748.13" y="-50.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;o o . </text>
+<text text-anchor="middle" x="1748.13" y="-37.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge39" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;x x x \n &#160;&#160;&#160;o o . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1748.13,-196.87C1748.13,-184.36 1748.13,-171.22 1748.13,-158.38"/>
+<polygon fill="black" stroke="black" points="1751.63,-158.17 1748.13,-148.17 1744.63,-158.17 1751.63,-158.17"/>
+<text text-anchor="middle" x="1778.63" y="-169.9" font-family="Monospace" font-size="12.00">b3: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge41" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2135.82,-2900.82C2133.49,-2851.35 2130.35,-2784.99 2127.92,-2733.39"/>
+<polygon fill="black" stroke="black" points="2131.41,-2733.1 2127.44,-2723.28 2124.42,-2733.43 2131.41,-2733.1"/>
+<text text-anchor="middle" x="2164.63" y="-2808.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node35" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="2204.8,-1946 2164.46,-2017.07 2083.8,-2017.07 2043.46,-1946 2083.8,-1874.93 2164.46,-1874.93 2204.8,-1946"/>
+<text text-anchor="middle" x="2124.13" y="-1961.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="2124.13" y="-1948.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
+<text text-anchor="middle" x="2124.13" y="-1935.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x o </text>
+<text text-anchor="middle" x="2124.13" y="-1922.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="2124.13" y="-1909.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge44" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;x . x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2124.13,-2198.73C2124.13,-2148.25 2124.13,-2080.09 2124.13,-2027.43"/>
+<polygon fill="black" stroke="black" points="2127.63,-2027.12 2124.13,-2017.12 2120.63,-2027.12 2127.63,-2027.12"/>
+<text text-anchor="middle" x="2154.63" y="-2105.9" font-family="Monospace" font-size="12.00">b2: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. o . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node36" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. o . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="red" stroke="black" points="2204.8,-1620 2164.46,-1691.07 2083.8,-1691.07 2043.46,-1620 2083.8,-1548.93 2164.46,-1548.93 2204.8,-1620"/>
+<text text-anchor="middle" x="2124.13" y="-1635.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="2124.13" y="-1622.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
+<text text-anchor="middle" x="2124.13" y="-1609.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x o </text>
+<text text-anchor="middle" x="2124.13" y="-1596.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. o . </text>
+<text text-anchor="middle" x="2124.13" y="-1583.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. o . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge45" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. o . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2124.13,-1874.7C2124.13,-1823.64 2124.13,-1754.47 2124.13,-1701.25"/>
+<polygon fill="black" stroke="black" points="2127.63,-1701.17 2124.13,-1691.17 2120.63,-1701.17 2127.63,-1701.17"/>
+<text text-anchor="middle" x="2154.63" y="-1779.9" font-family="Monospace" font-size="12.00">b3: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node37" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="2204.8,-1426 2164.46,-1497.07 2083.8,-1497.07 2043.46,-1426 2083.8,-1354.93 2164.46,-1354.93 2204.8,-1426"/>
+<text text-anchor="middle" x="2124.13" y="-1441.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="2124.13" y="-1428.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o x </text>
+<text text-anchor="middle" x="2124.13" y="-1415.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="2124.13" y="-1402.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="2124.13" y="-1389.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. o . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge46" class="edge">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;. o . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2124.13,-1548.87C2124.13,-1535.47 2124.13,-1521.34 2124.13,-1507.64"/>
+<polygon fill="black" stroke="black" points="2127.63,-1507.26 2124.13,-1497.26 2120.63,-1507.26 2127.63,-1507.26"/>
+<text text-anchor="middle" x="2154.63" y="-1518.9" font-family="Monospace" font-size="12.00">b1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node38" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="2204.8,-1232 2164.46,-1303.07 2083.8,-1303.07 2043.46,-1232 2083.8,-1160.93 2164.46,-1160.93 2204.8,-1232"/>
+<text text-anchor="middle" x="2124.13" y="-1247.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="2124.13" y="-1234.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o x </text>
+<text text-anchor="middle" x="2124.13" y="-1221.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;x x . </text>
+<text text-anchor="middle" x="2124.13" y="-1208.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . . </text>
+<text text-anchor="middle" x="2124.13" y="-1195.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge47" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2124.13,-1354.87C2124.13,-1341.47 2124.13,-1327.34 2124.13,-1313.64"/>
+<polygon fill="black" stroke="black" points="2127.63,-1313.26 2124.13,-1303.26 2120.63,-1313.26 2127.63,-1313.26"/>
+<text text-anchor="middle" x="2154.63" y="-1327.9" font-family="Monospace" font-size="12.00">a2: 1.00</text>
+</g>
+<!-- \n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;O o . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node39" class="node">
+<title>\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;O o . \n &#160;&#160;&#160;&#160;. . . </title>
+<ellipse fill="red" stroke="black" cx="2124.13" cy="-1035" rx="70.01" ry="70.01"/>
+<ellipse fill="none" stroke="black" cx="2124.13" cy="-1035" rx="74.01" ry="74.01"/>
+<text text-anchor="middle" x="2124.13" y="-1050.9" font-family="Monospace" font-size="12.00" fill="white"> P 1 &#160;&#160;</text>
+<text text-anchor="middle" x="2124.13" y="-1037.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o x </text>
+<text text-anchor="middle" x="2124.13" y="-1024.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x o </text>
+<text text-anchor="middle" x="2124.13" y="-1011.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;O o . </text>
+<text text-anchor="middle" x="2124.13" y="-998.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;O o . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge48" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;x o x \n &#160;&#160;x x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o x \n &#160;&#160;. x o \n &#160;&#160;&#160;O o . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M2124.13,-1160.88C2124.13,-1147.35 2124.13,-1133.05 2124.13,-1119.15"/>
+<polygon fill="black" stroke="black" points="2127.63,-1119.12 2124.13,-1109.12 2120.63,-1119.12 2127.63,-1119.12"/>
+<text text-anchor="middle" x="2154.63" y="-1130.9" font-family="Monospace" font-size="12.00">a3: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge50" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1455.58,-2628.48C1349.58,-2593.15 1144.78,-2524.88 1033.19,-2487.69"/>
+<polygon fill="black" stroke="black" points="1034.27,-2484.36 1023.67,-2484.51 1032.05,-2491 1034.27,-2484.36"/>
+<text text-anchor="middle" x="1287.63" y="-2552.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge52" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;x . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;x . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M201.52,-1752.09C311.2,-1701.61 544.57,-1599.77 752.13,-1546 1022.74,-1475.89 1353.56,-1444.45 1508.37,-1432.79"/>
+<polygon fill="black" stroke="black" points="1509.04,-1436.25 1518.76,-1432.02 1508.52,-1429.27 1509.04,-1436.25"/>
+<text text-anchor="middle" x="782.63" y="-1616.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge55" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;. o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1685.22,-2740.76C1677.74,-2688.95 1659.14,-2620.79 1613.13,-2580.96 1529.19,-2508.31 1203.05,-2477.78 1044.14,-2467.01"/>
+<polygon fill="black" stroke="black" points="1044.13,-2463.5 1033.92,-2466.33 1043.66,-2470.49 1044.13,-2463.5"/>
+<text text-anchor="middle" x="1712.63" y="-2648.9" font-family="Monospace" font-size="12.00">c1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. x x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge57" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . . \n &#160;&#160;. x . \n &#160;&#160;&#160;. x x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;O o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M288.13,-2047.67C356.36,-1961.97 492.29,-1805.1 640.13,-1711.96 693.84,-1678.13 761.82,-1654.73 814.23,-1640.15"/>
+<polygon fill="black" stroke="black" points="815.44,-1643.44 824.16,-1637.43 813.6,-1636.69 815.44,-1643.44"/>
+<text text-anchor="middle" x="468.63" y="-1942.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node46" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;. o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1731.8,-1946 1691.46,-2017.07 1610.8,-2017.07 1570.46,-1946 1610.8,-1874.93 1691.46,-1874.93 1731.8,-1946"/>
+<text text-anchor="middle" x="1651.13" y="-1961.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1651.13" y="-1948.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;. o o </text>
+<text text-anchor="middle" x="1651.13" y="-1935.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1651.13" y="-1922.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . x </text>
+<text text-anchor="middle" x="1651.13" y="-1909.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge59" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. . o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;. o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1518.21,-2248.8C1553.03,-2235.04 1592.72,-2213.17 1616.13,-2180.04 1647.26,-2135.98 1655.61,-2075.47 1656.38,-2027.16"/>
+<polygon fill="black" stroke="black" points="1659.88,-2027.06 1656.44,-2017.04 1652.88,-2027.02 1659.88,-2027.06"/>
+<text text-anchor="middle" x="1685.63" y="-2105.9" font-family="Monospace" font-size="12.00">b1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="node47" class="node">
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . </title>
+<polygon fill="black" stroke="black" points="1676.8,-1620 1636.46,-1691.07 1555.8,-1691.07 1515.46,-1620 1555.8,-1548.93 1636.46,-1548.93 1676.8,-1620"/>
+<text text-anchor="middle" x="1596.13" y="-1635.9" font-family="Monospace" font-size="12.00" fill="white"> P 0 &#160;&#160;</text>
+<text text-anchor="middle" x="1596.13" y="-1622.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;x o o </text>
+<text text-anchor="middle" x="1596.13" y="-1609.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;. x . </text>
+<text text-anchor="middle" x="1596.13" y="-1596.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;. . x </text>
+<text text-anchor="middle" x="1596.13" y="-1583.9" font-family="Monospace" font-size="12.00" fill="white"> &#160;&#160;&#160;&#160;. . . </text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;. o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge60" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;. o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1639.19,-1874.7C1630.53,-1823.64 1618.79,-1754.47 1609.75,-1701.25"/>
+<polygon fill="black" stroke="black" points="1613.16,-1700.44 1608.04,-1691.17 1606.26,-1701.61 1613.16,-1700.44"/>
+<text text-anchor="middle" x="1664.63" y="-1779.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
+</g>
+<!-- \n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . .  -->
+<g id="edge61" class="edge">
+<title>\n P 0 &#160;&#160;\n &#160;x o o \n &#160;&#160;. x . \n &#160;&#160;&#160;. . x \n &#160;&#160;&#160;&#160;. . . &#45;&gt;\n P 1 &#160;&#160;\n &#160;x o o \n &#160;&#160;. . . \n &#160;&#160;&#160;. . . \n &#160;&#160;&#160;&#160;. . . </title>
+<path fill="none" stroke="black" d="M1596.13,-1548.87C1596.13,-1535.47 1596.13,-1521.34 1596.13,-1507.64"/>
+<polygon fill="black" stroke="black" points="1599.63,-1507.26 1596.13,-1497.26 1592.63,-1507.26 1599.63,-1507.26"/>
+<text text-anchor="middle" x="1626.63" y="-1518.9" font-family="Monospace" font-size="12.00">a1: 1.00</text>
 </g>
 </g>
 </svg>
