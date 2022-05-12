@@ -5,19 +5,26 @@ from darkhex.utils.util import save_file
 # todo: use file version if exists
 # todo: make dumping to file optional
 
-def get_all_information_states(game: pyspiel.Game, num_rows, num_cols, include_terminal_states=True) -> list:
+def get_all_information_states(game: pyspiel.Game, num_rows, num_cols, include_terminal_states=True,
+                               save_to_file = False, get_data=True) -> list:
     """Get all information states for the given game."""
     info_states = {}
     state_data = {}
     state = game.new_initial_state()
-    _get_all_info_states(state, info_states, state_data, include_terminal_states)
-    save_file(state_data, f"darkhex/data/state_data/{num_rows}x{num_cols}.pkl")
-    return info_states
+    if get_data:
+        _get_all_info_states_data(state, info_states, state_data, include_terminal_states)
+        return_data = [info_states, state_data]
+    else:
+        _get_all_info_states(state, info_states, state_data, include_terminal_states)
+        return_data = state_data
+    if save_to_file:
+        save_file(state_data, f"darkhex/data/state_data/{num_rows}x{num_cols}.pkl")
+    return return_data
 
-def _get_all_info_states(state: pyspiel.State, info_states: dict, state_data: dict,
-                         include_terminal_states) -> None:
+def _get_all_info_states_data(state: pyspiel.State, info_states: dict, state_data: dict,
+                              include_terminal_states) -> None:
     """Calculate information states recursively for the state. Fill in the
-    info_states."""
+    info_states and state_data."""
     r = -1
     if state.is_terminal():
         if include_terminal_states:
@@ -40,6 +47,29 @@ def _get_all_info_states(state: pyspiel.State, info_states: dict, state_data: di
     for action in state.legal_actions():
         new_state = state.child(action)
         _get_all_info_states(new_state, info_states, state_data, include_terminal_states)
+
+
+def _get_all_info_states(state: pyspiel.State, oracle: dict, state_data: dict,
+                         include_terminal_states:bool) -> None:
+    """Calculate information states recursively for the state. Fill in the
+    state_data."""
+    print(f'Number of states: {len(state_data)}', end='\r')
+    if state.is_terminal() and not include_terminal_states:
+        return
+    info_tuple = (state.information_state_string(0),
+                  state.information_state_string(1),)
+    if info_tuple in oracle:
+        return
+    oracle[info_tuple] = True
+    cur_player = state.current_player()
+    if cur_player < 0:
+        cur_player = 0 if state.returns()[0] > 0 else 1
+    cur_is = state.information_state_string(cur_player)
+    if cur_is not in state_data:
+        state_data[cur_is] = state
+    for action in state.legal_actions():
+        new_state = state.child(action)
+        _get_all_info_states(new_state, oracle, state_data, include_terminal_states)
 
 
 if __name__ == "__main__":
