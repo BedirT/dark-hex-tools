@@ -193,7 +193,7 @@ class TreeGenerator:
                 self.tree.add_node(terminal_node)
 
                 # Add the edge if it doesnt already exist
-                edge_label = f"{conv_alphapos(action, num_cols)}: {prob:.2f}"
+                edge_label = f"{conv_alphapos(action, num_cols)}: {prob:.4f}"
                 if not self.tree.get_edge(parent, terminal_node):
                     edge = pydot.Edge(
                         parent,
@@ -214,7 +214,7 @@ class TreeGenerator:
                 self.tree.add_node(node)
 
                 # Add the edge if it doesnt already exist
-                edge_label = f"{conv_alphapos(action, num_cols)}: {prob:.2f}"
+                edge_label = f"{conv_alphapos(action, num_cols)}: {prob:.4f}"
                 if not self.tree.get_edge(parent, node):
                     edge = pydot.Edge(parent,
                                       node,
