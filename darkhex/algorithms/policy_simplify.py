@@ -18,14 +18,28 @@ class PolicySimplify:
         player: int,
         policy_type: str,
         file_path: str,
+        epsilon: float, # the minimum probability of an action
+        eta: float, # the maximum distance between a fraction and an action
+        frac_limit: int, # the maximum number of fractions
+        max_number_of_actions: int, # the maximum number of actions
         include_isomorphic: bool = True,
     ):
         self.num_cols = num_cols
         self.num_rows = num_rows
         self.p = player
         self.o = 1 - self.p
-        self.allowed_num_actions = 2
-        self.epsilon = 0.2
+        self.max_number_of_actions = max_number_of_actions
+        self.epsilon = epsilon # the minimum probability of an action
+
+        self.frac_limit = frac_limit  # the clean fraction limit
+        self.eta = eta # the difference between the probability of an
+                        # action and a fraction value near it:
+                        # 1/2, 1/3, 2/3, 1/4, 3/4, ...
+        
+        self.fraction_values = None
+        if self.eta > 0 and self.frac_limit > 0:
+            self.fraction_values = self._calculate_fractions()
+            print(f"Fraction values: {self.fraction_values}")
 
         # todo: make the file name dynamic
         if policy_type == "mccfr":
@@ -46,6 +60,17 @@ class PolicySimplify:
         self.info_states = {}
 
         self.iterate_board(initial_board)
+
+    def _calculate_fractions(self):
+        """
+        Calculate the fraction values.
+        """
+        fractions = set()
+        for n in range(1, self.frac_limit + 1):
+            for k in range(1, n):
+                frac = k / n
+                fractions.add(frac)
+        return sorted(fractions)        
 
     def iterate_board(self, board) -> None:
         """Iterate the board"""
@@ -69,6 +94,7 @@ class PolicySimplify:
         action_probs = self.get_action_probs(board)
         if action_probs is None:
             return {}
+        action_probs = self.fractionize(action_probs)
         self.info_states[board] = action_probs
         new_boards = {}
         for a in self.info_states[board].keys():
@@ -113,12 +139,43 @@ class PolicySimplify:
         sorted_action_probs = sorted(action_probs.items(),
                                      key=lambda x: x[1],
                                      reverse=True)
-        sorted_action_probs = sorted_action_probs[:self.allowed_num_actions]
+        sorted_action_probs = sorted_action_probs[:self.max_number_of_actions]
         action_probs = {k: v for k, v in sorted_action_probs}
         total = sum(action_probs.values())
         action_probs = {k: v / total for k, v in action_probs.items()}
         # print(f"Action probs: {action_probs}")
 
+        return action_probs
+
+    def fractionize(self, action_probs):
+        """
+        Fractionize the action probabilities.
+
+        For a given action probability, find if "all" action probabilities
+        are within eta distance of a fraction value. If so, return the
+        fraction values. If not, return the original action probabilities.
+        """
+        if not self.fraction_values:
+            return action_probs
+        fraction_probs = {}
+        for action, prob in action_probs.items():
+            for frac in self.fraction_values:
+                if abs(frac - prob) <= self.eta:
+                    if action not in fraction_probs:
+                        fraction_probs[action] = frac
+                    else:
+                        # if the fraction is already in the dict,
+                        # get the closest fraction value
+                        if abs(prob - fraction_probs[action]) > \
+                           abs(prob - frac):
+                            fraction_probs[action] = frac
+        if len(fraction_probs) == len(action_probs):
+            if sum(fraction_probs.values()) == 1:
+                if action_probs != fraction_probs:
+                    print(f"Converted to fractions: {action_probs} | {fraction_probs}")
+                return fraction_probs
+            else:
+                print(f"Failed to convert to fractions: {action_probs} | {fraction_probs}")
         return action_probs
 
     def state_for_board(self, board):
