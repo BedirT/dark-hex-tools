@@ -5,6 +5,7 @@ to calculate best response value for a given player strategy.
 import typing
 from collections import defaultdict
 import pydot
+from decimal import Decimal
 
 import pyspiel
 from darkhex.utils.util import (convert_os_strategy, get_open_spiel_state,
@@ -77,7 +78,7 @@ class BRTree:
                           state: pyspiel.State,
                           parent: Node = None,
                           action: int = None,
-                          reach_prob: float = 1.,
+                          reach_prob: float = Decimal('1.0'),
                           value: float = 0.):
         """ Add a terminal node to the tree. """
         wait_node = len(state.legal_actions(self.br_player)) == 0
@@ -125,7 +126,7 @@ class BestResponse:
     @staticmethod
     def _br_value(val: float) -> float:
         # return (val + 1) / 2
-        return val
+        return Decimal(str(val))
 
     def _generate_value_tree(self,
                              cur_state: pyspiel.State,
@@ -168,13 +169,15 @@ class BestResponse:
             next_state = cur_state.child(action)
             if next_state.is_terminal():
                 value = self._br_value(next_state.returns()[self.br_player])
+                decimal_prob = Decimal(str(prob)) * Decimal(str(reach_prob))
                 br_tree.add_terminal_node(next_state, parent_node, action,
-                                          reach_prob * prob, value)
+                                          decimal_prob, value)
             else:
-                new_node = br_tree.add_node(next_state, reach_prob * prob,
+                decimal_prob = Decimal(str(prob)) * Decimal(str(reach_prob))
+                new_node = br_tree.add_node(next_state, decimal_prob,
                                             parent_node, action)
                 self._generate_value_tree(next_state, br_tree, new_node,
-                                          reach_prob * prob)
+                                          decimal_prob)
 
     def _backpropogate_values(self, br_tree: BRTree, cur_node: Node = None):
         """
@@ -186,10 +189,10 @@ class BestResponse:
             # Terminal node
             cur_node.value *= cur_node.reach_prob
             return cur_node.value
-        tot_value = 0.
-        mx_value = -1e9
+        tot_value = Decimal('0.0')
+        mx_value = Decimal('-inf')
         for action, children in cur_node.children.items():
-            children_value = 0.
+            children_value = Decimal('0.0')
             for child in children:
                 if child is not None:
                     children_value += self._backpropogate_values(br_tree, child)
@@ -215,9 +218,9 @@ class BestResponse:
                 continue
             # find the best action for the given info state
             best_action = None
-            best_value = -1e9
+            best_value = Decimal('-inf')
             for action, children in cur_node.children.items():
-                children_value = 0.
+                children_value = Decimal('0.0')
                 for child in children:
                     if child is None:
                         continue
@@ -234,16 +237,17 @@ class BestResponse:
         Calculate the best response value for the given player strategy and
         calculated opponent strategy.
         """
-        br_value = 0
+        br_value = Decimal('0.0')
         cur_player = cur_state.current_player()
         info_state = cur_state.information_state_string()
         for action, prob in self.strategies[cur_player][info_state]:
             new_state = cur_state.child(action)
             if new_state.is_terminal():
-                value = (new_state.returns()[self.br_player] + 1) / 2
+                value = (Decimal(str(new_state.returns()[self.br_player])) \
+                    + Decimal('1.0')) / Decimal('2.0')
             else:
                 value = self._calculate_br_value(new_state)
-            br_value += value * prob
+            br_value +=  Decimal(str(value)) * Decimal(str(prob))
         return br_value
 
     @staticmethod
@@ -282,7 +286,7 @@ class BestResponse:
 
         # Generate the BR tree
         br_tree = BRTree(self.br_player)
-        br_tree.root = br_tree.add_node(game_state, 1.)
+        br_tree.root = br_tree.add_node(game_state, Decimal('1.0'))
         self._generate_value_tree(game_state, br_tree, br_tree.root)
 
         # Backpropogate the values
