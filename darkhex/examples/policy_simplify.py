@@ -11,13 +11,13 @@ def simplify_policy(num_rows,
                     file_path,
                     policy_type='mccfr',
                     include_isomorphic=True):
-    ps = PolicySimplify(initial_board, 
-                        num_rows, 
-                        num_cols, 
-                        player, 
+    ps = PolicySimplify(initial_board,
+                        num_rows,
+                        num_cols,
+                        player,
                         policy_type,
                         file_path,
-                        epsilon=1/15,
+                        epsilon=1 / 15,
                         eta=0.03,
                         frac_limit=15,
                         max_number_of_actions=3,
@@ -44,4 +44,8 @@ def simplify_policy(num_rows,
 
 if __name__ == "__main__":
     file_path = "../open_spiel/tmp/Arena/arena_mccfr_4x3_pone_ir/solver.pkl"
-    simplify_policy(num_rows=4, num_cols=3, player=0, initial_board="............", file_path=file_path)
+    simplify_policy(num_rows=4,
+                    num_cols=3,
+                    player=0,
+                    initial_board="............",
+                    file_path=file_path)

@@ -18,10 +18,10 @@ class PolicySimplify:
         player: int,
         policy_type: str,
         file_path: str,
-        epsilon: float, # the minimum probability of an action
-        eta: float, # the maximum distance between a fraction and an action
-        frac_limit: int, # the maximum number of fractions
-        max_number_of_actions: int, # the maximum number of actions
+        epsilon: float,  # the minimum probability of an action
+        eta: float,  # the maximum distance between a fraction and an action
+        frac_limit: int,  # the maximum number of fractions
+        max_number_of_actions: int,  # the maximum number of actions
         include_isomorphic: bool = True,
     ):
         self.num_cols = num_cols
@@ -29,17 +29,17 @@ class PolicySimplify:
         self.p = player
         self.o = 1 - self.p
         self.max_number_of_actions = max_number_of_actions
-        self.epsilon = epsilon # the minimum probability of an action
+        self.epsilon = epsilon  # the minimum probability of an action
 
         self.frac_limit = frac_limit  # the clean fraction limit
-        self.eta = eta # the difference between the probability of an
-                        # action and a fraction value near it:
-                        # 1/2, 1/3, 2/3, 1/4, 3/4, ...
-        
+        self.eta = eta  # the difference between the probability of an
+        # action and a fraction value near it:
+        # 1/2, 1/3, 2/3, 1/4, 3/4, ...
+
         self.fraction_values = None
         if self.eta > 0 and self.frac_limit > 0:
             self.fraction_values = self._calculate_fractions()
-            print(f"Fraction values: {self.fraction_values}")
+            # print(f"Fraction values: {self.fraction_values}")
 
         # todo: make the file name dynamic
         if policy_type == "mccfr":
@@ -70,7 +70,7 @@ class PolicySimplify:
             for k in range(1, n):
                 frac = k / n
                 fractions.add(frac)
-        return sorted(fractions)        
+        return sorted(fractions)
 
     def iterate_board(self, board) -> None:
         """Iterate the board"""
@@ -171,11 +171,11 @@ class PolicySimplify:
                             fraction_probs[action] = frac
         if len(fraction_probs) == len(action_probs):
             if sum(fraction_probs.values()) == 1:
-                if action_probs != fraction_probs:
-                    print(f"Converted to fractions: {action_probs} | {fraction_probs}")
+                # if action_probs != fraction_probs:
+                #     print(f"Converted to fractions: {action_probs} | {fraction_probs}")
                 return fraction_probs
-            else:
-                print(f"Failed to convert to fractions: {action_probs} | {fraction_probs}")
+            # else:
+            #     print(f"Failed to convert to fractions: {action_probs} | {fraction_probs}")
         return action_probs
 
     def state_for_board(self, board):

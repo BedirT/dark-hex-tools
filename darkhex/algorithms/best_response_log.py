@@ -5,10 +5,10 @@ to calculate best response value for a given player strategy.
 import typing
 from collections import defaultdict
 import pydot
-from decimal import Decimal
+import numpy as np
 
 import pyspiel
-from darkhex.utils.util import (get_open_spiel_state, save_file)
+from darkhex.utils.util import (get_open_spiel_state, load_file, save_file)
 
 
 class Node:
@@ -16,12 +16,12 @@ class Node:
 
     def __init__(self,
                  info_state: str,
-                 reach_prob: float,
+                 reach_prob: np.float64,
                  wait_node: bool,
                  value: float = 0.,
                  is_terminal: bool = False):
         self.info_state = info_state
-        self.reach_prob = reach_prob
+        self.reach_prob = reach_prob  # reach probability on log-scale
         self.value = value
         self.wait_node = wait_node
         self.node_key = (info_state, wait_node)
@@ -51,7 +51,7 @@ class BRTree:
 
     def add_node(self,
                  state: pyspiel.State,
-                 reach_prob: float,
+                 reach_prob: np.float64,
                  parent: Node = None,
                  action: int = None,
                  value: float = 0.):
@@ -77,7 +77,7 @@ class BRTree:
                           state: pyspiel.State,
                           parent: Node = None,
                           action: int = None,
-                          reach_prob: float = Decimal('1.0'),
+                          reach_prob: np.float64 = np.log(1.),
                           value: float = 0.):
         """ Add a terminal node to the tree. """
         wait_node = len(state.legal_actions(self.br_player)) == 0
@@ -85,7 +85,9 @@ class BRTree:
 
         if parent_node.children[action][int(wait_node)] is not None:
             parent_node.children[action][int(
-                wait_node)].reach_prob += reach_prob
+                wait_node)].reach_prob = np.logaddexp(
+                    parent_node.children[action][int(wait_node)].reach_prob,
+                    reach_prob)
         else:
             parent_node.children[action][int(wait_node)] = Node(
                 state.information_state_string(self.br_player) + f':T:{action}',
@@ -122,17 +124,12 @@ class BestResponse:
 
         self.full_game_state_cache = {}
 
-    @staticmethod
-    def _br_value(val: float) -> float:
-        # return (val + 1) / 2
-        return Decimal(str(val))
-
     def _generate_value_tree(
         self,
         cur_state: pyspiel.State,
         br_tree: BRTree,
         parent_node: Node,
-        reach_prob: Decimal = Decimal('1.0')) -> float:
+        reach_prob: np.float64 = np.log(1.0)) -> float:
         """
         Generate the value tree for the best response player playing against
         the given player strategy.
@@ -155,7 +152,7 @@ class BestResponse:
             for action in cur_state.legal_actions():
                 next_state = cur_state.child(action)
                 if next_state.is_terminal():
-                    value = self._br_value(next_state.returns()[self.br_player])
+                    value = next_state.returns()[self.br_player]
                     br_tree.add_terminal_node(next_state, parent_node, action,
                                               reach_prob, value)
                 else:
@@ -166,14 +163,15 @@ class BestResponse:
             return
         # strategy players turn
         for action, prob in self.strategy[info_state]:
+            # ? Should I change prob to log prob when simplifying policy
             next_state = cur_state.child(action)
             if next_state.is_terminal():
-                value = self._br_value(next_state.returns()[self.br_player])
-                decimal_prob = Decimal(str(prob)) * Decimal(str(reach_prob))
+                value = next_state.returns()[self.br_player]
+                decimal_prob = np.log(prob) + reach_prob
                 br_tree.add_terminal_node(next_state, parent_node, action,
                                           decimal_prob, value)
             else:
-                decimal_prob = Decimal(str(prob)) * Decimal(str(reach_prob))
+                decimal_prob = np.log(prob) + reach_prob
                 new_node = br_tree.add_node(next_state, decimal_prob,
                                             parent_node, action)
                 self._generate_value_tree(next_state, br_tree, new_node,
@@ -187,12 +185,12 @@ class BestResponse:
             cur_node = br_tree.root
         if cur_node.is_terminal:
             # Terminal node
-            cur_node.value *= cur_node.reach_prob
+            cur_node.value *= np.exp(cur_node.reach_prob)
             return cur_node.value
-        tot_value = Decimal('0.0')
-        mx_value = Decimal('-inf')
+        tot_value = 0.
+        mx_value = -np.inf
         for action, children in cur_node.children.items():
-            children_value = Decimal('0.0')
+            children_value = 0.
             for child in children:
                 if child is not None:
                     children_value += self._backpropogate_values(br_tree, child)
@@ -218,9 +216,9 @@ class BestResponse:
                 continue
             # find the best action for the given info state
             best_action = None
-            best_value = Decimal('-inf')
+            best_value = -np.inf
             for action, children in cur_node.children.items():
-                children_value = Decimal('0.0')
+                children_value = 0.
                 for child in children:
                     if child is None:
                         continue
@@ -232,22 +230,24 @@ class BestResponse:
             cur_node.best_action = best_action
         return br_strategy
 
-    def _calculate_br_value(self, cur_state: pyspiel.State) -> float:
+    def _calculate_br_value(self, cur_state: pyspiel.State,
+                            reach_prob: np.float64 = np.log(1.0)) -> float:
         """
         Calculate the best response value for the given player strategy and
         calculated opponent strategy.
         """
-        br_value = Decimal('0.0')
+        br_value = 0.
         cur_player = cur_state.current_player()
         info_state = cur_state.information_state_string()
         for action, prob in self.strategies[cur_player][info_state]:
             new_state = cur_state.child(action)
             if new_state.is_terminal():
-                value = (Decimal(str(new_state.returns()[self.br_player])) \
-                    + Decimal('1.0')) / Decimal('2.0')
+                value = new_state.returns()[self.br_player] * np.exp(
+                    reach_prob + np.log(prob))
+                br_value += value
             else:
-                value = self._calculate_br_value(new_state)
-            br_value += Decimal(str(value)) * Decimal(str(prob))
+                br_value += self._calculate_br_value(new_state,
+                                                     reach_prob + np.log(prob))
         return br_value
 
     @staticmethod
@@ -286,7 +286,7 @@ class BestResponse:
 
         # Generate the BR tree
         br_tree = BRTree(self.br_player)
-        br_tree.root = br_tree.add_node(game_state, Decimal('1.0'))
+        br_tree.root = br_tree.add_node(game_state, np.log(1.0))
         self._generate_value_tree(game_state, br_tree, br_tree.root)
 
         # Backpropogate the values
@@ -298,15 +298,15 @@ class BestResponse:
         # Generate best response strategy
         br_strategy = self.best_response_strategy(br_tree.nodes)
 
-        # self.br_strategy = load_file(self.file_path)
+        # br_strategy = load_file(self.file_path)
 
         # calculate the best response value
         self.strategies = {
             self.s_player: self.strategy,
             self.br_player: br_strategy,
         }
-        br_value = 1 - self._calculate_br_value(
-            game_state)  # how good the given strategy is
+        br_value = 1 - (self._calculate_br_value(game_state) + 1) / 2
+        # how good the given strategy is
 
         # write the opponent strategy to a file
         save_file(br_strategy, self.file_path)
