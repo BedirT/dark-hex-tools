@@ -11,10 +11,10 @@ Gtk.init_check()
 
 class TreeRun(xdot.DotWindow):
 
-    def __init__(self, file_name):
+    def __init__(self, folder_path):
         xdot.DotWindow.__init__(self)
         self.dotwidget.connect("clicked", self.on_url_clicked)
-        self.file_name = file_name
+        self.folder_path = folder_path
 
     def on_url_clicked(self, widget, url, event):
         dialog = Gtk.MessageDialog(parent=self,
@@ -26,7 +26,7 @@ class TreeRun(xdot.DotWindow):
 
     def tree_run(self):
         dotcode = load_file(
-            f"darkhex/data/strategy_data/{self.file_name}/tree.dot")
+            f"{self.folder_path}/tree.dot")
 
         dotcode = dotcode.encode("UTF-8")
 

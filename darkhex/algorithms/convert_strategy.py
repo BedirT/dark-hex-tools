@@ -16,7 +16,7 @@ def convert(strategy, num_cols, num_rows, pid):
 
 
 if __name__ == "__main__":
-    file_path = "darkhex/data/strategy_data/simplified_4x3_mccfr_p1/game_info.pkl"
+    file_path = "darkhex/data/strategy_data/simplified_4x3_mccfr_p0_test_2/game_info.pkl"
     with open(file_path, "rb") as f:
         game_info = pickle.load(f)
     new_strategy = convert(game_info['strategy'], game_info['num_cols'],

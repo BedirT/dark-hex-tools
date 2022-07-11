@@ -230,8 +230,9 @@ class BestResponse:
             cur_node.best_action = best_action
         return br_strategy
 
-    def _calculate_br_value(self, cur_state: pyspiel.State,
-                            reach_prob: np.float64 = np.log(1.0)) -> float:
+    def _calculate_br_value(
+        self, cur_state: pyspiel.State,
+        reach_prob: np.float64 = np.log(1.0)) -> float:
         """
         Calculate the best response value for the given player strategy and
         calculated opponent strategy.
@@ -278,27 +279,29 @@ class BestResponse:
                         pydot.Edge(node_id, ch_info, label=str(action)))
         graph.write_png(file_path)
 
-    def best_response(self):
+    def best_response(self, calculate=True):
         """
         Calculate the best response value for the given player strategy.
         """
         game_state = get_open_spiel_state(self.game, self.initial_state)
 
-        # Generate the BR tree
-        br_tree = BRTree(self.br_player)
-        br_tree.root = br_tree.add_node(game_state, np.log(1.0))
-        self._generate_value_tree(game_state, br_tree, br_tree.root)
+        if calculate:
+            # Generate the BR tree
+            br_tree = BRTree(self.br_player)
+            br_tree.root = br_tree.add_node(game_state, np.log(1.0))
+            self._generate_value_tree(game_state, br_tree, br_tree.root)
 
-        # Backpropogate the values
-        self._backpropogate_values(br_tree)
+            # Backpropogate the values
+            self._backpropogate_values(br_tree)
 
-        # graph test
-        # self.graph_test(br_tree, 'tmp/br_tree.png')
+            # graph test
+            # self.graph_test(br_tree, 'tmp/br_tree.png')
 
-        # Generate best response strategy
-        br_strategy = self.best_response_strategy(br_tree.nodes)
+            # Generate best response strategy
+            br_strategy = self.best_response_strategy(br_tree.nodes)
 
-        # br_strategy = load_file(self.file_path)
+        else:
+            br_strategy = load_file(self.file_path)
 
         # calculate the best response value
         self.strategies = {

@@ -7,7 +7,7 @@ from darkhex.utils.util import load_file
 
 
 def main():
-    file_name = "simplified_4x3_mccfr_p0"
+    file_name = "simplified_4x3_mccfr_p1_test"
     game_info = load_file(
         f"darkhex/data/strategy_data/{file_name}/game_info.pkl")
 

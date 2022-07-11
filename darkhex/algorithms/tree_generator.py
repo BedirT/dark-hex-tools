@@ -20,12 +20,12 @@ from darkhex.utils.util import (
 
 class TreeGenerator:
 
-    def __init__(self, game, file_name):
-        self.file_name = file_name
+    def __init__(self, game, folder_path):
+        self.folder_path = folder_path
 
         # Load the game information
         self.game_info = load_file(
-            f"darkhex/data/strategy_data/{self.file_name}/game_info.pkl")
+            f"{self.folder_path}/game_info.pkl")
         self.player = self.game_info["player"]
 
         self.nc = self.game_info["num_cols"]
@@ -39,7 +39,7 @@ class TreeGenerator:
                 self.game_info["strategy"],
             1 - self.player:
                 load_file(
-                    f"darkhex/data/strategy_data/{self.file_name}/br_strategy.pkl"
+                    f"{self.folder_path}/br_strategy.pkl"
                 ),
         }
 
@@ -147,13 +147,13 @@ class TreeGenerator:
 
         # Save the dot file
         save_file(output_raw_dot,
-                  f"darkhex/data/strategy_data/{self.file_name}/tree.dot")
+                  f"{self.folder_path}/tree.dot")
 
         # Save the tree
         self.tree.write_svg(
-            f"darkhex/data/strategy_data/{self.file_name}/tree.svg")
+            f"{self.folder_path}/tree.svg")
         self.tree.write_pdf(
-            f"darkhex/data/strategy_data/{self.file_name}/tree.pdf")
+            f"{self.folder_path}/tree.pdf")
 
     def _add_children(self, game_state, parent=None):
         """
