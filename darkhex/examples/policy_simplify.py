@@ -9,6 +9,10 @@ def simplify_policy(num_rows,
                     player,
                     initial_board,
                     file_path,
+                    epsilon=0.2,
+                    max_number_of_actions=2,
+                    eta=0.0,
+                    frac_limit=0,
                     policy_type='mccfr',
                     include_isomorphic=True):
     ps = PolicySimplify(initial_board,
@@ -34,16 +38,15 @@ def simplify_policy(num_rows,
     }
     # print(ps.info_states)
     print(f"Total states: {len(ps.info_states)}")
-    save_file(
-        data,
-        f"darkhex/data/strategy_data/simplified_{num_rows}x{num_cols}_{policy_type}_p{player}_test/game_info.pkl"
-    )
+    fname = f'p{player}_{max_number_of_actions}_{epsilon}_{eta}_{frac_limit}'
+    save_file(data,
+              f"darkhex/data/strategy_data/4x3_mccfr/{fname}/game_info.pkl")
 
 
 if __name__ == "__main__":
     file_path = "../open_spiel/tmp/Arena/arena_mccfr_4x3_pone_ir/solver.pkl"
     simplify_policy(num_rows=4,
                     num_cols=3,
-                    player=0,
+                    player=1,
                     initial_board="............",
                     file_path=file_path)

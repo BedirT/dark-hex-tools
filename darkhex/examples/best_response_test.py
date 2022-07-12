@@ -1,6 +1,6 @@
 import json
 from os import stat
-import time
+import timesimplified_4x3_mccfr_p0_test
 
 import pyspiel
 from darkhex.algorithms.best_response import BestResponse
@@ -29,4 +29,4 @@ def main(folder_path):
 
 
 if __name__ == "__main__":
-    main("darkhex/data/strategy_data/simplified_4x3_mccfr_p1/")
+    main("darkhex/data/strategy_data/simplified_4x3_mccfr_p1_test_2/")
