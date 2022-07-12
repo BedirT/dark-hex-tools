@@ -1,6 +1,6 @@
 import json
 from os import stat
-import timesimplified_4x3_mccfr_p0_test
+import time
 
 import pyspiel
 from darkhex.algorithms.best_response import BestResponse
