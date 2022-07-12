@@ -15,13 +15,11 @@ def simplify_policy(num_rows,
                         num_rows,
                         num_cols,
                         player,
-                        policy_type,
                         file_path,
                         epsilon=1 / 15,
                         eta=0.03,
                         frac_limit=15,
-                        max_number_of_actions=3,
-                        include_isomorphic=include_isomorphic)
+                        max_number_of_actions=3)
     # print(ps.info_states)
     conv_is = {}
     for key, value in ps.info_states.items():

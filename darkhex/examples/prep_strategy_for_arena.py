@@ -3,8 +3,9 @@ from darkhex.utils.util import load_file, get_open_spiel_state, save_file
 
 
 def test():
-    data = load_file(
-        "darkhex/data/strategy_data/simplified_4x3_mccfr_p1/game_info.pkl")
-    game = pyspiel.load_game(
-        f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]})')
-    save_file(data["strategy"], "data/arena_strats/simplified_4x3_mccfr_p1.pkl")
+    p = 0
+    data = load_file(f"darkhex/data/ttt/test_{p}/game_info.pkl")
+    save_file(data["strategy"], f"data/arena_strats/test_{p}.pkl")
+
+
+test()
