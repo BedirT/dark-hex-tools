@@ -11,10 +11,10 @@ def simplify_policy(player,
                            initial_board,
                             player,
                             file_path,
-                            epsilon=1 / 10,
+                            epsilon=1 / 20,
                             eta=0.03,
                             frac_limit=10,
-                            max_number_of_actions=2)
+                            max_number_of_actions=9)
     # print(ps.info_states)
     conv_is = {}
     for key, value in ps.info_states.items():
@@ -35,6 +35,6 @@ def simplify_policy(player,
 
 if __name__ == "__main__":
     file_path = "../open_spiel/tmp/phantom_ttt_ir/solver.pkl"
-    simplify_policy(player=0,
+    simplify_policy(player=1,
                     initial_board=".........",
                     file_path=file_path)

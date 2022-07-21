@@ -7,7 +7,7 @@ import time
 
 
 def main():
-    folder_name = 'test_0'
+    folder_name = 'test_1'
     file_path = f"darkhex/data/ttt/{folder_name}/"
     data = load_file(file_path + "game_info.pkl")
     game = pyspiel.load_game('phantom_ttt_ir')

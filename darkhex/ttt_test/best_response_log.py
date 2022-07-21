@@ -16,12 +16,12 @@ class Node:
 
     def __init__(self,
                  info_state: str,
-                 reach_prob: np.float64,
                  wait_node: bool,
                  value: float = 0.,
                  is_terminal: bool = False):
         self.info_state = info_state
-        self.reach_prob = reach_prob  # reach probability on log-scale
+        self.im_rps = {} # immediate_reach_probs
+        self.reach_prob = None  # final reach probability on log-scale
         self.value = value
         self.wait_node = wait_node
         self.node_key = (info_state, wait_node)
@@ -34,6 +34,13 @@ class Node:
         self.children = defaultdict(lambda: [None, None])
 
         self.best_action = None
+        
+    def add_immediate_reach_prob(self, action, reach_prob):
+        self.im_rps[action] = reach_prob
+        
+    def cumulate_immediate_reach_prob(self):
+        self.reach_prob = np.log(sum(self.im_rps.values()))
+        return self.reach_prob
 
     def __repr__(self):
         return f"{self.info_state}:{self.reach_prob}:{self.value}:{self.wait_node}"
@@ -59,9 +66,15 @@ class BRTree:
         info_state = state.information_state_string(self.br_player)
         wait_node = len(state.legal_actions(self.br_player)) == 0
         key = (info_state, wait_node)
+        
+        # !! ERROR: You should accumulate the reach probability if the node
+        # !       already exists. Instead, you are currently ignoring the
+        # !       already seen states reach probability.
 
         if key not in self.nodes:
-            self.nodes[key] = Node(info_state, reach_prob, wait_node, value)
+            self.nodes[key] = Node(info_state, wait_node, value)
+        self.nodes[key].add_immediate_reach_prob(action, reach_prob)
+            
         # Connect the node to the parent
         if parent is not None:
             parent_node = self.get_node(parent.node_key)
@@ -89,12 +102,13 @@ class BRTree:
                     parent_node.children[action][int(wait_node)].reach_prob,
                     reach_prob)
         else:
-            parent_node.children[action][int(wait_node)] = Node(
+            new_node = Node(
                 state.information_state_string(self.br_player) + f':T:{action}',
-                reach_prob,
                 wait_node,
                 value,
                 is_terminal=True)
+            new_node.add_immediate_reach_prob(action, reach_prob)
+            parent_node.children[action][int(wait_node)] = new_node
 
     def get_node(self, node_key: tuple) -> Node:
         """
@@ -120,16 +134,17 @@ class BestResponse:
         self.initial_state = initial_state
         self.strategy = strategy
         self.num_cols = num_cols
-        self.file_path = file_path
+        self.file_path = file_path #!CHANGE THE NAMING
         
-        self.full_game_state_cache = {}
+        self.full_game_state_cache = {} # todo: proper underscore naming
 
     def _generate_value_tree(
         self,
         cur_state: pyspiel.State,
         br_tree: BRTree,
         parent_node: Node,
-        reach_prob: np.float64 = np.log(1.0)) -> float:
+        last_action: int,
+        im_reach_prob: np.float64 = np.log(1.0)) -> float:
         """
         Generate the value tree for the best response player playing against
         the given player strategy.
@@ -137,6 +152,11 @@ class BestResponse:
         value is always in perspective of the best response player. Only the
         terminal states are assigned a value for now, later on we backpropagate
         to update the value of the parent states.
+        
+        im_reach_prob is the immediate reach probability of the current state.
+        Immediate reach probability is the reach probability of reaching the
+        current state from the previous state where the action is taken by the
+        opponent.
         """
         cur_player = cur_state.current_player()
         info_state = cur_state.information_state_string()
@@ -144,8 +164,11 @@ class BestResponse:
         full_state = cur_state.information_state_string(0) + \
                      cur_state.information_state_string(1)
         if full_state in self.full_game_state_cache:
-            return
-        self.full_game_state_cache[full_state] = True
+            if last_action in self.full_game_state_cache:
+                return
+            self.full_game_state_cache[full_state].add(last_action)
+        else:
+            self.full_game_state_cache[full_state] = set(last_action)
 
         if cur_player == self.br_player:
             # best response players turn
@@ -154,12 +177,12 @@ class BestResponse:
                 if next_state.is_terminal():
                     value = next_state.returns()[self.br_player]
                     br_tree.add_terminal_node(next_state, parent_node, action,
-                                              reach_prob, value)
+                                              im_reach_prob, value)
                 else:
-                    new_node = br_tree.add_node(next_state, reach_prob,
+                    new_node = br_tree.add_node(next_state, im_reach_prob,
                                                 parent_node, action)
                     self._generate_value_tree(next_state, br_tree, new_node,
-                                              reach_prob)
+                                              action, im_reach_prob)
             return
         # strategy players turn
         for action, prob in self.strategy[info_state]:
@@ -167,15 +190,13 @@ class BestResponse:
             next_state = cur_state.child(action)
             if next_state.is_terminal():
                 value = next_state.returns()[self.br_player]
-                decimal_prob = np.log(prob) + reach_prob
                 br_tree.add_terminal_node(next_state, parent_node, action,
-                                          decimal_prob, value)
+                                          np.log(prob), value)
             else:
-                decimal_prob = np.log(prob) + reach_prob
-                new_node = br_tree.add_node(next_state, decimal_prob,
+                new_node = br_tree.add_node(next_state, np.log(prob),
                                             parent_node, action)
                 self._generate_value_tree(next_state, br_tree, new_node,
-                                          decimal_prob)
+                                          action, np.log(prob))
 
     def _backpropogate_values(self, br_tree: BRTree, cur_node: Node = None):
         """
@@ -278,6 +299,20 @@ class BestResponse:
                         pydot.Edge(node_id, ch_info, label=str(action)))
         graph.write_png(file_path)
 
+    def _update_reach_probs(self, cur_node: Node,
+                            reach_prob: np.float64 = np.log(1.0)) -> None:
+        """
+        Accumulate the reach probabilities of the nodes and
+        iterate starting from the root, to update the node rps.
+        
+        Args:
+            cur_node (Node): The current node.
+            reach_prob (np.float64): The reach probability of the current node.
+        """
+        new_rp = cur_node.cumulate_immediate_reach_prob()
+        
+        
+
     def best_response(self):
         """
         Calculate the best response value for the given player strategy.
@@ -288,6 +323,7 @@ class BestResponse:
         br_tree = BRTree(self.br_player)
         br_tree.root = br_tree.add_node(game_state, np.log(1.0))
         self._generate_value_tree(game_state, br_tree, br_tree.root)
+        self._accumulate_reach_probs(br_tree)
 
         # Backpropogate the values
         self._backpropogate_values(br_tree)
