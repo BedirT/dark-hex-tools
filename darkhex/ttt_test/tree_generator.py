@@ -38,9 +38,7 @@ class TreeGenerator:
             self.player:
                 self.game_info["strategy"],
             1 - self.player:
-                load_file(
-                    f"darkhex/data/{self.file_name}/br_strategy.pkl"
-                ),
+                load_file(f"darkhex/data/{self.file_name}/br_strategy.pkl"),
         }
 
         # Match game state to initial_state in game_info

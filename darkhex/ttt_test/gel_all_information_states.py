@@ -6,6 +6,7 @@ import time
 # todo: use file version if exists
 # todo: make dumping to file optional
 
+
 def get_all_information_states(game: pyspiel.Game,
                                include_terminal_states=True,
                                save_to_file=False,
@@ -115,4 +116,5 @@ def _get_all_info_states(state: pyspiel.State, oracle: dict, state_data: dict,
 
 
 if __name__ == "__main__":
-    data = get_all_information_states(pyspiel.load_game("phantom_ttt_ir"), save_to_file=True)
+    data = get_all_information_states(pyspiel.load_game("phantom_ttt_ir"),
+                                      save_to_file=True)

@@ -375,3 +375,41 @@ def convert_to_infostate(board_state: str, player: int) -> str:
     board_ls = list(board_state)
     board_ls.insert(0, "P{} ".format(player))
     return "".join(board_ls)
+
+def report(data, type: str) -> None:
+    """ Prints the report in a pretty format given the data
+    and the type. Valid types are = ['memory', 'time']
+
+    Time: Output of time.time()
+    Memory: Output of process.memory_info().rss
+    """
+    bold = "\033[1m"
+    red = "\033[1;31m"
+    yellow = "\033[1;33m"
+    green = "\033[1;32m"
+    end = "\033[0m"
+    if type == 'memory':
+        print(f"{bold}{green}Memory usage:\t{end}", end='')
+        gbs = data // (1024 ** 2)
+        mbs = (data - gbs * 1024 ** 2) // 1024
+        kbs = (data - gbs * 1024 ** 2 - mbs * 1024)
+        if gbs > 0:
+            print(f"{gbs} {red}GB{end} ", end='')
+        if mbs > 0:
+            print(f"{mbs} {red}MB{end} ", end='')
+        if kbs > 0:
+            print(f"{kbs} {red}KB{end}", end='')
+        print()
+    elif type == 'time':
+        print(f"{bold}{green}Time taken:\t{end}", end="")
+        m, s = divmod(data, 60)
+        h, m = divmod(m, 60)
+        h, m, s = int(h), int(m), int(s)
+        if h > 0:
+            print(f"{h}:{m:02d}:{s:02d} {yellow}hours{end}")
+        elif m > 0:
+            print(f"{m}:{s:02d} {yellow}minutes{end}")
+        else:
+            print(f"{s:02d} {yellow}seconds{end}")
+    else:
+        print(f"{red}{bold}Invalid type given to report(). Valid types are = ['memory', 'time']{end}")

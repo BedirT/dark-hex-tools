@@ -2,25 +2,26 @@ import numpy as np
 from darkhex.utils.util import load_file
 from copy import deepcopy
 
+
 class PolicySimplifyTTT:
 
     def __init__(
-        self,
-        game,
-        initial_board: str,
-        player: int,
-        file_path: str,
-        epsilon: float,  # the minimum probability of an action
-        eta: float,  # the maximum distance between a fraction and an action
-        frac_limit: int,  # the maximum number of fractions
-        max_number_of_actions: int,  # the maximum number of actions
+            self,
+            game,
+            initial_board: str,
+            player: int,
+            file_path: str,
+            epsilon: float,  # the minimum probability of an action
+            eta: float,  # the maximum distance between a fraction and an action
+            frac_limit: int,  # the maximum number of fractions
+            max_number_of_actions: int,  # the maximum number of actions
     ):
         self.p = player
         self.o = 1 - self.p
-    
+
         self.o_color = "o" if self.p == 0 else "x"
         self.p_color = "x" if self.p == 0 else "o"
-        
+
         self.max_number_of_actions = max_number_of_actions
         self.epsilon = epsilon  # the minimum probability of an action
 
@@ -36,7 +37,8 @@ class PolicySimplifyTTT:
 
         solver = load_file(filename=file_path)
         self.policy = solver.average_policy()
-        self.all_states = load_file("darkhex/data/state_data/phantom_ttt_ir().pkl")["state_data"]
+        self.all_states = load_file(
+            "darkhex/data/state_data/phantom_ttt_ir().pkl")["state_data"]
         self.info_states = {}
 
         self.iterate_board(initial_board)
@@ -86,7 +88,7 @@ class PolicySimplifyTTT:
             if new_board_2:
                 new_boards[f"{a}{self.p}"] = new_board_2
         return new_boards
-    
+
     def updated_board(self, board_state, cell, color):
         """
         Update the board with the given cell and color.
@@ -97,23 +99,23 @@ class PolicySimplifyTTT:
         """
         board = list(board_state)
         board[cell] = color
-        
+
         # check rows and cols
         for i in range(3):
             if board[i*3] == board[i*3+1] == board[i*3+2] != "." or \
                board[i] == board[i+3] == board[i+6] != ".":
                 return 't'
-            
+
         # check diagonals
         if board[0] == board[4] == board[8] != "." or \
            board[2] == board[4] == board[6] != ".":
             return 't'
-        
+
         # check for draw
         if '.' not in board:
             return 't'
-        
-        # check the number of pieces on the board 
+
+        # check the number of pieces on the board
         # num of o's can at most be 3
         # num of x's can at most be 4
         s = ''.join(board)
@@ -121,11 +123,11 @@ class PolicySimplifyTTT:
             print('here')
         if self.p_color == 'o':
             if board.count('o') > 3:
-                return 't' # not actully terminal
+                return 't'  # not actully terminal
         else:
             if board.count('x') > 4:
                 return 't'
-        
+
         return ''.join(board)
 
     def get_action_probs(self, board):
@@ -231,6 +233,7 @@ class PolicySimplifyTTT:
             return True
         return False
 
+
 def get_os_str(str_board, num_cols, player):
     """
     Get the OS string for the board.
@@ -245,7 +248,8 @@ def get_os_str(str_board, num_cols, player):
         new_board += cell
         if (i + 1) % num_cols == 0 and i < len(str_board) - 1:
             new_board += "\n"
-    return new_board    
+    return new_board
+
 
 def is_valid_board(board: str, num_rows: int, num_cols: int) -> bool:
     """Check if the given board is valid."""

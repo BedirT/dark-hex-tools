@@ -1,6 +1,7 @@
 from darkhex.utils.util import save_file, load_file, convert_to_infostate, game_over
 import pandas as pd
 
+
 def main():
     folder = "darkhex/data/definite_wins/4x3"
     data = load_file(f"{folder}/results_w_p.pkl")
@@ -16,6 +17,7 @@ def main():
     # dont add the header to the csv
     df = pd.DataFrame(new_data, columns=["info_state", "res"])
     df.to_csv(f"{folder}/results_w_p.csv", index=False, header=False)
+
 
 if __name__ == "__main__":
     main()
