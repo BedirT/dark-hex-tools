@@ -20,12 +20,12 @@ from darkhex.utils.util import (
 
 class TreeGenerator:
 
-    def __init__(self, game, file_name):
-        self.file_name = file_name
+    def __init__(self, game, file_path):
+        self.file_path = file_path
 
         # Load the game information
         self.game_info = load_file(
-            f"darkhex/data/{self.file_name}/game_info.pkl")
+            f"{self.file_path}/game_info.pkl")
         self.player = self.game_info["player"]
 
         self.nc = 3
@@ -38,7 +38,7 @@ class TreeGenerator:
             self.player:
                 self.game_info["strategy"],
             1 - self.player:
-                load_file(f"darkhex/data/{self.file_name}/br_strategy.pkl"),
+                load_file(f"{self.file_path}/br_strategy.pkl"),
         }
 
         # Match game state to initial_state in game_info
@@ -75,12 +75,20 @@ class TreeGenerator:
             "0-terminal": {
                 "shape": "doublecircle",
                 "style": "filled",
+                "fillcolor": "white",
+                "fontname": "Monospace",
+                "fontsize": "12",
+                "fontcolor": "black",
+            },
+            "1-terminal": {
+                "shape": "doublecircle",
+                "style": "filled",
                 "fillcolor": "black",
                 "fontname": "Monospace",
                 "fontsize": "12",
                 "fontcolor": "white",
             },
-            "1-terminal": {
+            "-1-terminal": {
                 "shape": "doublecircle",
                 "style": "filled",
                 "fillcolor": "red",
@@ -144,14 +152,11 @@ class TreeGenerator:
                           output_raw_dot[idx + len(self.tree_name) + 2:])
 
         # Save the dot file
-        save_file(output_raw_dot,
-                  f"darkhex/data/strategy_data/{self.file_name}/tree.dot")
+        save_file(output_raw_dot, f"{self.file_path}/tree.dot")
 
         # Save the tree
-        self.tree.write_svg(
-            f"darkhex/data/strategy_data/{self.file_name}/tree.svg")
-        self.tree.write_pdf(
-            f"darkhex/data/strategy_data/{self.file_name}/tree.pdf")
+        self.tree.write_svg(f"{self.file_path}/tree.svg")
+        self.tree.write_pdf(f"{self.file_path}/tree.pdf")
 
     def _add_children(self, game_state, parent=None):
         """
@@ -184,10 +189,9 @@ class TreeGenerator:
                     new_game_state.information_state_string(0),
                     new_game_state.information_state_string(1),
                 )
-                terminal_node = pydot.Node(
-                    f"{info_state_str}",
-                    **self.attributes[f"{cur_player_terminal}-terminal"],
-                )
+                res = int(new_game_state.returns()[0])
+                atr_label = f"{res}-terminal"
+                terminal_node = pydot.Node(f"{info_state_str}", **self.attributes[atr_label])
                 self.tree.add_node(terminal_node)
 
                 # Add the edge if it doesnt already exist
@@ -208,7 +212,7 @@ class TreeGenerator:
 
                 # Add the child node
                 node_label = f"{info_state_str}"
-                node = pydot.Node(node_label, **self.attributes[cur_player])
+                node = pydot.Node(node_label, **self.attributes[new_game_state.current_player()])
                 self.tree.add_node(node)
 
                 # Add the edge if it doesnt already exist

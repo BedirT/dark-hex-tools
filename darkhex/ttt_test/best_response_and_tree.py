@@ -1,38 +1,31 @@
 import pyspiel
 from darkhex.ttt_test.best_response_log import BestResponse
 from darkhex.ttt_test.tree_generator import TreeGenerator
-# from darkhex.algorithms.tree_run import TreeRun
-from darkhex.utils.util import load_file
-import time
+from darkhex.algorithms.tree_run import TreeRun
+from darkhex.utils.util import load_file, get_open_spiel_state
 
 
 def main():
-    folder_name = 'test_1'
-    file_path = f"darkhex/data/ttt/{folder_name}/"
-    data = load_file(file_path + "game_info.pkl")
-    game = pyspiel.load_game('phantom_ttt_ir')
+    folder_path = f"darkhex/data/ttt/test_1/"
+    data = load_file(folder_path + "game_info.pkl")
+    game = pyspiel.load_game("phantom_ttt_ir")
+    initial_state = get_open_spiel_state(game, data["initial_board"])
     # create best response object
-    br = BestResponse(
-        game,
-        data["player"],
-        data["initial_board"],
-        3,
-        data["strategy"],
-        file_path + "br_strategy.pkl",
-    )
+    br = BestResponse(initial_state=initial_state,
+                      eval_player=data["player"],
+                      eval_strategy=data["strategy"],
+                      br_strategy_save_path=folder_path + "br_strategy.pkl")
 
-    start = time.time()
     # calculate best response value
     br_value = br.best_response()
     print(f"Best response value: {br_value}")
-    print(f"Time taken: {time.time() - start}")
 
     # create tree generator object
-    TreeGenerator(game, f'ttt/{folder_name}')
+    TreeGenerator(game, folder_path)
 
     # create tree run object
-    # tree_run = TreeRun(file_name)
-    # tree_run.tree_run()
+    tree_run = TreeRun(folder_path)
+    tree_run.tree_run()
 
 
 if __name__ == "__main__":

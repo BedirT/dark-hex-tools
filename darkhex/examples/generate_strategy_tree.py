@@ -7,9 +7,9 @@ from darkhex.utils.util import load_file
 
 
 def main():
-    file_name = "simplified_4x3_mccfr_p1_test"
+    file_name = "darkhex/data/strategy_data/4x3_mccfr/p1_2_0.04_0.01_25/"
     game_info = load_file(
-        f"darkhex/data/strategy_data/{file_name}/game_info.pkl")
+        f"{file_name}/game_info.pkl")
 
     # Load the game
     game = pyspiel.load_game(

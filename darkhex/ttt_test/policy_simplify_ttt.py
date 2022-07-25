@@ -11,10 +11,10 @@ def simplify_policy(initial_board, file_path):
         initial_board,
         0,  # player
         file_path,
-        epsilon=0.05,  # probability threshold
+        epsilon=0.1,  # probability threshold
         eta=0.00,  # smoothing distance
         frac_limit=10,  # max fraction to check the distance
-        max_number_of_actions=9)  # max number of actions allowed
+        max_number_of_actions=3)  # max number of actions allowed
     # print(ps.info_states)
     conv_is = {}
     for key, value in ps.info_states.items():

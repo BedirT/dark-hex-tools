@@ -36,6 +36,7 @@ import resource
 import typing
 import numpy as np
 import pyspiel
+from collections import defaultdict
 from darkhex.utils.util import load_file, save_file, report
 
 
@@ -45,23 +46,14 @@ class Node:
     def __init__(self,
                  info_state: str,
                  history: str,
-                 reach_prob: float,
-                 value: float = 0.,
-                 wait_node: bool = False,
-                 is_terminal: bool = False):
+                 reach_prob: float):
         """ Initialize a node. """
         self.info_state = info_state
         self.history = history
         self.reach_prob = reach_prob
-        self.value = value
-        self.wait_node = wait_node
-        self.is_terminal = is_terminal
-        self.children = {}
-
-        self.node_key = history
 
     def __repr__(self):
-        return f"{self.node_key}"
+        return f"{self.history}"
 
 
 class BRTree:
@@ -72,77 +64,28 @@ class BRTree:
     def __init__(self, br_player: int):
         self.root = None
         self.nodes = {}  # type: typing.Dict[str, Node]
-        self.terminal_nodes = {}  # type: typing.Dict[str, Node]
         self.br_player = br_player
 
     def add_node(self,
                  state: pyspiel.State,
                  history: list,
-                 reach_prob: np.float64,
-                 parent: Node = None,
-                 action: int = None,
-                 value: float = 0.):
+                 reach_prob: np.float64):
         """ Add a node to the tree. 
         
         Args:
             state (pyspiel.State): State of the game.
             history (list): Action history of the game, used to create the node key.
             reach_prob (np.float64): Reach probability on log-scale.
-            parent (Node, optional): Parent node. Defaults to None.
-            action (int, optional): Action taken to get to this state. Defaults to None.
-            value (float, optional): Value of the state. Defaults to 0.
         """
-        wait_node = len(state.legal_actions(self.br_player)) == 0
         info_state = state.information_state_string(self.br_player)
         history_str = "".join(str(x) for x in history)
-        key = history_str
+        if history_str not in self.nodes:
+            self.nodes[history_str] = Node(info_state, history_str, reach_prob)
+            if len(self.nodes) == 1:
+                self.root = self.nodes[history_str]
+        return self.nodes[history_str]
 
-        if key not in self.nodes:
-            self.nodes[key] = Node(info_state, history_str, reach_prob, value,
-                                   wait_node)
-
-        # Connect the node to the parent
-        if parent is not None:
-            parent_node = self.get_node(parent.node_key)
-            if action in parent_node.children:
-                raise ValueError(
-                    f"Node {parent_node} already has child {action}")
-            parent_node.children[action] = self.nodes[key]
-        return self.nodes[key]
-
-    def add_terminal_node(self,
-                          state: pyspiel.State,
-                          history: list,
-                          reach_prob: np.float64 = np.log(1.),
-                          parent: Node = None,
-                          action: int = None,
-                          value: float = 0.):
-        """ Add a terminal node to the tree. 
-        
-        Args:
-            state (pyspiel.State): State of the game.
-            history (list): Action history of the game, used to create the node key.
-            reach_prob (np.float64, optional): Reach probability on log-scale. Defaults to np.log(1.).
-            parent (Node, optional): Parent node. Defaults to None.
-            action (int, optional): Action taken to get to this state. Defaults to None.
-            value (float, optional): Value of the state. Defaults to 0.
-        """
-        parent_node = self.get_node(parent.node_key)
-        info_state = state.information_state_string(self.br_player)
-        history_str = "".join(str(x) for x in history)
-        key = history_str
-
-        if key not in self.terminal_nodes:
-            self.terminal_nodes[key] = Node(info_state,
-                                            history_str,
-                                            reach_prob,
-                                            value,
-                                            is_terminal=True)
-        if action in parent_node.children:
-            raise ValueError(f"Node {parent_node} already has child {action}")
-        parent_node.children[action] = self.terminal_nodes[key]
-
-    def get_node(self, node_key: tuple) -> Node:
+    def get_node(self, node_key: str) -> Node:
         """ Get a node from the tree. """
         return self.nodes.get(node_key, None)
 
@@ -176,6 +119,9 @@ class BestResponse:
         self._br_tree = BRTree(self._br_player)
         self._br_tree.root = self._br_tree.add_node(self._initial_state, [],
                                                     np.log(1.0))
+        self._value_memory = {}  # type: typing.Dict[str, float]
+        self._buckets = defaultdict(lambda: defaultdict(lambda: np.log(1.0)))
+        self._br_strategy = {}  # type: typing.Dict[str, typing.List[typing.Tuple[int, float]]]
 
     def best_response(self):
         """
@@ -189,44 +135,37 @@ class BestResponse:
         """
         start = time.time()  # Start timer for reporting
 
-        self._generate_history_tree(self._initial_state, self._br_tree.root, [])
-        self._calculate_values(self._br_tree.root, {})
-
-        # Generate best response strategy
-        br_strategy = self._best_response_strategy(self._br_tree)
-        # br_strategy = load_file(self._br_strategy_save_path)
+        self._generate_history_tree(self._initial_state, [])
+        print(f"Completed generating history tree in {time.time() - start} seconds.")
+        self._info_set_rp = self._bucket_histories() # information set reach probabilities
+        # self._info_set_rp = self._buckets
+        root_value = self._value(self._initial_state)
+        # self._br_strategy = load_file(self._br_strategy_save_path) # test
 
         self.strategies = {
             self._eval_player: self._eval_strategy,
-            self._br_player: br_strategy,
+            self._br_player: self._br_strategy,
         }
-
-        br_value = 1 - (self._calculate_br_value(self._initial_state) + 1) / 2
+        br_value = self._calculate_br_value(self._initial_state)
 
         # reporting
-        print(f"BR Tree size: {len(self._br_tree.nodes)}")
-        print(f"Number of terminal nodes: {len(self._br_tree.terminal_nodes)}")
+        print(f"Number of histories: {len(self._br_tree.nodes)}")
         report(time.time() - start, 'time')
         report(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss, 'memory')
 
         # write the opponent strategy to a file
-        save_file(br_strategy, self._br_strategy_save_path)
+        save_file(self._br_strategy, self._br_strategy_save_path)
 
         return br_value
 
     def _generate_history_tree(
         self,
         cur_state: pyspiel.State,
-        parent_node: Node,
         history: list,
         reach_prob: np.float64 = np.log(1.0)) -> float:
         """
         Generate the value tree for the best response player playing against
         the given player strategy.
-
-        Value is always in perspective of the best response player. Only the
-        terminal states are assigned a value for now, later on we backpropagate
-        to update the value of the parent states.
 
         Args:
             cur_state: The current state of the game.
@@ -239,105 +178,72 @@ class BestResponse:
 
         if cur_player == self._br_player:
             # best response players turn
+            history_str = "".join(str(x) for x in history)
+            self._buckets[info_state][history_str] += reach_prob
             for action in cur_state.legal_actions():
                 next_state = cur_state.child(action)
-                new_history = history + [action]
-                if next_state.is_terminal():
-                    value = next_state.returns()[self._br_player]
-                    self._br_tree.add_terminal_node(state=next_state,
-                                                    history=new_history,
-                                                    reach_prob=reach_prob,
-                                                    parent=parent_node,
-                                                    action=action,
-                                                    value=value)
-                else:
-                    new_node = self._br_tree.add_node(state=next_state,
-                                                      history=new_history,
-                                                      reach_prob=reach_prob,
-                                                      parent=parent_node,
-                                                      action=action)
-                    self._generate_history_tree(next_state, new_node, new_history,
+                # new_history = history + [action]
+                if not next_state.is_terminal():
+                    self._generate_history_tree(next_state, history,
                                                 reach_prob)
             return
-
         # strategy players turn
         for action, prob in self._eval_strategy[info_state]:
             next_state = cur_state.child(action)
             new_history = history + [action]
-            if next_state.is_terminal():
-                value = next_state.returns()[self._br_player]
-                self._br_tree.add_terminal_node(state=next_state,
-                                                history=new_history,
-                                                reach_prob=reach_prob +
-                                                np.log(prob),
-                                                parent=parent_node,
-                                                action=action,
-                                                value=value)
-            else:
-                new_node = self._br_tree.add_node(state=next_state,
-                                                  history=new_history,
-                                                  reach_prob=reach_prob +
-                                                  np.log(prob),
-                                                  parent=parent_node,
-                                                  action=action)
-                self._generate_history_tree(next_state, new_node, new_history,
+            if not next_state.is_terminal():
+                self._generate_history_tree(next_state, new_history,
                                             reach_prob + np.log(prob))
 
-    # todo: Use decorator for memoization
-    def _calculate_values(self, cur_node: Node, memoize: dict):
+    def _bucket_histories(self):
         """
-        Backpropogate the values from the terminal nodes to the parent nodes.
+        Bucket the histories of the tree into information sets.
+        Then calculate the reach probability of each bucket, and return the
+        reach probability dictionary.
+        """
+        accumulated_reach_prob = {}
+        for info_state, histories in self._buckets.items():
+            reach_prob = np.log(1.0)
+            for rp in histories:
+                reach_prob = np.logaddexp(reach_prob, rp)
+            accumulated_reach_prob[info_state] = reach_prob
+        return accumulated_reach_prob
 
+    def _value(self, state: pyspiel.State) -> float:
+        """
+        Calculate the value of the given state. A value of a state
+        is the average of the q_values of the actions if the player
+        is the best response player, otherwise its the expectation
+        of the actions.
+            
         Args:
-            cur_node: The current node to backpropogate from.
+            state: The state to calculate the value for.
         """
-        if cur_node.is_terminal:
-            cur_node.value *= np.exp(cur_node.reach_prob)
-            return cur_node.value
-        if cur_node.node_key in memoize:
-            return memoize[cur_node.node_key]
-        tot_value = 0.
-        mx_value = -np.inf
-        for action, child in cur_node.children.items():
-            child_value = self._calculate_values(child, memoize)
-            mx_value = max(mx_value, child_value)
-            tot_value += child_value
-        if cur_node.wait_node:
-            cur_node.value = tot_value
-            return tot_value
-        cur_node.value = mx_value
-        memoize[cur_node.node_key] = cur_node.value
-        return cur_node.value
-
-    def _get_br_strategy(self, cur_state: pyspiel.State, br_buckets: dict,
-                         br_strategy: dict):
-        """ Depth first search to find the best response strategy using the
-        bucketed histories. """
-        if cur_state.is_terminal():
-            return
-        cur_player = cur_state.current_player()
-        info_state = cur_state.information_state_string()
-        if info_state in br_strategy:
-            self._get_br_strategy(
-                cur_state.child(br_strategy[info_state][0][0]), br_buckets,
-                br_strategy)
-            return
+        if state.is_terminal():
+            return state.returns()[self._br_player]
+        full_info_state = state.information_state_string(0) + \
+            state.information_state_string(1)
+        if full_info_state in self._value_memory:
+            return self._value_memory[full_info_state]
+        cur_player = state.current_player()
+        info_state = state.information_state_string()
         if cur_player == self._br_player:
-            # best response player turn
-            best_val = -np.inf
-            best_action = None
-            for val, action in br_buckets[info_state]:
-                if val > best_val:
-                    best_val = val
-                    best_action = action
-            br_strategy[info_state] = [(best_action, 1.)]
-            self._get_br_strategy(cur_state.child(best_action), br_buckets,
-                                  br_strategy)
-            return
-        # strategy player turn
+            mx_value = -np.inf
+            reach_prob = np.exp(self._info_set_rp[state.information_state_string()])
+            for action in state.legal_actions():
+                next_state = state.child(action)
+                value = self._value(next_state) * reach_prob
+                if value > mx_value:
+                    mx_value = value
+                    self._br_strategy[info_state] = [(action, 1.0)]
+            self._value_memory[full_info_state] = mx_value
+            return mx_value
+        exp_value = 0
         for action, prob in self._eval_strategy[info_state]:
-            self._get_br_strategy(cur_state.child(action), br_buckets,
-                                  br_strategy)
+            next_state = state.child(action)
+            exp_value += prob * self._value(next_state)
+        self._value_memory[full_info_state] = exp_value
+        return exp_value
 
     def _calculate_br_value(
         self, cur_state: pyspiel.State,
@@ -352,9 +258,11 @@ class BestResponse:
         for action, prob in self.strategies[cur_player][info_state]:
             new_state = cur_state.child(action)
             if new_state.is_terminal():
-                value = new_state.returns()[self._br_player] * np.exp(
-                    reach_prob + np.log(prob))
-                br_value += value
+                value = new_state.returns()[self._br_player]
+                if value in [-1, 0]: # if the game is lost or drawn
+                    value = 0
+                br_value += np.exp(
+                    reach_prob + np.log(prob)) * value
             else:
                 br_value += self._calculate_br_value(new_state,
                                                      reach_prob + np.log(prob))
