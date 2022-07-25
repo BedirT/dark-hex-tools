@@ -17,7 +17,7 @@ def irbr_test(game, folder_path, data):
     print(f"Best Response Value: {1 - br_val}")
 
 if __name__ == "__main__":
-    folder_path = "darkhex/data/strategy_data/4x3_mccfr/p0_3_0.2_0.01_5/"
+    folder_path = "darkhex/data/strategy_data/4x3_0_def/"
     data = load_file(folder_path + "game_info.pkl")
     game_ttt = pyspiel.load_game(f'phantom_ttt_ir')
     game_dh = pyspiel.load_game(

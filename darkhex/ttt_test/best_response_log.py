@@ -204,7 +204,7 @@ class BestResponse:
         accumulated_reach_prob = {}
         for info_state, histories in self._buckets.items():
             reach_prob = np.log(1.0)
-            for rp in histories:
+            for _, rp in histories.items():
                 reach_prob = np.logaddexp(reach_prob, rp)
             accumulated_reach_prob[info_state] = reach_prob
         return accumulated_reach_prob
