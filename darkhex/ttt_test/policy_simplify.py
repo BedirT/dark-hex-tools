@@ -7,7 +7,6 @@ class PolicySimplifyTTT:
 
     def __init__(
             self,
-            game,
             initial_board: str,
             player: int,
             file_path: str,
@@ -247,7 +246,7 @@ def get_os_str(str_board, num_cols, player):
     for i, cell in enumerate(str_board):
         new_board += cell
         if (i + 1) % num_cols == 0 and i < len(str_board) - 1:
-            new_board += "\n"
+            new_board += ""
     return new_board
 
 
