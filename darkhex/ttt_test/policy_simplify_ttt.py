@@ -39,7 +39,7 @@ def simplify_policy_darkhex(initial_board, file_path):
         player=1,
         policy_type="mccfr",
         file_path=file_path,
-        epsilon=0.2,  # probability threshold
+        epsilon=0.1,  # probability threshold
         eta=0.00,  # smoothing distance
         frac_limit=0,  # max fraction to check the distance
         max_number_of_actions=2)  # max number of actions allowed
@@ -62,5 +62,5 @@ def simplify_policy_darkhex(initial_board, file_path):
 if __name__ == "__main__":
     # file_path = "../open_spiel/tmp/phantom_ttt_ir/solver.pkl"
     # simplify_policy_pttt(initial_board=".........", file_path=file_path)
-    file_path = "../open_spiel/tmp/Arena/arena_mccfr_4x3_pone_ir/solver.pkl"
+    file_path = "../open_spiel/tmp/Arena/arena_mccfr_4x3_pone_ir_100000000/solver.pkl"
     simplify_policy_darkhex(initial_board="............", file_path=file_path)

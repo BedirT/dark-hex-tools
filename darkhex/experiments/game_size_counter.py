@@ -33,10 +33,11 @@ class CountHistories:
 
 def main():
     """Main function."""
-    game = pyspiel.load_game("dark_hex(num_rows=3,num_cols=3)")
+    game = pyspiel.load_game("dark_hex(num_rows=4,num_cols=4)")
     count_histories = CountHistories(game)
     print("Non-terminal histories: {}".format(count_histories.num_non_terminal))
     print("Terminal histories: {}".format(count_histories.num_terminal))
+    print("Total histories: {}".format(count_histories.num_non_terminal + count_histories.num_terminal))
 
 
 if __name__ == "__main__":

@@ -21,14 +21,15 @@ def simplify_policy(num_rows,
                         player,
                         policy_type,
                         file_path,
-                        epsilon=1 / 15,
-                        eta=0.03,
-                        frac_limit=15,
-                        max_number_of_actions=2)
+                        epsilon=epsilon,
+                        eta=eta,
+                        frac_limit=frac_limit,
+                        max_number_of_actions=max_number_of_actions)
     # print(ps.info_states)
     conv_is = {}
     for key, value in ps.info_states.items():
         conv_is[key] = [(k, v) for k, v in value.items()]
+    conv_is = convert_dh
     data = {
         "num_cols": num_cols,
         "num_rows": num_rows,
@@ -50,4 +51,8 @@ if __name__ == "__main__":
                     num_cols=3,
                     player=0,
                     initial_board="............",
-                    file_path=file_path)
+                    file_path=file_path,
+                    epsilon=0.25,
+                    max_number_of_actions=2,
+                    eta=0.03,
+                    frac_limit=15,)
