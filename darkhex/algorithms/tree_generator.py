@@ -24,8 +24,7 @@ class TreeGenerator:
         self.folder_path = folder_path
 
         # Load the game information
-        self.game_info = load_file(
-            f"{self.folder_path}/game_info.pkl")
+        self.game_info = load_file(f"{self.folder_path}/game_info.pkl")
         self.player = self.game_info["player"]
 
         self.nc = self.game_info["num_cols"]
@@ -35,12 +34,8 @@ class TreeGenerator:
         self.br_color = 'black' if self.player == 1 else 'red'
 
         self.strategies = {
-            self.player:
-                self.game_info["strategy"],
-            1 - self.player:
-                load_file(
-                    f"{self.folder_path}/br_strategy.pkl"
-                ),
+            self.player: self.game_info["strategy"],
+            1 - self.player: load_file(f"{self.folder_path}/br_strategy.pkl"),
         }
 
         # Match game state to initial_state in game_info
@@ -146,14 +141,11 @@ class TreeGenerator:
                           output_raw_dot[idx + len(self.tree_name) + 2:])
 
         # Save the dot file
-        save_file(output_raw_dot,
-                  f"{self.folder_path}/tree.dot")
+        save_file(output_raw_dot, f"{self.folder_path}/tree.dot")
 
         # Save the tree
-        self.tree.write_svg(
-            f"{self.folder_path}/tree.svg")
-        self.tree.write_pdf(
-            f"{self.folder_path}/tree.pdf")
+        self.tree.write_svg(f"{self.folder_path}/tree.svg")
+        self.tree.write_pdf(f"{self.folder_path}/tree.pdf")
 
     def _add_children(self, game_state, parent=None):
         """

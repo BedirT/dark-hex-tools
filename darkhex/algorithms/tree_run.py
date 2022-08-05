@@ -25,8 +25,7 @@ class TreeRun(xdot.DotWindow):
         return True
 
     def tree_run(self):
-        dotcode = load_file(
-            f"{self.folder_path}/tree.dot")
+        dotcode = load_file(f"{self.folder_path}/tree.dot")
 
         dotcode = dotcode.encode("UTF-8")
 

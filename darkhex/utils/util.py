@@ -376,6 +376,7 @@ def convert_to_infostate(board_state: str, player: int) -> str:
     board_ls.insert(0, "P{} ".format(player))
     return "".join(board_ls)
 
+
 def report(data, type: str) -> None:
     """ Prints the report in a pretty format given the data
     and the type. Valid types are = ['memory', 'time']
@@ -390,9 +391,9 @@ def report(data, type: str) -> None:
     end = "\033[0m"
     if type == 'memory':
         print(f"{bold}{green}Memory usage:\t{end}", end='')
-        gbs = data // (1024 ** 2)
-        mbs = (data - gbs * 1024 ** 2) // 1024
-        kbs = (data - gbs * 1024 ** 2 - mbs * 1024)
+        gbs = data // (1024**2)
+        mbs = (data - gbs * 1024**2) // 1024
+        kbs = (data - gbs * 1024**2 - mbs * 1024)
         if gbs > 0:
             print(f"{gbs} {red}GB{end} ", end='')
         if mbs > 0:
@@ -412,4 +413,6 @@ def report(data, type: str) -> None:
         else:
             print(f"{s:02d} {yellow}seconds{end}")
     else:
-        print(f"{red}{bold}Invalid type given to report(). Valid types are = ['memory', 'time']{end}")
+        print(
+            f"{red}{bold}Invalid type given to report(). Valid types are = ['memory', 'time']{end}"
+        )

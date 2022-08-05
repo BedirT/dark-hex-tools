@@ -47,12 +47,14 @@ def simplify_policy(num_rows,
 
 if __name__ == "__main__":
     file_path = "../open_spiel/tmp/Arena/arena_mccfr_4x3_pone_ir/solver.pkl"
-    simplify_policy(num_rows=4,
-                    num_cols=3,
-                    player=0,
-                    initial_board="............",
-                    file_path=file_path,
-                    epsilon=0.25,
-                    max_number_of_actions=2,
-                    eta=0.03,
-                    frac_limit=15,)
+    simplify_policy(
+        num_rows=4,
+        num_cols=3,
+        player=0,
+        initial_board="............",
+        file_path=file_path,
+        epsilon=0.25,
+        max_number_of_actions=2,
+        eta=0.03,
+        frac_limit=15,
+    )

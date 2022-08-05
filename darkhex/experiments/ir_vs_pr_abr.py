@@ -7,7 +7,7 @@ import pickle
 import tqdm
 
 from open_spiel.python.algorithms.approximate_best_response_dqn import ApproximateBestResponseDQN
-    
+
 
 def compare_ir_pr(number_of_iterations, eval_freq, eval_episodes):
     num_rows = 4
@@ -41,7 +41,7 @@ def compare_ir_pr(number_of_iterations, eval_freq, eval_episodes):
         pickle.dump(solver_ir, file)
     with open(f"{path}/eval.pkl", "wb") as file:
         pickle.dump(evals, file, pickle.HIGHEST_PROTOCOL)
-        
+
     # plotting the evals
     plt.plot(evals)
     plt.xlabel(f"Iterations x{eval_freq}")

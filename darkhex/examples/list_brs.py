@@ -5,6 +5,7 @@ import pyspiel
 
 from darkhex.algorithms.best_response_log import BestResponse
 
+
 def get_br(folder_path):
     file_path = folder_path + 'game_info.pkl'
     data = load_file(file_path)
@@ -36,7 +37,7 @@ def list_brs(folder_path, prior):
             del br
         except:
             print(f"{full_path} failed")
-        
+
 
 if __name__ == "__main__":
     folder_path = "darkhex/data/strategy_data/4x3_mccfr/"

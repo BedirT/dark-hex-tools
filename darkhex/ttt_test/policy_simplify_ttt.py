@@ -56,7 +56,8 @@ def simplify_policy_darkhex(initial_board, file_path):
     }
     # print(ps.info_states)
     print(f"Total states: {len(ps.info_states)}")
-    save_file(data, f"darkhex/data/strategy_data/4x3_mccfr/{fname}/game_info.pkl")
+    save_file(data,
+              f"darkhex/data/strategy_data/4x3_mccfr/{fname}/game_info.pkl")
 
 
 if __name__ == "__main__":

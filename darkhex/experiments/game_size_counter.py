@@ -9,7 +9,9 @@ class CountHistories:
         state = game.new_initial_state()
         a_init = int(input("Initial Move: "))
         state.apply_action(a_init)
-        print(f"Counting histories for {a_init}...\nNumber of Non Terminal/Number of Terminal")
+        print(
+            f"Counting histories for {a_init}...\nNumber of Non Terminal/Number of Terminal"
+        )
         self.num_non_terminal = 0
         self.num_terminal = 0
         self._count_histories(state)
@@ -25,11 +27,14 @@ class CountHistories:
         for action in state.legal_actions():
             new_state = state.child(action)
             self._count_histories(new_state)
-            
+
     def report(self) -> None:
         """Prints the number of histories in a game."""
         red, green, end = "\033[91m", "\033[92m", "\033[0m"
-        print(f"{red}{self.num_non_terminal}{end}/{green}{self.num_terminal}{end}", end="\r")
+        print(
+            f"{red}{self.num_non_terminal}{end}/{green}{self.num_terminal}{end}",
+            end="\r")
+
 
 def main():
     """Main function."""
@@ -37,7 +42,8 @@ def main():
     count_histories = CountHistories(game)
     print("Non-terminal histories: {}".format(count_histories.num_non_terminal))
     print("Terminal histories: {}".format(count_histories.num_terminal))
-    print("Total histories: {}".format(count_histories.num_non_terminal + count_histories.num_terminal))
+    print("Total histories: {}".format(count_histories.num_non_terminal +
+                                       count_histories.num_terminal))
 
 
 if __name__ == "__main__":

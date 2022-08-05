@@ -11,17 +11,17 @@ import numpy as np
 class PolicySimplify:
 
     def __init__(
-        self,
-        initial_board: str,
-        num_rows: int,
-        num_cols: int,
-        player: int,
-        policy_type: str,
-        file_path: str,
-        epsilon: float,  # the minimum probability of an action
-        eta: float,  # the maximum distance between a fraction and an action
-        frac_limit: int,  # the maximum number of fractions
-        max_number_of_actions: int,  # the maximum number of actions
+            self,
+            initial_board: str,
+            num_rows: int,
+            num_cols: int,
+            player: int,
+            policy_type: str,
+            file_path: str,
+            epsilon: float,  # the minimum probability of an action
+            eta: float,  # the maximum distance between a fraction and an action
+            frac_limit: int,  # the maximum number of fractions
+            max_number_of_actions: int,  # the maximum number of actions
     ):
         self.num_cols = num_cols
         self.num_rows = num_rows

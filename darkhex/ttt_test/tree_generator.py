@@ -24,8 +24,7 @@ class TreeGenerator:
         self.file_path = file_path
 
         # Load the game information
-        self.game_info = load_file(
-            f"{self.file_path}/game_info.pkl")
+        self.game_info = load_file(f"{self.file_path}/game_info.pkl")
         self.player = self.game_info["player"]
 
         self.nc = 3
@@ -35,10 +34,8 @@ class TreeGenerator:
         self.br_color = 'black' if self.player == 1 else 'red'
 
         self.strategies = {
-            self.player:
-                self.game_info["strategy"],
-            1 - self.player:
-                load_file(f"{self.file_path}/br_strategy.pkl"),
+            self.player: self.game_info["strategy"],
+            1 - self.player: load_file(f"{self.file_path}/br_strategy.pkl"),
         }
 
         # Match game state to initial_state in game_info
@@ -191,7 +188,8 @@ class TreeGenerator:
                 )
                 res = int(new_game_state.returns()[0])
                 atr_label = f"{res}-terminal"
-                terminal_node = pydot.Node(f"{info_state_str}", **self.attributes[atr_label])
+                terminal_node = pydot.Node(f"{info_state_str}",
+                                           **self.attributes[atr_label])
                 self.tree.add_node(terminal_node)
 
                 # Add the edge if it doesnt already exist
@@ -212,7 +210,9 @@ class TreeGenerator:
 
                 # Add the child node
                 node_label = f"{info_state_str}"
-                node = pydot.Node(node_label, **self.attributes[new_game_state.current_player()])
+                node = pydot.Node(
+                    node_label,
+                    **self.attributes[new_game_state.current_player()])
                 self.tree.add_node(node)
 
                 # Add the edge if it doesnt already exist

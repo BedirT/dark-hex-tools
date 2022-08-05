@@ -16,6 +16,7 @@ def irbr_test(game, folder_path, data):
     br_val = br.best_response()
     print(f"Best Response Value: {1 - br_val}")
 
+
 if __name__ == "__main__":
     folder_path = "darkhex/data/strategy_data/4x3_0_def/"
     data = load_file(folder_path + "game_info.pkl")
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     game_dh = pyspiel.load_game(
         f'dark_hex_ir(num_cols={data["num_cols"]},num_rows={data["num_rows"]},use_early_terminal=True)'
     )
-    
+
     p = 1
     # br_ttt_test(f"darkhex/data/ttt/test_{p}/")
     # br_dh_test("darkhex/data/strategy_data/4x3_mccfr/p0_2_0.1_0.05_50/")

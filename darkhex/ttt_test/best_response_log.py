@@ -43,10 +43,7 @@ from darkhex.utils.util import load_file, save_file, report
 class Node:
     """Best response strategy state node. """
 
-    def __init__(self,
-                 info_state: str,
-                 history: str,
-                 reach_prob: float):
+    def __init__(self, info_state: str, history: str, reach_prob: float):
         """ Initialize a node. """
         self.info_state = info_state
         self.history = history
@@ -66,9 +63,7 @@ class BRTree:
         self.nodes = {}  # type: typing.Dict[str, Node]
         self.br_player = br_player
 
-    def add_node(self,
-                 state: pyspiel.State,
-                 history: list,
+    def add_node(self, state: pyspiel.State, history: list,
                  reach_prob: np.float64):
         """ Add a node to the tree. 
         
@@ -121,7 +116,8 @@ class BestResponse:
                                                     np.log(1.0))
         self._value_memory = {}  # type: typing.Dict[str, float]
         self._buckets = defaultdict(lambda: defaultdict(lambda: np.log(1.0)))
-        self._br_strategy = {}  # type: typing.Dict[str, typing.List[typing.Tuple[int, float]]]
+        self._br_strategy = {
+        }  # type: typing.Dict[str, typing.List[typing.Tuple[int, float]]]
 
     def best_response(self):
         """
@@ -136,8 +132,11 @@ class BestResponse:
         start = time.time()  # Start timer for reporting
 
         self._generate_history_tree(self._initial_state, [])
-        print(f"Completed generating history tree in {time.time() - start} seconds.")
-        self._info_set_rp = self._bucket_histories() # information set reach probabilities
+        print(
+            f"Completed generating history tree in {time.time() - start} seconds."
+        )
+        self._info_set_rp = self._bucket_histories(
+        )  # information set reach probabilities
         # self._info_set_rp = self._buckets
         root_value = self._value(self._initial_state)
         # self._br_strategy = load_file(self._br_strategy_save_path) # test
@@ -184,8 +183,7 @@ class BestResponse:
                 next_state = cur_state.child(action)
                 # new_history = history + [action]
                 if not next_state.is_terminal():
-                    self._generate_history_tree(next_state, history,
-                                                reach_prob)
+                    self._generate_history_tree(next_state, history, reach_prob)
             return
         # strategy players turn
         for action, prob in self._eval_strategy[info_state]:
@@ -229,7 +227,8 @@ class BestResponse:
         info_state = state.information_state_string()
         if cur_player == self._br_player:
             mx_value = -np.inf
-            reach_prob = np.exp(self._info_set_rp[state.information_state_string()])
+            reach_prob = np.exp(
+                self._info_set_rp[state.information_state_string()])
             for action in state.legal_actions():
                 next_state = state.child(action)
                 value = self._value(next_state) * reach_prob
@@ -259,10 +258,9 @@ class BestResponse:
             new_state = cur_state.child(action)
             if new_state.is_terminal():
                 value = new_state.returns()[self._br_player]
-                if value in [-1, 0]: # if the game is lost or drawn
+                if value in [-1, 0]:  # if the game is lost or drawn
                     value = 0
-                br_value += np.exp(
-                    reach_prob + np.log(prob)) * value
+                br_value += np.exp(reach_prob + np.log(prob)) * value
             else:
                 br_value += self._calculate_br_value(new_state,
                                                      reach_prob + np.log(prob))
