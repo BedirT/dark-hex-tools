@@ -36,6 +36,17 @@ class CountHistories:
             end="\r")
 
 
+def approximation(board_size):
+    total = 0
+    mult = 1
+    flag = False
+    for i in range(1, board_size+1):
+        for j in range(2):
+            mult *= i
+            total += mult
+    return total
+
+
 def main():
     """Main function."""
     game = pyspiel.load_game("dark_hex(num_rows=4,num_cols=4)")
