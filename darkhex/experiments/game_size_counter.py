@@ -7,7 +7,9 @@ class CountHistories:
     def __init__(self, game: pyspiel.Game) -> None:
         """Counts the number of histories in a game."""
         state = game.new_initial_state()
-        print("Counting histories...\nNumber of Non Terminal/Number of Terminal")
+        a_init = int(input("Initial Move: "))
+        state.apply_action(a_init)
+        print(f"Counting histories for {a_init}...\nNumber of Non Terminal/Number of Terminal")
         self.num_non_terminal = 0
         self.num_terminal = 0
         self._count_histories(state)
