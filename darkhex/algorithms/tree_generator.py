@@ -33,9 +33,11 @@ class TreeGenerator:
         self.strat_color = 'black' if self.player == 0 else 'red'
         self.br_color = 'black' if self.player == 1 else 'red'
 
+        br_data = load_file(f"{self.folder_path}/br_data.pkl")
+
         self.strategies = {
             self.player: self.game_info["strategy"],
-            1 - self.player: load_file(f"{self.folder_path}/br_strategy.pkl"),
+            1 - self.player: br_data["br_strategy"],
         }
 
         # Match game state to initial_state in game_info
