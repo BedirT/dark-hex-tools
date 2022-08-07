@@ -1,6 +1,7 @@
 """ Get Approximate Best Response for a given strategy """
 import pyspiel
 import pickle
+import argparse
 
 from open_spiel.python.algorithms.approximate_best_response_dqn import ApproximateBestResponseDQN
 
@@ -15,7 +16,7 @@ def get_abr(data_folder, eval_episodes, train_episodes):
                                     eval_policy=data["strategy"],
                                     save_every=train_episodes,
                                     num_train_episodes=train_episodes,
-                                    eval_every=train_episodes/10,
+                                    eval_every=train_episodes,
                                     num_eval_games=eval_episodes,
                                     checkpoint_dir=data_folder+"/abr")
     val = abr.approximate_best_response() # gives the lower bound
@@ -25,9 +26,11 @@ def get_abr(data_folder, eval_episodes, train_episodes):
 
 def main():
     """ Main function. """
-    data_path = "p0_6_0.1_0.005_20"
+    parser = argparse.ArgumentParser(description="Get ABR for a given strategy.")
+    parser.add_argument("data_folder", type=str, help="Folder containing the data.")
+    data_path = parser.parse_args().data_folder
     data_folder = "darkhex/data/strategy_data/4x3_mccfr/" + data_path
-    eval_episodes = int(2e4)
+    eval_episodes = int(1e5)
     train_episodes = int(1e6)
     abr_res = get_abr(data_folder, eval_episodes, train_episodes)
     print(abr_res)
