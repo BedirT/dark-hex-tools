@@ -1,10 +1,11 @@
 """ Get Approximate Best Response for a given strategy """
 import pyspiel
 import pickle
+import argparse
 
 from open_spiel.python.algorithms.approximate_best_response_dqn import ApproximateBestResponseDQN
 
-def get_abr(data_folder, eval_episodes, train_episodes, save_path):
+def get_abr(data_folder, eval_episodes, train_episodes):
     """ Returns the ABR for a given data folder. """
     with open(f"{data_folder}/game_info.pkl", "rb") as file:
         data = pickle.load(file)
@@ -15,21 +16,23 @@ def get_abr(data_folder, eval_episodes, train_episodes, save_path):
                                     eval_policy=data["strategy"],
                                     save_every=train_episodes,
                                     num_train_episodes=train_episodes,
-                                    eval_every=train_episodes/10,
+                                    eval_every=train_episodes,
                                     num_eval_games=eval_episodes,
-                                    checkpoint_dir="tmp/"+save_path)
-    val = (abr.approximate_best_response() + 1) / 2
+                                    checkpoint_dir=data_folder+"/abr")
+    val = abr.approximate_best_response() # gives the lower bound
     # save the mean rewards
     return val
 
 
 def main():
     """ Main function. """
-    data_path = "p1_6_0.1_0.0_0"
+    parser = argparse.ArgumentParser(description="Get ABR for a given strategy.")
+    parser.add_argument("data_folder", type=str, help="Folder containing the data.")
+    data_path = parser.parse_args().data_folder
     data_folder = "darkhex/data/strategy_data/4x3_mccfr/" + data_path
-    eval_episodes = int(1e4)
+    eval_episodes = int(1e5)
     train_episodes = int(1e6)
-    abr_res = get_abr(data_folder, eval_episodes, train_episodes, data_path)
+    abr_res = get_abr(data_folder, eval_episodes, train_episodes)
     print(abr_res)
     # write abr results on a text file
     with open(f"{data_folder}/abr.txt", "w") as file:
@@ -37,7 +40,6 @@ def main():
         file.write(f"Number of eval episodes: {eval_episodes}\n")
         file.write("Approximate Exploitability: " + str(abr_res))
             
-
 
 if __name__ == "__main__":
     main()
