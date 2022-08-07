@@ -4,7 +4,7 @@ import pickle
 
 from open_spiel.python.algorithms.approximate_best_response_dqn import ApproximateBestResponseDQN
 
-def get_abr(data_folder, eval_episodes, train_episodes, save_path):
+def get_abr(data_folder, eval_episodes, train_episodes):
     """ Returns the ABR for a given data folder. """
     with open(f"{data_folder}/game_info.pkl", "rb") as file:
         data = pickle.load(file)
@@ -17,19 +17,19 @@ def get_abr(data_folder, eval_episodes, train_episodes, save_path):
                                     num_train_episodes=train_episodes,
                                     eval_every=train_episodes/10,
                                     num_eval_games=eval_episodes,
-                                    checkpoint_dir="tmp/"+save_path)
-    val = (abr.approximate_best_response() + 1) / 2
+                                    checkpoint_dir=data_folder+"/abr")
+    val = abr.approximate_best_response() # gives the lower bound
     # save the mean rewards
     return val
 
 
 def main():
     """ Main function. """
-    data_path = "p1_6_0.1_0.0_0"
+    data_path = "p0_6_0.1_0.005_20"
     data_folder = "darkhex/data/strategy_data/4x3_mccfr/" + data_path
-    eval_episodes = int(1e4)
+    eval_episodes = int(2e4)
     train_episodes = int(1e6)
-    abr_res = get_abr(data_folder, eval_episodes, train_episodes, data_path)
+    abr_res = get_abr(data_folder, eval_episodes, train_episodes)
     print(abr_res)
     # write abr results on a text file
     with open(f"{data_folder}/abr.txt", "w") as file:
@@ -37,7 +37,6 @@ def main():
         file.write(f"Number of eval episodes: {eval_episodes}\n")
         file.write("Approximate Exploitability: " + str(abr_res))
             
-
 
 if __name__ == "__main__":
     main()
