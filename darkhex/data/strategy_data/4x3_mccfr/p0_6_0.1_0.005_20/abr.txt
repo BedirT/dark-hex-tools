@@ -1,3 +1,3 @@
 Number of train episodes: 1000000
 Number of eval episodes: 100000
-Approximate Exploitability: 0.19462000000000002
+Approximate Exploitability: 0.14673000000000003
