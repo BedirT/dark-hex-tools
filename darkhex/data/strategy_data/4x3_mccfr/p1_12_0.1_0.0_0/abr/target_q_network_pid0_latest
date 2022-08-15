@@ -1,2 +1,0 @@
-model_checkpoint_path: "target_q_network_pid0"
-all_model_checkpoint_paths: "target_q_network_pid0"
