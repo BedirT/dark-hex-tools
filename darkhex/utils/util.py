@@ -7,6 +7,15 @@ import pyspiel
 from darkhex.utils.cell_state import cellState
 
 
+class PathVars:
+    """ The path data for common tasks. These variables are here to
+    keep the saved file organized, please use them. """
+
+    policies = "darkhex/data/policies/"
+    all_states = "darkhex/data/all_states/"
+    pone_states = "darkhex/data/pone_states/"
+
+
 def cell_connections(cell, num_cols, num_rows):
     """
     Returns the neighbours of the given cell.
@@ -169,6 +178,8 @@ def load_file(filename):
     """
     Loads a file and returns the content.
     """
+    if not filename.endswith('.pkl'):
+        filename += '.pkl'
     try:
         return dill.load(open(filename, "rb"))
     except IOError:
@@ -336,6 +347,20 @@ class dotdict(dict):
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+    __type__ = dict
+
+    def __init__(self, d=None, **kwargs):
+        if d is None:
+            d = {}
+        dict.__init__(self, d, **kwargs)
+        self.__dict__ = self
+
+    # class returns a new instance of itself
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__.update(d)
 
 
 def safe_normalize(y, out=None):
@@ -416,3 +441,70 @@ def report(data, type: str) -> None:
         print(
             f"{red}{bold}Invalid type given to report(). Valid types are = ['memory', 'time']{end}"
         )
+
+
+# ! THIS SHOULD NOT BE NEEDED CORRECT EVERYTHING THAT USES THIS
+def convert(strategy, num_cols, num_rows, pid):
+    """Converts strategies with old info_state representation
+    ie. 'yyq.yqyqx...' to new representation ie. for player_id=0
+    'P0 xxo.xoxox...'
+    """
+    new_strategy = {}
+    for info_state, actions in strategy.items():
+        new_info_state = convert_os_str(info_state, num_cols, player=pid)
+        assert (len(new_info_state) == num_cols * num_rows + 3)
+        new_strategy[new_info_state] = actions
+    return new_strategy
+
+
+def _is_collusion_possible(board, player) -> bool:
+    """
+    Check if a collusion is possible.
+    """
+    # Get the number of cellState on the board.
+    count = Counter(board)
+    if player == 1:
+        player_pieces = sum(
+            [s for x, s in count.items() if x in cellState.white_pieces])
+        opponent_pieces = sum(
+            [s for x, s in count.items() if x in cellState.black_pieces])
+        return opponent_pieces <= player_pieces
+    player_pieces = sum(
+        [s for x, s in count.items() if x in cellState.black_pieces])
+    opponent_pieces = sum(
+        [s for x, s in count.items() if x in cellState.white_pieces])
+    return opponent_pieces < player_pieces
+
+
+def _is_terminal(self, board_state, player):
+    """
+    Check if the game is over.
+
+    - board_state: The current board state.
+    """
+    if (board_state.count(cellState.kBlackWin) +
+            board_state.count(cellState.kWhiteWin) > 0):
+        return True
+    ct = Counter(board_state)
+    empty_cells = ct[cellState.kEmpty]
+    if player == 0:
+        opponent_pieces = sum(
+            [s for x, s in ct.items() if x in cellState.white_pieces])
+        player_pieces = sum(
+            [s for x, s in ct.items() if x in cellState.black_pieces])
+        if opponent_pieces + empty_cells == player_pieces:
+            return True
+    else:
+        opponent_pieces = sum(
+            [s for x, s in ct.items() if x in cellState.black_pieces])
+        player_pieces = sum(
+            [s for x, s in ct.items() if x in cellState.white_pieces])
+        if opponent_pieces + empty_cells == player_pieces + 1:
+            return True
+    return False
+
+
+def load_policy(policy_file: str) -> dict:
+    """
+    Loads a policy from a file.
+    """
