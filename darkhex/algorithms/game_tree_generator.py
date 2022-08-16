@@ -48,9 +48,9 @@ class TreeGenerator:
             0: {
                 "shape": "hexagon",
                 "style": "filled",
-                "fillcolor": "black",
+                "fillcolor": "gray14",
                 "fontname": "Monospace",
-                "fontcolor": "white",
+                "fontcolor": "ghostwhite",
                 "fontsize": "12",
                 "width": "1.5",
                 "height": "1.5",
@@ -58,43 +58,43 @@ class TreeGenerator:
             1: {
                 "shape": "hexagon",
                 "style": "filled",
-                "fillcolor": "red",
+                "fillcolor": "ghostwhite",
                 "fontname": "Monospace",
                 "fontsize": "12",
-                "fontcolor": "white",
+                "fontcolor": "gray14",
                 "width": "1.5",
                 "height": "1.5",
             },
             "edge": {
                 "fontname": "Monospace",
                 "fontsize": "12",
-                "fontcolor": "black"
+                "fontcolor": "gray14"
             },
             "0-terminal": {
                 "shape": "doublecircle",
                 "style": "filled",
-                "fillcolor": "black",
+                "fillcolor": "gray14",
                 "fontname": "Monospace",
                 "fontsize": "12",
-                "fontcolor": "white",
+                "fontcolor": "ghostwhite",
             },
             "1-terminal": {
                 "shape": "doublecircle",
                 "style": "filled",
-                "fillcolor": "red",
+                "fillcolor": "ghostwhite",
                 "fontname": "Monospace",
                 "fontsize": "12",
-                "fontcolor": "white",
+                "fontcolor": "gray14",
                 "peripheries": "2",
-                "linecolor": "black",
+                "linecolor": "gray14",
             },
             "root": {
                 "shape": "hexagon",
                 "style": "filled",
-                "fillcolor": "darkgrey",
+                "fillcolor": "snow3",
                 "fontname": "Monospace",
                 "fontsize": "12",
-                "fontcolor": "white",
+                "fontcolor": "gray14",
                 "width": "1.5",
                 "height": "1.5",
             },
@@ -108,18 +108,18 @@ class TreeGenerator:
 
     def generate_tree(self):
         # Start the tree
-        self.tree_name = f"{self.name_0}-{self.name_1}"
+        self.tree_name = f"{self.name_0}_{self.name_1}"
         self.tree = pydot.Dot(
             self.tree_name,
             graph_type="digraph",
-            bgcolor="white",
+            bgcolor="mintcream",
             fontname="Monospace",
             fontsize="12",
-            fontcolor="black",
+            fontcolor="gray14",
             rankdir="TB",
             ratio="fill",
-            size="8.3,11.7!",
-            margin=0,
+            size="8.3,11.7",
+            margin=5,
         )
         # Add the root node's children
         self._add_children(self.game_state)
@@ -127,19 +127,6 @@ class TreeGenerator:
     def save_tree_data(self):
         # Save the tree dot file
         output_raw_dot = self.tree.to_string()
-        idx = output_raw_dot.find(self.tree_name + " {")
-        legend_string = """\nsubgraph cluster_01 { 
-            label = "Legend";
-            style = "filled";
-            color = "lightgrey";
-            node [style=filled,color=white];
-            a0 [label="%s", shape=circle, color=black, style=filled, fontcolor=white];
-            a1 [label="%s", shape=circle, color=red, style=filled, fontcolor=white];
-        }""" % (self.name_0, self.name_1)
-        # add the legend to the dotcode
-        output_raw_dot = (output_raw_dot[:idx + len(self.tree_name) + 2] +
-                          legend_string +
-                          output_raw_dot[idx + len(self.tree_name) + 2:])
         path = f"{util.PathVars.game_trees}{self.name_0}-{self.name_1}"
         # Save the dot file
         util.save_file(output_raw_dot, f"{path}/tree.dot")
