@@ -215,8 +215,8 @@ def convert_position_to_alphanumeric(position: int, num_cols: int) -> str:
     Returns:
         str: The alphanumeric representation of the position.
     """
-    col = pos % num_cols
-    row = pos // num_cols
+    col = position % num_cols
+    row = position // num_cols
     return "{}{}".format(chr(ord("a") + col), row + 1)
 
 

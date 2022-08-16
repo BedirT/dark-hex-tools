@@ -8,17 +8,23 @@ from darkhex import logger
 
 class Policy:
 
-    def __init__(self, policy, board_size: typing.Tuple[int, int],
-                 initial_state: pyspiel.State):
+    def __init__(self,
+                 policy,
+                 board_size: typing.Tuple[int, int],
+                 initial_state: pyspiel.State,
+                 is_best_response: bool = False) -> None:
         """
         Initialize the policy.
+        
         Args:
             policy: The policy.
-            board_size: The board size.
+            board_size (typing.Tuple[int, int]): The board size.
+            initial_state (pyspiel.State): The initial state.
+            is_best_response (bool): Whether the policy is best response.
         """
         if isinstance(policy, str):
             # setup all the parameters using the policy data
-            self._load_policy(policy)
+            self._load_policy(policy, is_best_response)
             CHECK.EQUAL_OR_N(self.board_size, board_size)
             # Todo: CHECK.EQUAL_OR_N(self.initial_state, initial_state)
         else:
@@ -57,7 +63,7 @@ class Policy:
         a_p = self.get_action_probabilities(info_state)
         return max(a_p, key=a_p.get)
 
-    def _load_policy(self, policy_name: str) -> None:
+    def _load_policy(self, policy_name: str, is_best_response: bool) -> None:
         """
         Load the Policy data from the file.
         Args:
@@ -66,7 +72,10 @@ class Policy:
         if policy_name not in os.listdir(util.PathVars.policies):
             path = policy_name
         else:
-            path = util.PathVars.policies + policy_name + "/policy.pkl"
+            if is_best_response:
+                path = util.PathVars.policies + policy_name + "/best_response.pkl"
+            else:
+                path = util.PathVars.policies + policy_name + "/policy.pkl"
         data = util.load_file(path)
         self.policy = data.policy
         self.initial_state = data.initial_state
@@ -108,6 +117,7 @@ class TabularPolicy(Policy):
         policy,
         board_size: typing.Tuple[int] = None,
         initial_state: pyspiel.State = None,
+        is_best_response: bool = False,
     ):
         """
         Setup a tabular policy. Any two player policy that has a tabular representation can be used.
@@ -116,8 +126,9 @@ class TabularPolicy(Policy):
             policy (str or dict[str, dict[int, float]]): The policy name or a dictionary of action probability dictionary.
             board_size (list): The size of the board.
             initial_state (pyspiel.State): The initial state of the board.
+            is_best_response (bool): Whether the policy is best response.
         """
-        super().__init__(policy, board_size, initial_state)
+        super().__init__(policy, board_size, initial_state, is_best_response)
 
     def get_action_probabilities(self,
                                  info_state: str) -> typing.Dict[int, float]:
@@ -140,6 +151,7 @@ class SinglePlayerTabularPolicy(TabularPolicy):
         board_size: typing.Tuple[int] = None,
         initial_state: pyspiel.State = None,
         player: int = None,
+        is_best_response: bool = False,
     ):
         """
         Setup a single player tabular policy. Any single player policy that has a tabular representation can be used.
@@ -149,8 +161,9 @@ class SinglePlayerTabularPolicy(TabularPolicy):
             board_size (list): The size of the board.
             initial_state (pyspiel.State): The initial state of the board.
             player (int): The player the policy belongs to.
+            is_best_response (bool): Whether the policy is a best response policy.
         """
-        super().__init__(policy, board_size, initial_state)
+        super().__init__(policy, board_size, initial_state, is_best_response)
         if not hasattr(self, 'player'):
             self.player = player
         CHECK.PLAYER(self.player)
@@ -166,7 +179,8 @@ class SinglePlayerTabularPolicy(TabularPolicy):
         Returns:
             The action probability dictionary.
         """
-        CHECK.STATE_PLAYER(info_state, self.player)
+        # todo:
+        # CHECK.STATE_PLAYER(info_state, self.player)
         return self.policy[info_state]
 
 

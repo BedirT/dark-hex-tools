@@ -4,6 +4,7 @@ from copy import deepcopy
 import pydot
 import pyspiel
 import darkhex.utils.util as util
+import darkhex.policy as darkhexPolicy
 
 
 class TreeGenerator:
@@ -11,30 +12,33 @@ class TreeGenerator:
     Visually presents a game and probabilities for given policies for both players.
     """
 
-    def __init__(self, policy_0: DarkhexPolicy, policy_1: DarkhexPolicy,
-                 folder_path: str):
+    def __init__(self, policy_0: darkhexPolicy, policy_1: darkhexPolicy,
+                 name_0: str, name_1: str):
         """
         Initializes the TreeGenerator.
 
         Args:
-            game: The game to be visualized.
-            policy_0: The policy for player 0.
-            policy_1: The policy for player 1.
-            folder_path: The path to the folder where the files are saved.
+            policy_0 (darkhexPolicy): The policy for player 0.
+            policy_1 (darkhexPolicy): The policy for player 1.
+            name_0 (str): The name of player 0. Be descriptive as this will be used in the filename.
+            name_1 (str): The name of player 1. Be descriptive as this will be used in the filename.
         """
         assert policy_0.board_size == policy_1.board_size, "Policies must be for the same board size"
         self.num_cols = policy_0.num_cols
         self.num_rows = policy_0.num_rows
 
+        self.name_0 = name_0
+        self.name_1 = name_1
+
         self.game = pyspiel.load_game(
             "dark_hex_ir", {
                 "num_rows": self.num_rows,
                 "num_cols": self.num_cols,
-                "use_early_terminals": True
+                "use_early_terminal": True
             })
         self.game_state = self.game.new_initial_state()
 
-        policies = {
+        self.policies = {
             0: policy_0,
             1: policy_1,
         }
@@ -104,7 +108,7 @@ class TreeGenerator:
 
     def generate_tree(self):
         # Start the tree
-        self.tree_name = f"Strategy_Tree"
+        self.tree_name = f"{self.name_0}-{self.name_1}"
         self.tree = pydot.Dot(
             self.tree_name,
             graph_type="digraph",
@@ -129,20 +133,20 @@ class TreeGenerator:
             style = "filled";
             color = "lightgrey";
             node [style=filled,color=white];
-            a0 [label="Strat_P", shape=hexagon, color=%s, style=filled, fontcolor=white];
-            a1 [label="BR_P", shape=hexagon, color=%s, style=filled, fontcolor=white];
-        }""" % (self.strat_color, self.br_color)
+            a0 [label="%s", shape=circle, color=black, style=filled, fontcolor=white];
+            a1 [label="%s", shape=circle, color=red, style=filled, fontcolor=white];
+        }""" % (self.name_0, self.name_1)
         # add the legend to the dotcode
         output_raw_dot = (output_raw_dot[:idx + len(self.tree_name) + 2] +
                           legend_string +
                           output_raw_dot[idx + len(self.tree_name) + 2:])
-
+        path = f"{util.PathVars.game_trees}{self.name_0}-{self.name_1}"
         # Save the dot file
-        save_file(output_raw_dot, f"{self.folder_path}/tree.dot")
+        util.save_file(output_raw_dot, f"{path}/tree.dot")
 
         # Save the tree
-        self.tree.write_svg(f"{self.folder_path}/tree.svg")
-        self.tree.write_pdf(f"{self.folder_path}/tree.pdf")
+        self.tree.write_svg(f"{path}/tree.svg")
+        self.tree.write_pdf(f"{path}/tree.pdf")
 
     def _add_children(self, game_state, parent=None):
         """
@@ -163,7 +167,7 @@ class TreeGenerator:
             parent = node
 
         # Add an edge for each action
-        a_p = self.strategies[cur_player].get_action_probabilities(
+        a_p = self.policies[cur_player].get_action_probabilities(
             info_state).items()
         for action, prob in a_p:
             # Update the game state
@@ -183,7 +187,7 @@ class TreeGenerator:
                 self.tree.add_node(terminal_node)
 
                 # Add the edge if it doesnt already exist
-                edge_label = f"{conv_alphapos(action, self.num_cols)}: {prob:.4f}"
+                edge_label = f"{util.convert_position_to_alphanumeric(action, self.num_cols)}: {prob:.4f}"
                 if not self.tree.get_edge(parent, terminal_node):
                     edge = pydot.Edge(
                         parent,
@@ -204,7 +208,7 @@ class TreeGenerator:
                 self.tree.add_node(node)
 
                 # Add the edge if it doesnt already exist
-                edge_label = f"{conv_alphapos(action, self.num_cols)}: {prob:.4f}"
+                edge_label = f"{util.convert_position_to_alphanumeric(action, self.num_cols)}: {prob:.4f}"
                 if not self.tree.get_edge(parent, node):
                     edge = pydot.Edge(parent,
                                       node,
@@ -224,7 +228,7 @@ class TreeGenerator:
         for idx, (is_0_cell,
                   is_1_cell) in enumerate(zip(info_state_0, info_state_1)):
             # if beginning of a new line
-            if idx % self.nc == 0 and idx != 0:
+            if idx % self.num_cols == 0 and idx != 0:
                 # add the strings to the info_str
                 # add \n and spaces amount of the row number
                 info_str += f"\n{'':>{line_num-1}}{line_str_0}  {line_str_1}"

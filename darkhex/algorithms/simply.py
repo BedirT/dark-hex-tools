@@ -1,3 +1,6 @@
+# ! Currently only works for Imperfect Recall version of the game. Add tests to see
+# ! if it works for other versions.
+
 import typing
 import pickle
 import numpy as np
