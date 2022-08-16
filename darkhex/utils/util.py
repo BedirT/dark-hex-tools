@@ -1,10 +1,13 @@
 import os
+import typing
 from copy import deepcopy
 
 import dill
 import numpy as np
 import pyspiel
-from darkhex.utils.cell_state import cellState
+import darkhex.check as CHECK
+import darkhex
+from collections import Counter
 
 
 class PathVars:
@@ -16,301 +19,308 @@ class PathVars:
     pone_states = "darkhex/data/pone_states/"
 
 
-def cell_connections(cell, num_cols, num_rows):
+def position_from_coordinates(num_cols: int, row_idx:int, col_idx:int) -> int:
+    """
+    Converts a row and column (2d index) to a 1d index, position.
+
+    Args:
+        num_cols (int): The number of columns in the board.
+        row_idx (int): The row index.
+        col_idx (int): The column index.
+    Returns:
+        int: The 1d index.
+    """
+    return num_cols * row_idx + col_idx
+
+
+def neighbour_indexes(cell: int, num_cols: int, num_rows: int) -> typing.List[typing.List[int]]:
     """
     Returns the neighbours of the given cell.
 
-    args:
-        cell    - The location on the board to check the neighboring cells for.
-
-    returns:
-        positions   - List of all the neighbouring cells to the cell.
-                    Elements are in the format [row, column].
+    Args:
+        cell (int): The cell to get the neighbours of.
+        num_cols (int): The number of columns in the board.
+        num_rows (int): The number of rows in the board.
+        
+    Returns:
+        list: The neighbours of the given cell. each element in the form of 
+        [row_index, column_index].
     """
     row = cell // num_cols
     col = cell % num_cols
+    CHECK.ROW_INDEX(row, num_rows)
+    CHECK.COLUMN_INDEX(col, num_cols)
 
     positions = []
     if col + 1 < num_cols:
-        positions.append(pos_by_coord(num_cols, row, col + 1))
+        positions.append(position_from_coordinates(num_cols, row, col + 1))
     if col - 1 >= 0:
-        positions.append(pos_by_coord(num_cols, row, col - 1))
+        positions.append(position_from_coordinates(num_cols, row, col - 1))
     if row + 1 < num_rows:
-        positions.append(pos_by_coord(num_cols, row + 1, col))
+        positions.append(position_from_coordinates(num_cols, row + 1, col))
         if col - 1 >= 0:
-            positions.append(pos_by_coord(num_cols, row + 1, col - 1))
+            positions.append(position_from_coordinates(num_cols, row + 1, col - 1))
     if row - 1 >= 0:
-        positions.append(pos_by_coord(num_cols, row - 1, col))
+        positions.append(position_from_coordinates(num_cols, row - 1, col))
         if col + 1 < num_cols:
-            positions.append(pos_by_coord(num_cols, row - 1, col + 1))
+            positions.append(position_from_coordinates(num_cols, row - 1, col + 1))
     return positions
 
 
-def game_over(board_state):
+def board_after_action(board: str, action: int, player: int, num_rows: int, num_cols: int) -> str:
     """
-    Check if the game is over.
-
-    - board_state: The current refree board state.
+    Update the board state with the new action.
+    
+    Args:
+        board (str): The current board state to update the action on.
+        action (int): The action to play.
+        player (int): The player to play the action. Based on the player the stone
+        to be placed will change.
+        num_rows (int): The number of rows in the board.
+        num_cols (int): The number of columns in the board.
+    Returns:
+        str: The new board state.
     """
-    return (board_state.count(cellState.kBlackWin) +
-            board_state.count(cellState.kWhiteWin) == 1)
-
-
-def updated_board(board_state, cell, color, num_rows, num_cols):
-    """
-    Update the board state with the move.
-
-    - board_state: The current board state.
-    - move: The move to be made. (int)
-    - piece: The piece to be placed on the board.
-    """
-    # Work on a list version of the board state.
-    updated_board_state = list(deepcopy(board_state))
-    # If the move is illegal return false.
-    # - Illegal if the move is out of bounds.
-    # - Illegal if the move is already taken.
-    if (cell < 0 or cell >= len(updated_board_state) or
-            updated_board_state[cell] != cellState.kEmpty):
-        return False
+    updated_board = list(deepcopy(board))
+    CHECK.ACTION_BOARD(action, board)
+    color = darkhex.cellState.kBlack if player == 0 else darkhex.cellState.kWhite
     # Update the board state with the move.
-    if color == cellState.kBlack:
+    if color == darkhex.cellState.kBlack:
         north_connected = False
         south_connected = False
-        if cell < num_cols:  # First row
+        if action < num_cols:  # First row
             north_connected = True
-        elif cell >= num_cols * (num_rows - 1):  # Last row
+        elif action >= num_cols * (num_rows - 1):  # Last row
             south_connected = True
-        for neighbour in cell_connections(cell, num_cols, num_rows):
-            if updated_board_state[neighbour] == cellState.kBlackNorth:
+        for neighbour in neighbour_indexes(action, num_cols, num_rows):
+            if updated_board[neighbour] == darkhex.cellState.kBlackNorth:
                 north_connected = True
-            elif updated_board_state[neighbour] == cellState.kBlackSouth:
+            elif updated_board[neighbour] == darkhex.cellState.kBlackSouth:
                 south_connected = True
         if north_connected and south_connected:
-            updated_board_state[cell] = cellState.kBlackWin
+            updated_board[action] = darkhex.cellState.kBlackWin
         elif north_connected:
-            updated_board_state[cell] = cellState.kBlackNorth
+            updated_board[action] = darkhex.cellState.kBlackNorth
         elif south_connected:
-            updated_board_state[cell] = cellState.kBlackSouth
+            updated_board[action] = darkhex.cellState.kBlackSouth
         else:
-            updated_board_state[cell] = cellState.kBlack
-    elif color == cellState.kWhite:
+            updated_board[action] = darkhex.cellState.kBlack
+    elif color == darkhex.cellState.kWhite:
         east_connected = False
         west_connected = False
-        if cell % num_cols == 0:  # First column
+        if action % num_cols == 0:  # First column
             west_connected = True
-        elif cell % num_cols == num_cols - 1:  # Last column
+        elif action % num_cols == num_cols - 1:  # Last column
             east_connected = True
-        for neighbour in cell_connections(cell, num_cols, num_rows):
-            if updated_board_state[neighbour] == cellState.kWhiteWest:
+        for neighbour in neighbour_indexes(action, num_cols, num_rows):
+            if updated_board[neighbour] == darkhex.cellState.kWhiteWest:
                 west_connected = True
-            elif updated_board_state[neighbour] == cellState.kWhiteEast:
+            elif updated_board[neighbour] == darkhex.cellState.kWhiteEast:
                 east_connected = True
         if east_connected and west_connected:
-            updated_board_state[cell] = cellState.kWhiteWin
+            updated_board[action] = darkhex.cellState.kWhiteWin
         elif east_connected:
-            updated_board_state[cell] = cellState.kWhiteEast
+            updated_board[action] = darkhex.cellState.kWhiteEast
         elif west_connected:
-            updated_board_state[cell] = cellState.kWhiteWest
+            updated_board[action] = darkhex.cellState.kWhiteWest
         else:
-            updated_board_state[cell] = cellState.kWhite
+            updated_board[action] = darkhex.cellState.kWhite
 
-    if updated_board_state[cell] in [cellState.kBlackWin, cellState.kWhiteWin]:
-        return updated_board_state[cell]
-    elif updated_board_state[cell] not in [cellState.kBlack, cellState.kWhite]:
-        # The cell is connected to an edge but not a win position.
+    if updated_board[action] in [darkhex.cellState.kBlackWin, darkhex.cellState.kWhiteWin]:
+        return updated_board[action]
+    elif updated_board[action] not in [darkhex.cellState.kBlack, darkhex.cellState.kWhite]:
+        # The action is connected to an edge but not a win position.
         # We need to use flood-fill to find the connected edges.
-        flood_stack = [cell]
+        flood_stack = [action]
         latest_cell = 0
         while len(flood_stack) != 0:
             latest_cell = flood_stack.pop()
-            for neighbour in cell_connections(latest_cell, num_cols, num_rows):
-                if updated_board_state[neighbour] == color:
-                    updated_board_state[neighbour] = updated_board_state[cell]
+            for neighbour in neighbour_indexes(latest_cell, num_cols, num_rows):
+                if updated_board[neighbour] == color:
+                    updated_board[neighbour] = updated_board[action]
                     flood_stack.append(neighbour)
         # Flood-fill is complete.
     # Convert list back to string
-    return "".join(updated_board_state)
+    return "".join(updated_board)
 
 
-def replace_action(board, action, new_value):
-    """
-    Replaces the action on the board with the new value.
-    """
-    new_board = list(deepcopy(board))
-    new_board[action] = new_value
-    return "".join(new_board)
-
-
-def play_action(game, player, action):
-    """
-    Plays the action on the game board.
-    """
-    new_game = deepcopy(game)
-    if new_game["board"][action] != cellState.kEmpty:
-        opponent = cellState.kBlack if player == cellState.kWhite else cellState.kWhite
-        new_game["boards"][player] = replace_action(new_game["boards"][player],
-                                                    action, opponent)
-        return new_game, True
-    else:
-        res = updated_board(new_game["board"], action, player, game["num_cols"],
-                            game["num_rows"])
-        if res == cellState.kBlackWin or res == cellState.kWhiteWin:
-            # The game is over.
-            return res, False
-        new_game["board"] = res
-        new_game["boards"][player] = replace_action(new_game["boards"][player],
-                                                    action,
-                                                    new_game["board"][action])
-        s = ""
-        opponent = cellState.kBlack if player == cellState.kWhite else cellState.kWhite
-        for r in new_game["boards"][player]:
-            if r in cellState.black_pieces:
-                s += cellState.kBlack
-            elif r in cellState.white_pieces:
-                s += cellState.kWhite
-            else:
-                s += r
-        new_game["boards"][player] = s
-        return new_game, False
-
-
-def load_file(filename):
+def load_file(filename: str) -> typing.Any:
     """
     Loads a file and returns the content.
+
+    Args:
+        filename (str): The filename to load.
+    Returns:
+        Any: The content of the file.
     """
-    if not filename.endswith('.pkl'):
-        filename += '.pkl'
     try:
         return dill.load(open(filename, "rb"))
     except IOError:
         raise IOError(f"File not found: {filename}")
 
 
-def save_file(content, file_path):
+def save_file(content: typing.Any, file_path: str) -> None:
     """
-    Saves the content to a file.
+    Saves the content to the file_path.
+
+    Args:
+        content (Any): The content to save.
+        file_path (str): The file path to save the content to.
+    Returns:
+        None
     """
-    # Create the directory if it doesn't exist.
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
         os.makedirs(directory)
-    dill.dump(content, open(file_path, "wb"))
+    with open(file_path, "wb") as f:
+        dill.dump(content, f)
 
 
-def pos_by_coord(num_cols, r, c):
-    return num_cols * r + c
-
-
-def conv_alphapos(pos, num_cols):
+def convert_position_to_alphanumeric(position: int, num_cols: int) -> str:
     """
-    Converts a position to a letter and number
-    pos: int
+    Converts a position of the board to an alphanumeric representation. 
+    i.e. 0 -> a1, 1 -> a2
+
+    Args:
+        position (int): The position to convert.
+        num_cols (int): The number of columns in the board.
+    Returns:
+        str: The alphanumeric representation of the position.
     """
     col = pos % num_cols
     row = pos // num_cols
     return "{}{}".format(chr(ord("a") + col), row + 1)
 
 
-def greedify(strategy, multiple_actions_allowed=False):
-    """
-    Greedifies the given strategy. -1 is the minumum value and 1 is the maximum.
-    Args:
-        strategy: The strategy to greedify.
-        multiple_actions_allowed: Whether multiple actions are allowed.
-    Returns:
-        A greedified version of the strategy.
-    """
-    greedy_strategy = {}
-    for board_state, action_val in strategy.items():
-        mx_value = -1
-        actions = []
-        for action, value in action_val.items():
-            if value > mx_value:
-                mx_value = value
-                actions = [action]
-            elif value == mx_value and multiple_actions_allowed:
-                actions.append(action)
-        greedy_strategy[board_state] = [
-            (actions[i], 1 / len(actions)) for i in range(len(actions))
-        ]
-    return greedy_strategy
-
-
-def calculate_turn(state: str):
-    """
-    Calculates which player's turn it is given board state.
-    """
-    num_black = 0
-    num_white = 0
-    for cell in state:
-        if cell in cellState.black_pieces:
-            num_black += 1
-        elif cell in cellState.white_pieces:
-            num_white += 1
-    return 1 if num_black > num_white else 0
-
-
-def num_action(action, num_cols):
+def convert_alphanumeric_to_position(alpha_numeric: str, num_cols: int) -> int:
     """
     Converts the action in the form of alpha-numeric row column sequence to
-    numeric actions. i.e. a2 -> 3 for 3x3 board.
+    numeric actions/position. i.e. a2 -> 2 for 3x3 board.
+    
+    Args:
+        alpha_numeric (str): The alpha-numeric representation of the action.
+        num_cols (int): The number of columns in the board.
+    Returns:
+        int: The numeric representation of the action.
     """
     # If not alpha-numeric, return the action as is.
     action = action.lower().strip()
     try:
         if not action[0].isalpha():
             return action
-        row = int(action[1:]) - 1
+        row = int(action[1:])
         # for column a -> 0, b -> 1 ...
         col = ord(action[0]) - ord("a")
-        return pos_by_coord(num_cols, row, col)
+        return position_from_coordinates(num_cols, row, col)
     except ValueError:
         log.error("Invalid action: {}".format(action))
         return False
 
 
-def random_selection(board_state):
-    pos_moves = [i for i, x in enumerate(board_state) if x == cellState.kEmpty]
-    return [np.random.choice(pos_moves)], [1.0]
-
-
-def convert_to_xo(str_board):
+def convert_board_to_xo(board: str) -> str:
     """
-    Convert the board state to only x and o.
+    Board state, when play is going on, is represented by multiple characters
+    based on the connection the pieces have. i.e. if a black stone is only connected
+    to north edge the stone will be represented as y instead of x. This function 
+    converts the board state to only x's and o's.
+
+    Args:
+        board (str): The board state to convert.
+    Returns:
+        str: The converted board state.
     """
-    for p in cellState.black_pieces:
-        str_board = str_board.replace(p, cellState.kBlack)
-    for p in cellState.white_pieces:
-        str_board = str_board.replace(p, cellState.kWhite)
+    for p in darkhex.cellState.black_pieces:
+        str_board = str_board.replace(p, darkhex.cellState.kBlack)
+    for p in darkhex.cellState.white_pieces:
+        str_board = str_board.replace(p, darkhex.cellState.kWhite)
     return str_board
 
 
-def get_open_spiel_state(game: pyspiel.Game,
-                         initial_state: str) -> pyspiel.State:
+def is_collusion_possible(board: str, player: int) -> bool:
     """
-    Setup the game state, -start is same as given initial state
+    Checks if a collusion is possible given the board state and player.
+    
+    Args:
+        board (str): The board state to check.
+        player (int): The player to check for collusion.
+    Returns:
+        bool: True if collusion is possible, False otherwise.
     """
-    game_state = game.new_initial_state()
-    black_stones_loc = []
-    white_stones_loc = []
-    for i in range(len(initial_state)):
-        if initial_state[i] in cellState.black_pieces:
-            black_stones_loc.append(i)
-        if initial_state[i] in cellState.white_pieces:
-            white_stones_loc.append(i)
-    black_loc = 0
-    white_loc = 0
-    for _ in range(len(black_stones_loc) + len(white_stones_loc)):
-        cur_player = game_state.current_player()
-        if cur_player == 0:
-            game_state.apply_action(black_stones_loc[black_loc])
-            game_state.apply_action(black_stones_loc[black_loc])
-            black_loc += 1
-        else:
-            game_state.apply_action(white_stones_loc[white_loc])
-            game_state.apply_action(white_stones_loc[white_loc])
-            white_loc += 1
-    return game_state
+    CHECK.PLAYER(player)
+    count = Counter(board)
+    if player == 1:
+        player_pieces = sum(
+            [s for x, s in count.items() if x in darkhex.cellState.white_pieces])
+        opponent_pieces = sum(
+            [s for x, s in count.items() if x in darkhex.cellState.black_pieces])
+        return opponent_pieces <= player_pieces
+    player_pieces = sum(
+        [s for x, s in count.items() if x in darkhex.cellState.black_pieces])
+    opponent_pieces = sum(
+        [s for x, s in count.items() if x in darkhex.cellState.white_pieces])
+    return opponent_pieces < player_pieces
+
+
+def is_board_terminal(board: str, player: int) -> bool:
+    """
+    Checks if the board state is a terminal state.
+
+    Todo: Have a terminal state lookup table.
+
+    Args:
+        board (str): The board state to check.
+        player (int): The player to check for collusion.
+    Returns:
+        bool: True if the board state is a terminal state, False otherwise.
+    """
+    if (board.count(darkhex.cellState.kBlackWin) +
+        board.count(darkhex.cellState.kWhiteWin) > 0):
+        return True
+    ct = Counter(board)
+    empty_cells = ct[darkhex.cellState.kEmpty]
+    if player == 0:
+        opponent_pieces = sum(
+            [s for x, s in ct.items() if x in darkhex.cellState.white_pieces])
+        player_pieces = sum(
+            [s for x, s in ct.items() if x in darkhex.cellState.black_pieces])
+        if opponent_pieces + empty_cells == player_pieces:
+            return True
+    else:
+        opponent_pieces = sum(
+            [s for x, s in ct.items() if x in darkhex.cellState.black_pieces])
+        player_pieces = sum(
+            [s for x, s in ct.items() if x in darkhex.cellState.white_pieces])
+        if opponent_pieces + empty_cells == player_pieces + 1:
+            return True
+    return False
+
+
+def get_board_from_info_state(info_state: str) -> str:
+    """
+    Gets the board state from the info state. Information states are in the form
+    of "P{player} board". We extract the board state from the info state.
+    
+    Args:
+        info_state (str): The info state to get the board state from.
+    Returns:
+        str: The board state.
+    """
+    return info_state.split(" ")[1]
+
+
+def get_info_state_from_board(board: str, player: int) -> str:
+    """
+    Gets the info state from the board state. Information states are in the form
+    of "P{player} board". We use the board and the player information to create
+    the info state.
+
+    Args:
+        board (str): The board state to get the info state from.
+        player (int): The player to get the info state from.
+    Returns:
+        str: The info state.
+    """
+    return "P{} {}".format(player, board)
 
 
 def convert_os_str(str_board: str, num_cols: int, player: int = -1):
@@ -323,12 +333,12 @@ def convert_os_str(str_board: str, num_cols: int, player: int = -1):
     else:
         new_board = f"P{player} "
     for i, cell in enumerate(str_board):
-        if cell in cellState.black_pieces:
-            new_board += cellState.kBlack
-        elif cell in cellState.white_pieces:
-            new_board += cellState.kWhite
+        if cell in darkhex.cellState.black_pieces:
+            new_board += darkhex.cellState.kBlack
+        elif cell in darkhex.cellState.white_pieces:
+            new_board += darkhex.cellState.kWhite
         else:
-            new_board += cellState.kEmpty
+            new_board += darkhex.cellState.kEmpty
     return new_board
 
 
@@ -383,13 +393,13 @@ def safe_normalize(y, out=None):
 
 def flood_fill(state: list, init_pos: int, num_rows: int,
                num_cols: int) -> list:
-    player = cellState.kBlack \
-        if state[init_pos] in cellState.black_pieces \
-        else cellState.kWhite
+    player = darkhex.cellState.kBlack \
+        if state[init_pos] in darkhex.cellState.black_pieces \
+        else darkhex.cellState.kWhite
     flood_stack = [init_pos]
     while len(flood_stack) > 0:
         latest_cell = flood_stack.pop()
-        for n in cell_connections(latest_cell, num_cols, num_rows):
+        for n in neighbour_indexes(latest_cell, num_cols, num_rows):
             if state[n] == player:
                 state[n] = state[latest_cell]
                 flood_stack.append(n)
@@ -455,56 +465,3 @@ def convert(strategy, num_cols, num_rows, pid):
         assert (len(new_info_state) == num_cols * num_rows + 3)
         new_strategy[new_info_state] = actions
     return new_strategy
-
-
-def _is_collusion_possible(board, player) -> bool:
-    """
-    Check if a collusion is possible.
-    """
-    # Get the number of cellState on the board.
-    count = Counter(board)
-    if player == 1:
-        player_pieces = sum(
-            [s for x, s in count.items() if x in cellState.white_pieces])
-        opponent_pieces = sum(
-            [s for x, s in count.items() if x in cellState.black_pieces])
-        return opponent_pieces <= player_pieces
-    player_pieces = sum(
-        [s for x, s in count.items() if x in cellState.black_pieces])
-    opponent_pieces = sum(
-        [s for x, s in count.items() if x in cellState.white_pieces])
-    return opponent_pieces < player_pieces
-
-
-def _is_terminal(self, board_state, player):
-    """
-    Check if the game is over.
-
-    - board_state: The current board state.
-    """
-    if (board_state.count(cellState.kBlackWin) +
-            board_state.count(cellState.kWhiteWin) > 0):
-        return True
-    ct = Counter(board_state)
-    empty_cells = ct[cellState.kEmpty]
-    if player == 0:
-        opponent_pieces = sum(
-            [s for x, s in ct.items() if x in cellState.white_pieces])
-        player_pieces = sum(
-            [s for x, s in ct.items() if x in cellState.black_pieces])
-        if opponent_pieces + empty_cells == player_pieces:
-            return True
-    else:
-        opponent_pieces = sum(
-            [s for x, s in ct.items() if x in cellState.black_pieces])
-        player_pieces = sum(
-            [s for x, s in ct.items() if x in cellState.white_pieces])
-        if opponent_pieces + empty_cells == player_pieces + 1:
-            return True
-    return False
-
-
-def load_policy(policy_file: str) -> dict:
-    """
-    Loads a policy from a file.
-    """
