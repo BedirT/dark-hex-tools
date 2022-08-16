@@ -12,88 +12,52 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for open_spiel.python.algorithms.best_response_imperfect_recall."""
-
-import numpy as np
-import dill
-import time
 import resource
-from absl import flags
-from absl import app
-
-from open_spiel.python import policy
-from open_spiel.python.algorithms import best_response
+import time
 import pyspiel
 
-FLAGS = flags.FLAGS
-flags.DEFINE_string("path", None, "Path to the strategy")
+from open_spiel.python import policy as open_spiel_policy
+from open_spiel.python.algorithms import best_response
+
+import darkhex.policy as darkhexPolicy
+import darkhex.utils.util as util
+from darkhex import logger
 
 
-def report(data, type: str) -> None:
-    """ Prints the report in a pretty format given the data
-    and the type. Valid types are = ['memory', 'time']
-
-    Time: Output of time.time()
-    Memory: Output of process.memory_info().rss
-    """
-    bold = "\033[1m"
-    red = "\033[1;31m"
-    yellow = "\033[1;33m"
-    green = "\033[1;32m"
-    end = "\033[0m"
-    with open("tmp/report.txt", "a") as f:
-        if type == 'memory':
-            report = f"{bold}{green}Memory usage:\t{end}"
-            gbs = data // (1024**2)
-            mbs = (data - gbs * 1024**2) // 1024
-            kbs = (data - gbs * 1024**2 - mbs * 1024)
-            if gbs > 0:
-                report += f"{gbs} {red}GB{end} "
-            if mbs > 0:
-                report += f"{mbs} {red}MB{end} "
-            if kbs > 0:
-                report += f"{kbs} {red}KB{end} "
-            report += f"\n"
-            print(report)
-            f.write(report)
-        elif type == 'time':
-            report = f"{bold}{green}Time taken:\t{end}"
-            m, s = divmod(data, 60)
-            h, m = divmod(m, 60)
-            h, m, s = int(h), int(m), int(s)
-            if h > 0:
-                report += f"{h}:{m:02d}:{s:02d} {yellow}hours{end}\n"
-            elif m > 0:
-                report += f"{m}:{s:02d} {yellow}minutes{end}\n"
-            else:
-                report += f"{s:02d} {yellow}seconds{end}\n"
-            print(report)
-            f.write(report)
-        else:
-            report = f"{red}{bold}Invalid type given to report(). Valid types are = ['memory', 'time']{end}\n"
-            print(report)
-            f.write(report)
-
-
-def test_br_strategy_large_game(argv):
+def single_player_br_policy_and_value(policy_name: str):
+    """Test single player full BR on a small Dark Hex problem."""
     start = time.time()
-    policy = "4x3_1_ryan_new"
-    file_path = f"darkhex/data/strategy_data/{folder}/"
+    darkhex_policy = darkhexPolicy.SinglePlayerTabularPolicy(policy=policy_name)
     game = pyspiel.load_game(
-        "dark_hex_ir(num_rows=4,num_cols=3,use_early_terminal=True)")
-    pyspiel_policy = policy.PartialTabularPolicy(game,
-                                                 policy=data["strategy"],
-                                                 player=player_id)
+        "dark_hex_ir", {
+            "num_rows": darkhex_policy.num_rows,
+            "num_cols": darkhex_policy.num_cols,
+            "use_early_terminal": True
+        })
+    # Open Spiel PartialTabularPolicy requires a policy with tuples:
+    # info_state -> [(action, probability)]
+    # we have the function util.policy_dict_to_policy_tuple() to convert
+    os_tuple_policy = util.policy_dict_to_policy_tuple(darkhex_policy.policy)
+    pyspiel_policy = open_spiel_policy.PartialTabularPolicy(
+        game, policy=os_tuple_policy, player=darkhex_policy.player)
     br = best_response.BestResponsePolicyIR(game,
                                             policy=pyspiel_policy,
-                                            player_id=1 - player_id)
-    br_val, br_strategy = br.get_best_response()
-    print(f"Lower bound value: {br_val}")
-    report(time.time() - start, 'time')
-    report(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss, 'memory')
+                                            player_id=1 - darkhex_policy.player)
+    br_value, br_strategy = br.get_best_response()
+
+    logger.info(f"Lower bound value: {br_value}")
+    logger.debug(f"Time: {time.time() - start}")
+    logger.debug(
+        f"Peak Memory: {resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}")
+
     # save best response policy
+    br_policy = darkhexPolicy.SinglePlayerTabularPolicy(
+        policy=br_strategy,
+        player=1 - darkhex_policy.player,
+        board_size=darkhex_policy.board_size,
+        initial_state=game.new_initial_state())
+    br_policy.save_policy_to_file(policy_name, is_best_response=True)
 
 
 if __name__ == "__main__":
-    # test_best_response_for_partial_ir_policy()
-    # test_br_strategy_full_size()
-    app.run(test_br_strategy_large_game)
+    single_player_br_policy_and_value("4x3_handcrafted_second_player")
