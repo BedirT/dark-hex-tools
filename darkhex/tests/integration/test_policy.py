@@ -14,7 +14,7 @@ def test_mccfr_solver_from_str():
         "dark_hex_ir(num_cols=3,num_rows=4,use_early_terminal=True)")
     state = game.new_initial_state()
     assert darkhex_policy.get_action(state) == 7
-    assert len(darkhex_policy.get_action_prob(state)) == 12
+    assert len(darkhex_policy.get_action_probabilities(state)) == 12
 
 
 def test_mccfr_policy_from_data():
@@ -25,4 +25,4 @@ def test_mccfr_policy_from_data():
         "dark_hex_ir(num_cols=3,num_rows=4,use_early_terminal=True)")
     state = game.new_initial_state()
     assert darkhex_policy.get_action(state) == 7
-    assert len(darkhex_policy.get_action_prob(state)) == 12
+    assert len(darkhex_policy.get_action_probabilities(state)) == 12
