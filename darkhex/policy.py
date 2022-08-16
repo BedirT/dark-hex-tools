@@ -8,10 +8,8 @@ from darkhex import logger
 
 class Policy:
 
-    def __init__(self,
-                 policy,
-                 board_size: typing.Tuple[int, int],
-                 initial_state: str = None):
+    def __init__(self, policy, board_size: typing.Tuple[int, int],
+                 initial_state: pyspiel.State):
         """
         Initialize the policy.
         Args:
@@ -22,18 +20,15 @@ class Policy:
             # setup all the parameters using the policy data
             self._load_policy(policy)
             CHECK.EQUAL_OR_N(self.board_size, board_size)
-            CHECK.EQUAL_OR_N(self.initial_state, initial_state)
+            # Todo: CHECK.EQUAL_OR_N(self.initial_state, initial_state)
         else:
-            if initial_state is None:
-                self.initial_state = "P0 " + "".join(
-                    ["." for _ in range(board_size[0] * board_size[1])])
-            else:
-                self.initial_state = initial_state
-            CHECK.INFO_STATE(self.initial_state)
-            CHECK.BOARD_SIZE(board_size, initial_state)
-            self.policy = policy
+            assert initial_state is not None, "Initial state must be provided"
+            assert board_size is not None, "Board size must be provided"
+            self.initial_state = initial_state
+            # Todo: CHECK.INFO_STATE(self.initial_state)
+            # Todo: CHECK.BOARD_SIZE(board_size, initial_state)
             self.board_size = board_size
-
+            self.policy = policy
         self.num_rows = self.board_size[0]
         self.num_cols = self.board_size[1]
         self.num_cells = self.num_rows * self.num_cols
@@ -79,22 +74,29 @@ class Policy:
         if data.player in [0, 1]:
             self.player = data.player
 
-    def save_policy_to_file(self, policy_name: str) -> None:
+    def save_policy_to_file(self,
+                            policy_name: str,
+                            is_best_response: bool = False) -> None:
         """
         Save the policy as a pickle to the file.
 
         Args:
             policy_name (str): The policy name.
+            is_best_response (bool): Whether the policy is best response.
         """
         data = util.dotdict(
             policy=self.policy,
             initial_state=self.initial_state,
             board_size=self.board_size,
             player=self.player if hasattr(self, "player") else None)
-        if policy_name not in os.listdir(util.PathVars.policies):
+        if policy_name.find("/") != -1 and policy_name.find(
+                ".") != -1:  # policy_name is a path
             path = policy_name
         else:
-            path = util.PathVars.policies + policy_name + "/policy.pkl"
+            if is_best_response:
+                path = util.PathVars.policies + policy_name + "/best_response.pkl"
+            else:
+                path = util.PathVars.policies + policy_name + "/policy.pkl"
         util.save_file(data, path)
         logger.info("Saved policy to path: " + path)
 
@@ -105,7 +107,7 @@ class TabularPolicy(Policy):
         self,
         policy,
         board_size: typing.Tuple[int] = None,
-        initial_state: str = None,
+        initial_state: pyspiel.State = None,
     ):
         """
         Setup a tabular policy. Any two player policy that has a tabular representation can be used.
@@ -113,7 +115,7 @@ class TabularPolicy(Policy):
         Args:
             policy (str or dict[str, dict[int, float]]): The policy name or a dictionary of action probability dictionary.
             board_size (list): The size of the board.
-            initial_state (str): The initial state of the board.
+            initial_state (pyspiel.State): The initial state of the board.
         """
         super().__init__(policy, board_size, initial_state)
 
@@ -136,7 +138,7 @@ class SinglePlayerTabularPolicy(TabularPolicy):
         self,
         policy,
         board_size: typing.Tuple[int] = None,
-        initial_state: str = None,
+        initial_state: pyspiel.State = None,
         player: int = None,
     ):
         """
@@ -145,14 +147,14 @@ class SinglePlayerTabularPolicy(TabularPolicy):
         Args:
             policy (str or dict[str, dict[int, float]]): The policy name or a dictionary of action probability dictionary.
             board_size (list): The size of the board.
-            initial_state (str): The initial state of the board.
+            initial_state (pyspiel.State): The initial state of the board.
             player (int): The player the policy belongs to.
         """
         super().__init__(policy, board_size, initial_state)
         if not hasattr(self, 'player'):
             self.player = player
         CHECK.PLAYER(self.player)
-        self.opponent = 1 - player
+        self.opponent = 1 - self.player
 
     def get_action_probabilities(self,
                                  info_state: str) -> typing.Dict[int, float]:
@@ -174,7 +176,7 @@ class PyspielSolverPolicy(Policy):
                  solver=None,
                  path=None,
                  board_size: typing.Tuple[int] = None,
-                 initial_state: str = None):
+                 initial_state: pyspiel.State = None):
         """
         Setup a pyspiel policy that uses a solver. A policy file that has a type where average
         policy can be accessed using a solver can be used.
@@ -184,7 +186,7 @@ class PyspielSolverPolicy(Policy):
                 A pyspiel solver object.
             path (str): The path to the policy file. Cannot be used with solver.
             board_size (list): The size of the board.
-            initial_state (str): The initial state of the board.
+            initial_state (pyspiel.State): The initial state of the board.
         """
         if (solver is None and path is None) or (solver is not None and
                                                  path is not None):
