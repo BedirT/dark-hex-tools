@@ -2,7 +2,8 @@ import typing
 import darkhex.utils.util as util
 import pyspiel
 import os
-from darkhex import *  # class vars
+import darkhex.check as CHECK
+from darkhex import logger
 
 
 class Policy:
@@ -26,6 +27,8 @@ class Policy:
             if initial_state is None:
                 self.initial_state = "P0 " + "".join(
                     ["." for _ in range(board_size[0] * board_size[1])])
+            else:
+                self.initial_state = initial_state
             CHECK.INFO_STATE(self.initial_state)
             CHECK.BOARD_SIZE(board_size, initial_state)
             self.policy = policy
@@ -35,7 +38,7 @@ class Policy:
         self.num_cols = self.board_size[1]
         self.num_cells = self.num_rows * self.num_cols
 
-    def get_action_prob(self, info_state: str) -> typing.Dict[int, float]:
+    def get_action_probabilities(self, info_state: str) -> typing.Dict[int, float]:
         """
         Get the action probability dictionary for the given state.
         Args:
@@ -55,7 +58,7 @@ class Policy:
         Returns:
             The action.
         """
-        a_p = self.get_action_prob(info_state)
+        a_p = self.get_action_probabilities(info_state)
         return max(a_p, key=a_p.get)
 
     def _load_policy(self, policy_name: str) -> None:
@@ -87,8 +90,12 @@ class Policy:
             initial_state=self.initial_state,
             board_size=self.board_size,
             player=self.player if hasattr(self, "player") else None)
-        path = util.PathVars.policies + policy_name + "/policy.pkl"
-        log.info("Saved policy to path: " + path)
+        if policy_name not in os.listdir(util.PathVars.policies):
+            path = policy_name
+        else:
+            path = util.PathVars.policies + policy_name + "/policy.pkl"
+        util.save_file(data, path)
+        logger.info("Saved policy to path: " + path)
 
 
 class TabularPolicy(Policy):
@@ -109,7 +116,7 @@ class TabularPolicy(Policy):
         """
         super().__init__(policy, board_size, initial_state)
 
-    def get_action_prob(self, info_state: str) -> typing.Dict[int, float]:
+    def get_action_probabilities(self, info_state: str) -> typing.Dict[int, float]:
         """
         Get the action probability dictionary for the given state.
         Args:
@@ -127,8 +134,8 @@ class SinglePlayerTabularPolicy(TabularPolicy):
         self,
         policy,
         board_size: typing.Tuple[int] = None,
-        player: int = None,
         initial_state: str = None,
+        player: int = None,
     ):
         """
         Setup a single player tabular policy. Any single player policy that has a tabular representation can be used.
@@ -136,16 +143,16 @@ class SinglePlayerTabularPolicy(TabularPolicy):
         Args:
             policy (str or dict[str, dict[int, float]]): The policy name or a dictionary of action probability dictionary.
             board_size (list): The size of the board.
-            player (int): The player the policy belongs to.
             initial_state (str): The initial state of the board.
+            player (int): The player the policy belongs to.
         """
         super().__init__(policy, board_size, initial_state)
-        if not self.player:
+        if not hasattr(self, 'player'):
             self.player = player
         CHECK.PLAYER(self.player)
         self.opponent = 1 - player
 
-    def get_action_prob(self, info_state: str) -> typing.Dict[int, float]:
+    def get_action_probabilities(self, info_state: str) -> typing.Dict[int, float]:
         """
         Get the action probability dictionary for the given state.
         Args:
@@ -179,13 +186,13 @@ class PyspielSolverPolicy(Policy):
         if (solver is None and path is None) or (solver is not None and
                                                  path is not None):
             raise ValueError("Either solver or path must be provided.")
-        if solver is not None:
+        if solver:
             self.solver = solver
             super().__init__(solver.average_policy(), board_size, initial_state)
         else:
             self._load_policy(path)
 
-    def get_action_prob(
+    def get_action_probabilities(
             self, pyspiel_state: pyspiel.State) -> typing.Dict[int, float]:
         """
         Get the action probability dictionary for the given pyspiel state.
@@ -208,7 +215,7 @@ class PyspielSolverPolicy(Policy):
         Returns:
             (int) The action.
         """
-        action_probs = self.get_action_prob(pyspiel_state)
+        action_probs = self.get_action_probabilities(pyspiel_state)
         return max(action_probs, key=action_probs.get)
 
     def _load_policy(self, policy_path: str) -> None:
@@ -226,6 +233,9 @@ class PyspielSolverPolicy(Policy):
         self.initial_state = data.initial_state
         self.board_size = data.board_size
         self.policy = self.solver.average_policy()
+        self.num_rows = self.board_size[0]
+        self.num_cols = self.board_size[1]
+        self.num_cells = self.num_rows * self.num_cols
 
     def save_policy_to_file(self, policy_name: str) -> None:
         """
@@ -239,7 +249,10 @@ class PyspielSolverPolicy(Policy):
             initial_state=self.initial_state,
             board_size=self.board_size,
         )
-        path = util.PathVars.policies + policy_name + "/policy.pkl"
+        if policy_name not in os.listdir(util.PathVars.policies):
+            path = policy_name
+        else:
+            path = util.PathVars.policies + policy_name + "/policy.pkl"
         util.save_file(data, path)
         logger.info("Saved policy to path: " + path)
 
