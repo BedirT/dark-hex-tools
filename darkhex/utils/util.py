@@ -36,6 +36,7 @@ class PathVars:
     policies = "darkhex/data/policies/"
     all_states = "darkhex/data/all_states/"
     pone_states = "darkhex/data/pone_states/"
+    game_trees = "darkhex/data/game_trees/"
 
 
 def position_from_coordinates(num_cols: int, row_idx:int, col_idx:int) -> int:
