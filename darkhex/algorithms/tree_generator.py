@@ -11,9 +11,7 @@ class TreeGenerator:
     Visually presents a game and probabilities for given policies for both players.
     """
 
-    def __init__(self,
-                 policy_0: DarkhexPolicy, 
-                 policy_1: DarkhexPolicy, 
+    def __init__(self, policy_0: DarkhexPolicy, policy_1: DarkhexPolicy,
                  folder_path: str):
         """
         Initializes the TreeGenerator.
@@ -28,8 +26,12 @@ class TreeGenerator:
         self.num_cols = policy_0.num_cols
         self.num_rows = policy_0.num_rows
 
-        self.game = pyspiel.load_game("dark_hex_ir", {"num_rows": self.num_rows, "num_cols": self.num_cols,
-                                                      "use_early_terminals": True})
+        self.game = pyspiel.load_game(
+            "dark_hex_ir", {
+                "num_rows": self.num_rows,
+                "num_cols": self.num_cols,
+                "use_early_terminals": True
+            })
         self.game_state = self.game.new_initial_state()
 
         policies = {
@@ -161,7 +163,8 @@ class TreeGenerator:
             parent = node
 
         # Add an edge for each action
-        a_p = self.strategies[cur_player].get_action_probabilities(info_state).items()
+        a_p = self.strategies[cur_player].get_action_probabilities(
+            info_state).items()
         for action, prob in a_p:
             # Update the game state
             new_game_state = game_state.child(action)

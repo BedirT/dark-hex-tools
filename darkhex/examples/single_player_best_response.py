@@ -93,7 +93,6 @@ def test_br_strategy_large_game(argv):
     # save best response policy
 
 
-
 if __name__ == "__main__":
     # test_best_response_for_partial_ir_policy()
     # test_br_strategy_full_size()

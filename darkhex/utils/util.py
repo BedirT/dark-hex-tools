@@ -39,7 +39,7 @@ class PathVars:
     game_trees = "darkhex/data/game_trees/"
 
 
-def position_from_coordinates(num_cols: int, row_idx:int, col_idx:int) -> int:
+def position_from_coordinates(num_cols: int, row_idx: int, col_idx: int) -> int:
     """
     Converts a row and column (2d index) to a 1d index, position.
 
@@ -53,7 +53,8 @@ def position_from_coordinates(num_cols: int, row_idx:int, col_idx:int) -> int:
     return num_cols * row_idx + col_idx
 
 
-def neighbour_indexes(cell: int, num_cols: int, num_rows: int) -> typing.List[typing.List[int]]:
+def neighbour_indexes(cell: int, num_cols: int,
+                      num_rows: int) -> typing.List[typing.List[int]]:
     """
     Returns the neighbours of the given cell.
 
@@ -79,15 +80,18 @@ def neighbour_indexes(cell: int, num_cols: int, num_rows: int) -> typing.List[ty
     if row + 1 < num_rows:
         positions.append(position_from_coordinates(num_cols, row + 1, col))
         if col - 1 >= 0:
-            positions.append(position_from_coordinates(num_cols, row + 1, col - 1))
+            positions.append(
+                position_from_coordinates(num_cols, row + 1, col - 1))
     if row - 1 >= 0:
         positions.append(position_from_coordinates(num_cols, row - 1, col))
         if col + 1 < num_cols:
-            positions.append(position_from_coordinates(num_cols, row - 1, col + 1))
+            positions.append(
+                position_from_coordinates(num_cols, row - 1, col + 1))
     return positions
 
 
-def board_after_action(board: str, action: int, player: int, num_rows: int, num_cols: int) -> str:
+def board_after_action(board: str, action: int, player: int, num_rows: int,
+                       num_cols: int) -> str:
     """
     Update the board state with the new action.
     
@@ -146,9 +150,13 @@ def board_after_action(board: str, action: int, player: int, num_rows: int, num_
         else:
             updated_board[action] = darkhex.cellState.kWhite
 
-    if updated_board[action] in [darkhex.cellState.kBlackWin, darkhex.cellState.kWhiteWin]:
+    if updated_board[action] in [
+            darkhex.cellState.kBlackWin, darkhex.cellState.kWhiteWin
+    ]:
         return updated_board[action]
-    elif updated_board[action] not in [darkhex.cellState.kBlack, darkhex.cellState.kWhite]:
+    elif updated_board[action] not in [
+            darkhex.cellState.kBlack, darkhex.cellState.kWhite
+    ]:
         # The action is connected to an edge but not a win position.
         # We need to use flood-fill to find the connected edges.
         flood_stack = [action]
@@ -269,10 +277,12 @@ def is_collusion_possible(board: str, player: int) -> bool:
     CHECK.PLAYER(player)
     count = Counter(board)
     if player == 1:
-        player_pieces = sum(
-            [s for x, s in count.items() if x in darkhex.cellState.white_pieces])
-        opponent_pieces = sum(
-            [s for x, s in count.items() if x in darkhex.cellState.black_pieces])
+        player_pieces = sum([
+            s for x, s in count.items() if x in darkhex.cellState.white_pieces
+        ])
+        opponent_pieces = sum([
+            s for x, s in count.items() if x in darkhex.cellState.black_pieces
+        ])
         return opponent_pieces <= player_pieces
     player_pieces = sum(
         [s for x, s in count.items() if x in darkhex.cellState.black_pieces])
@@ -294,7 +304,7 @@ def is_board_terminal(board: str, player: int) -> bool:
         bool: True if the board state is a terminal state, False otherwise.
     """
     if (board.count(darkhex.cellState.kBlackWin) +
-        board.count(darkhex.cellState.kWhiteWin) > 0):
+            board.count(darkhex.cellState.kWhiteWin) > 0):
         return True
     ct = Counter(board)
     empty_cells = ct[darkhex.cellState.kEmpty]

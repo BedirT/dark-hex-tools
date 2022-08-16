@@ -72,8 +72,10 @@ class SimPly:  # Simplified Policy
             self.fraction_values = calculate_fractions(self._frac_limit)
 
         algo_name = "SimPly" if self._eta == 0 and self._frac_limit == 0 else "SimPly+"
-        logger.info(f"Running {algo_name} with parameters---[epsilon:{self._epsilon},"+
-        f"action_cap:{self._action_cap},eta:{self._eta},frac_limit:{self._frac_limit}]")
+        logger.info(
+            f"Running {algo_name} with parameters---[epsilon:{self._epsilon}," +
+            f"action_cap:{self._action_cap},eta:{self._eta},frac_limit:{self._frac_limit}]"
+        )
 
         self.all_states = get_all_states(self.policy.board_size)
         self.new_policy = {}
@@ -129,11 +131,16 @@ class SimPly:  # Simplified Policy
         for a in self.new_policy[info_state].keys():
             info_state_board = util.get_board_from_info_state(info_state)
             new_board_collision = util.board_after_action(
-                info_state_board, a, 1-self.player, self.policy.num_rows, self.policy.num_cols)
-            new_info_state_collision = util.get_info_state_from_board(new_board_collision, self.player) 
-            new_board = util.board_after_action(new_info_state_collision, a, self.player,
-                                                self.policy.num_rows, self.policy.num_cols)
-            new_info_state = util.get_info_state_from_board(new_board, self.player)
+                info_state_board, a, 1 - self.player, self.policy.num_rows,
+                self.policy.num_cols)
+            new_info_state_collision = util.get_info_state_from_board(
+                new_board_collision, self.player)
+            new_board = util.board_after_action(new_info_state_collision, a,
+                                                self.player,
+                                                self.policy.num_rows,
+                                                self.policy.num_cols)
+            new_info_state = util.get_info_state_from_board(
+                new_board, self.player)
             if new_info_state_collision:
                 new_info_states[
                     f"{a}{1-self.player}"] = new_info_state_collision
@@ -233,5 +240,6 @@ class SimPly:  # Simplified Policy
             policy_name (str): The name of the policy to save.
         """
         policy = DarkhexPolicy.SinglePlayerTabularPolicy(
-            self.new_policy, self.policy.board_size, self.policy.initial_state, self.player)
+            self.new_policy, self.policy.board_size, self.policy.initial_state,
+            self.player)
         policy.save_policy_to_file(policy_name)

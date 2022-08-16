@@ -38,7 +38,8 @@ class Policy:
         self.num_cols = self.board_size[1]
         self.num_cells = self.num_rows * self.num_cols
 
-    def get_action_probabilities(self, info_state: str) -> typing.Dict[int, float]:
+    def get_action_probabilities(self,
+                                 info_state: str) -> typing.Dict[int, float]:
         """
         Get the action probability dictionary for the given state.
         Args:
@@ -116,7 +117,8 @@ class TabularPolicy(Policy):
         """
         super().__init__(policy, board_size, initial_state)
 
-    def get_action_probabilities(self, info_state: str) -> typing.Dict[int, float]:
+    def get_action_probabilities(self,
+                                 info_state: str) -> typing.Dict[int, float]:
         """
         Get the action probability dictionary for the given state.
         Args:
@@ -152,7 +154,8 @@ class SinglePlayerTabularPolicy(TabularPolicy):
         CHECK.PLAYER(self.player)
         self.opponent = 1 - player
 
-    def get_action_probabilities(self, info_state: str) -> typing.Dict[int, float]:
+    def get_action_probabilities(self,
+                                 info_state: str) -> typing.Dict[int, float]:
         """
         Get the action probability dictionary for the given state.
         Args:
@@ -249,10 +252,12 @@ class PyspielSolverPolicy(Policy):
             initial_state=self.initial_state,
             board_size=self.board_size,
         )
-        if policy_name not in os.listdir(util.PathVars.policies):
+        if policy_name.find("/") != -1 and policy_name.find(
+                ".") != -1:  # policy_name is a path
             path = policy_name
         else:
             path = util.PathVars.policies + policy_name + "/policy.pkl"
+        logger.debug(path)
         util.save_file(data, path)
         logger.info("Saved policy to path: " + path)
 

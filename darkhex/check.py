@@ -108,8 +108,7 @@ def PLAYER(player: int) -> None:
         raise ValueError(f"{player} is not 0 or 1")
 
 
-def ACTION_PROBABILITIES(
-        action_probabilities: typing.Dict[int, float]) -> None:
+def ACTION_PROBABILITIES(action_probabilities: typing.Dict[int, float]) -> None:
     """
     Check if the action probabilities are valid.
         - Type should be dict[int, float]
@@ -192,7 +191,8 @@ def ROW_INDEX(row_to_check: int, num_rows: int) -> None:
     if row_to_check < 0:
         raise ValueError(f"{row_to_check} is not a positive int")
     if row_to_check >= num_rows:
-        raise ValueError(f"{row_to_check} is not a valid row index for {num_rows} rows")
+        raise ValueError(
+            f"{row_to_check} is not a valid row index for {num_rows} rows")
 
 
 def COLUMN_INDEX(column_to_check: int, num_columns: int) -> None:
@@ -210,4 +210,6 @@ def COLUMN_INDEX(column_to_check: int, num_columns: int) -> None:
     if column_to_check < 0:
         raise ValueError(f"{column_to_check} is not a positive int")
     if column_to_check >= num_columns:
-        raise ValueError(f"{column_to_check} is not a valid column index for {num_columns} columns")
+        raise ValueError(
+            f"{column_to_check} is not a valid column index for {num_columns} columns"
+        )
