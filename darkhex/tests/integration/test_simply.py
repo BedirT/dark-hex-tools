@@ -2,7 +2,7 @@ import os
 import pyspiel
 import pickle
 import darkhex.policy as darkhexPolicy
-from darkhex.algorithms.policy_simplify import SimPly
+from darkhex.algorithms.simply import SimPly
 
 def test_simply_plus():
     file_path = "darkhex/tests/integration/fixtures/test_mccfr_policy.pkl"
