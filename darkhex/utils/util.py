@@ -1,13 +1,32 @@
 import os
 import typing
 from copy import deepcopy
-
-import dill
-import numpy as np
-import pyspiel
-import darkhex.check as CHECK
-import darkhex
 from collections import Counter
+import dill
+
+import darkhex
+import darkhex.check as CHECK
+
+
+class dotdict(dict):
+    """New data structure that allows for dot notation to access dictionary values."""
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+    __type__ = dict
+
+    def __init__(self, d=None, **kwargs):
+        if d is None:
+            d = {}
+        dict.__init__(self, d, **kwargs)
+        self.__dict__ = self
+
+    # class returns a new instance of itself
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__.update(d)
 
 
 class PathVars:
@@ -321,147 +340,3 @@ def get_info_state_from_board(board: str, player: int) -> str:
         str: The info state.
     """
     return "P{} {}".format(player, board)
-
-
-def convert_os_str(str_board: str, num_cols: int, player: int = -1):
-    """
-    Convert the board state to pyspiel format.
-    ie. P{player} firstrowsecondrow
-    """
-    if player == -1:
-        new_board = ""
-    else:
-        new_board = f"P{player} "
-    for i, cell in enumerate(str_board):
-        if cell in darkhex.cellState.black_pieces:
-            new_board += darkhex.cellState.kBlack
-        elif cell in darkhex.cellState.white_pieces:
-            new_board += darkhex.cellState.kWhite
-        else:
-            new_board += darkhex.cellState.kEmpty
-    return new_board
-
-
-def convert_os_strategy(strategy: dict, num_cols: int, player: int) -> dict:
-    """
-    Convert the strategy from open_spiel to the format of the game.
-    """
-    new_strat = {}
-    for board_state, actions in strategy.items():
-        new_strat[convert_os_str(board_state, num_cols, player)] = actions
-    return new_strat
-
-
-class dotdict(dict):
-    """dict with dot access"""
-    __getattr__ = dict.get
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-    __type__ = dict
-
-    def __init__(self, d=None, **kwargs):
-        if d is None:
-            d = {}
-        dict.__init__(self, d, **kwargs)
-        self.__dict__ = self
-
-    # class returns a new instance of itself
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, d):
-        self.__dict__.update(d)
-
-
-def safe_normalize(y, out=None):
-    """
-    Returns +y+/||+y+||_1 or indmax y if ||+y+||_1 = 0.
-
-    Assumes that +y+ >= 0.
-    """
-    if out is None:
-        out = y.copy()
-    z = np.sum(y)
-    if z > 0:
-        out[:] = y / z
-    else:
-        a = y.argmax()
-        out[:] = 0
-        out[a] = 1.
-    return out
-
-
-def flood_fill(state: list, init_pos: int, num_rows: int,
-               num_cols: int) -> list:
-    player = darkhex.cellState.kBlack \
-        if state[init_pos] in darkhex.cellState.black_pieces \
-        else darkhex.cellState.kWhite
-    flood_stack = [init_pos]
-    while len(flood_stack) > 0:
-        latest_cell = flood_stack.pop()
-        for n in neighbour_indexes(latest_cell, num_cols, num_rows):
-            if state[n] == player:
-                state[n] = state[latest_cell]
-                flood_stack.append(n)
-    return state
-
-
-def convert_to_infostate(board_state: str, player: int) -> str:
-    board_ls = list(board_state)
-    board_ls.insert(0, "P{} ".format(player))
-    return "".join(board_ls)
-
-
-def report(data, type: str) -> None:
-    """ Prints the report in a pretty format given the data
-    and the type. Valid types are = ['memory', 'time']
-
-    Time: Output of time.time()
-    Memory: Output of process.memory_info().rss
-    """
-    bold = "\033[1m"
-    red = "\033[1;31m"
-    yellow = "\033[1;33m"
-    green = "\033[1;32m"
-    end = "\033[0m"
-    if type == 'memory':
-        print(f"{bold}{green}Memory usage:\t{end}", end='')
-        gbs = data // (1024**2)
-        mbs = (data - gbs * 1024**2) // 1024
-        kbs = (data - gbs * 1024**2 - mbs * 1024)
-        if gbs > 0:
-            print(f"{gbs} {red}GB{end} ", end='')
-        if mbs > 0:
-            print(f"{mbs} {red}MB{end} ", end='')
-        if kbs > 0:
-            print(f"{kbs} {red}KB{end}", end='')
-        print()
-    elif type == 'time':
-        print(f"{bold}{green}Time taken:\t{end}", end="")
-        m, s = divmod(data, 60)
-        h, m = divmod(m, 60)
-        h, m, s = int(h), int(m), int(s)
-        if h > 0:
-            print(f"{h}:{m:02d}:{s:02d} {yellow}hours{end}")
-        elif m > 0:
-            print(f"{m}:{s:02d} {yellow}minutes{end}")
-        else:
-            print(f"{s:02d} {yellow}seconds{end}")
-    else:
-        print(
-            f"{red}{bold}Invalid type given to report(). Valid types are = ['memory', 'time']{end}"
-        )
-
-
-# ! THIS SHOULD NOT BE NEEDED CORRECT EVERYTHING THAT USES THIS
-def convert(strategy, num_cols, num_rows, pid):
-    """Converts strategies with old info_state representation
-    ie. 'yyq.yqyqx...' to new representation ie. for player_id=0
-    'P0 xxo.xoxox...'
-    """
-    new_strategy = {}
-    for info_state, actions in strategy.items():
-        new_info_state = convert_os_str(info_state, num_cols, player=pid)
-        assert (len(new_info_state) == num_cols * num_rows + 3)
-        new_strategy[new_info_state] = actions
-    return new_strategy
