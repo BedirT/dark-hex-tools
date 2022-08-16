@@ -10,8 +10,8 @@ def test_mccfr_solver_from_str():
     data = util.load_file(file_path)
     game = pyspiel.load_game(
         "dark_hex_ir(num_cols=3,num_rows=4,use_early_terminal=True)")
-    darkhex_policy = policy.PyspielSolverPolicy(solver=data, board_size=(4, 3),
-                                                initial_state=game.new_initial_state())
+    darkhex_policy = policy.PyspielSolverPolicy(
+        solver=data, board_size=(4, 3), initial_state=game.new_initial_state())
 
     state = game.new_initial_state()
     assert darkhex_policy.get_action(state) == 7
