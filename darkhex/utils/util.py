@@ -351,3 +351,29 @@ def get_info_state_from_board(board: str, player: int) -> str:
         str: The info state.
     """
     return "P{} {}".format(player, board)
+
+
+def policy_dict_to_policy_tuple(
+    policy_dict: typing.Dict[str, typing.Dict[int, float]]
+) -> typing.Dict[str, typing.List[typing.Tuple[int, float]]]:
+    """
+    Converts a policy dictionary to a policy tuple.
+    
+    Args:
+        policy_dict (typing.Dict[str, typing.Dict[int, float]]): The policy dictionary to convert.
+    Returns:
+    """
+    return {k: tuple(v.items()) for k, v in policy_dict.items()}
+
+
+def policy_tuple_to_policy_dict(
+    policy_tuple: typing.Dict[str, typing.List[typing.Tuple[int, float]]]
+) -> typing.Dict[str, typing.Dict[int, float]]:
+    """
+    Converts a policy tuple to a policy dictionary.
+    
+    Args:
+        policy_tuple (typing.Dict[str, typing.Tuple[int, float]]): The policy tuple to convert.
+    Returns:
+    """
+    return {k: dict(v) for k, v in policy_tuple.items()}
