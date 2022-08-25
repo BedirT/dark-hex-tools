@@ -38,7 +38,7 @@ class StrategyGenerator:
 
         self.random_roll = False  # if true, take actions until the terminal state.
         self.target_stack_board = None
-        
+
         # set history buffer
         self.history_buffer = gameBuffer(self.initial_state, num_rows, num_cols,
                                          player, include_isomorphic, self)
@@ -107,7 +107,8 @@ class StrategyGenerator:
         if len(self.move_stack) == 0:
             self.history_buffer.add_history_buffer(self, given_input)
             log.info(f"Game has ended. No more actions to take.")
-            self.current_info_state = util.get_info_state_from_board(self.board, self.p)
+            self.current_info_state = util.get_info_state_from_board(
+                self.board, self.p)
             return self.board, True
         self.board = self.move_stack.pop()
         self.history_buffer.add_history_buffer(self, given_input)
@@ -120,7 +121,8 @@ class StrategyGenerator:
             else:
                 self.iterate_board("random_roll")
         log.info("Move performed succeded.")
-        self.current_info_state = util.get_info_state_from_board(self.board, self.p)
+        self.current_info_state = util.get_info_state_from_board(
+            self.board, self.p)
         return self.board, False
 
     def is_valid_moves(
@@ -240,7 +242,9 @@ class StrategyGenerator:
         Returns:
             darkhex.TabularSinglePlayerPolicy: The darkhex policy.
         """
-        policy = SinglePlayerTabularPolicy(self.info_states, (self.num_rows, self.num_cols), self.initial_state, self.p)
+        policy = SinglePlayerTabularPolicy(self.info_states,
+                                           (self.num_rows, self.num_cols),
+                                           self.initial_state, self.p)
         return policy
 
     def load_game(self, history: gameBuffer):
@@ -256,4 +260,3 @@ class StrategyGenerator:
         self.moves_and_boards = history.moves_and_boards[-1]
         self.info_states = history.info_states[-1]
         self.initial_state = history.initial_state[-1]
-

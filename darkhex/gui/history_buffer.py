@@ -1,5 +1,6 @@
 import copy
 
+
 class gameBuffer:
     """History buffer for the game to use for rewind and restart."""
 
@@ -22,7 +23,8 @@ class gameBuffer:
 
     def add_history_buffer(self, stratgen_class, given_input=None):
         self.info_states.append(copy.deepcopy(stratgen_class.info_states))
-        self.moves_and_boards.append(copy.deepcopy(stratgen_class.moves_and_boards))
+        self.moves_and_boards.append(
+            copy.deepcopy(stratgen_class.moves_and_boards))
         self.board.append(copy.deepcopy(stratgen_class.board))
         self.move_stack.append(copy.deepcopy(stratgen_class.move_stack))
         if given_input:

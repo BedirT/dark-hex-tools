@@ -6,7 +6,7 @@ import typing
 import darkhex.utils.util as util
 from darkhex.gui.strategy_generator import StrategyGenerator
 from darkhex import logger as log
-import time
+import datetime
 import os
 import copy
 
@@ -124,13 +124,16 @@ class PolicyGenGUI(ctk.CTk):
             raise ValueError(
                 "Perfect recall is not compatible with isomorphic games.")
         # using open_spiels game representations
-        self.board_state = initial_board if initial_board else '.' * (self.num_rows * self.num_cols)
+        self.board_state = initial_board if initial_board else '.' * (
+            self.num_rows * self.num_cols)
         if self.perfect_recall:
             self.action_sequence = []
             self.history = []
-            if (self.history or self.action_sequence) and self.board_state != '.' * (self.num_rows * self.num_cols):
-                raise ValueError("Given a non empty board state and empty history or action sequence. The actions" +
-                                    " sequence and history must be matching the board state.")
+            if (self.history or self.action_sequence
+               ) and self.board_state != '.' * (self.num_rows * self.num_cols):
+                raise ValueError(
+                    "Given a non empty board state and empty history or action sequence. The actions"
+                    + " sequence and history must be matching the board state.")
             self.initial_state = util.get_perfect_recall_state(
                 self.player, self.board_state, len(self.history),
                 self.action_sequence)
@@ -140,7 +143,7 @@ class PolicyGenGUI(ctk.CTk):
         self.strat_gen = StrategyGenerator(self.initial_state, self.num_rows,
                                            self.num_cols, self.player,
                                            self.include_isomorphic)
-        
+
         self.information_state = copy.deepcopy(self.initial_state)
         self.setup_main_frame()
 
@@ -301,11 +304,11 @@ class PolicyGenGUI(ctk.CTk):
             justify=tk.RIGHT,
             anchor=tk.E,
         )
-        self.label_current_info_state = ctk.CTkLabel(master=self.frame_actions,
-                                                     text=self.strat_gen.current_info_state,
-
-                                                     justify=tk.LEFT,
-                                                     anchor=tk.W)
+        self.label_current_info_state = ctk.CTkLabel(
+            master=self.frame_actions,
+            text=self.strat_gen.current_info_state,
+            justify=tk.LEFT,
+            anchor=tk.W)
         self.entry_text_variable = tk.StringVar()
         self.entry_action_probs = ctk.CTkEntry(
             master=self.frame_actions,
@@ -414,10 +417,9 @@ class PolicyGenGUI(ctk.CTk):
         button_cancel = ctk.CTkButton(master=self.save_win,
                                       text="Cancel",
                                       command=self.save_win.destroy)
-        button_default_save = ctk.CTkButton(
-            master=self.save_win,
-            text="Save to default",
-            command=self.save_file_default)
+        button_default_save = ctk.CTkButton(master=self.save_win,
+                                            text="Save to default",
+                                            command=self.save_file_default)
 
         # place the widgets
         label_file_explorer.grid(row=0,
@@ -444,14 +446,14 @@ class PolicyGenGUI(ctk.CTk):
 
         # create the widgets
         label_row_size = ctk.CTkLabel(master=self.new_policy_win,
-                                        text="Number of Rows:",
-                                        anchor=tk.E)
+                                      text="Number of Rows:",
+                                      anchor=tk.E)
         label_column_size = ctk.CTkLabel(master=self.new_policy_win,
-                                        text="Number of Columns:",    
-                                        anchor=tk.E)
+                                         text="Number of Columns:",
+                                         anchor=tk.E)
         label_initial_board = ctk.CTkLabel(master=self.new_policy_win,
-                                        text="Initial board:",
-                                        anchor=tk.E)
+                                           text="Initial board:",
+                                           anchor=tk.E)
 
         self.var_row_size = tk.IntVar()
         self.var_column_size = tk.IntVar()
@@ -469,34 +471,34 @@ class PolicyGenGUI(ctk.CTk):
         self.var_pone.set(self.pone)
         self.var_player.set(self.player)
 
-
         entry_row_size = ctk.CTkEntry(master=self.new_policy_win,
-                                        width=5,
-                                        textvariable=self.var_row_size)
+                                      width=5,
+                                      textvariable=self.var_row_size)
         entry_column_size = ctk.CTkEntry(master=self.new_policy_win,
-                                        width=5,
-                                        textvariable=self.var_column_size)
+                                         width=5,
+                                         textvariable=self.var_column_size)
         entry_initial_board = ctk.CTkEntry(master=self.new_policy_win,
-                                        width=25,
-                                        textvariable=self.var_initial_board)
-        self.checkbox_perfect_recall = ctk.CTkSwitch(master=self.new_policy_win,
-                                        text="Perfect recall",
-                                        command=self.perfect_recall_toggle)
+                                           width=25,
+                                           textvariable=self.var_initial_board)
+        self.checkbox_perfect_recall = ctk.CTkSwitch(
+            master=self.new_policy_win,
+            text="Perfect recall",
+            command=self.perfect_recall_toggle)
         self.checkbox_isomorphic = ctk.CTkSwitch(master=self.new_policy_win,
-                                        text="Isomorphic")
+                                                 text="Isomorphic")
         self.checkbox_pone = ctk.CTkSwitch(master=self.new_policy_win,
-                                        text="Pone")
+                                           text="Pone")
         self.checkbox_player = ctk.CTkSwitch(master=self.new_policy_win,
-                                        text="First Player",
-                                        onvalue=0,
-                                        offvalue=1)
+                                             text="First Player",
+                                             onvalue=0,
+                                             offvalue=1)
 
         button_ok = ctk.CTkButton(master=self.new_policy_win,
-                                    text="OK",
-                                    command=self.new_policy)
+                                  text="OK",
+                                  command=self.new_policy)
         button_cancel = ctk.CTkButton(master=self.new_policy_win,
-                                        text="Cancel",
-                                        command=self.new_policy_win.destroy)
+                                      text="Cancel",
+                                      command=self.new_policy_win.destroy)
         # place the widgets
         label_row_size.grid(row=0, column=0, padx=5, pady=5, sticky="ewsn")
         label_column_size.grid(row=1, column=0, padx=5, pady=5, sticky="ewsn")
@@ -505,10 +507,26 @@ class PolicyGenGUI(ctk.CTk):
         entry_column_size.grid(row=1, column=1, padx=5, pady=5, sticky="ewsn")
         entry_initial_board.grid(row=2, column=1, padx=5, pady=5, sticky="ewsn")
 
-        self.checkbox_perfect_recall.grid(row=0, column=2, padx=10, pady=10, sticky="ewsn")
-        self.checkbox_isomorphic.grid(row=1, column=2, padx=10, pady=10, sticky="ewsn")
-        self.checkbox_pone.grid(row=2, column=2, padx=10, pady=10, sticky="ewsn")
-        self.checkbox_player.grid(row=3, column=2, padx=10, pady=10, sticky="ewsn")
+        self.checkbox_perfect_recall.grid(row=0,
+                                          column=2,
+                                          padx=10,
+                                          pady=10,
+                                          sticky="ewsn")
+        self.checkbox_isomorphic.grid(row=1,
+                                      column=2,
+                                      padx=10,
+                                      pady=10,
+                                      sticky="ewsn")
+        self.checkbox_pone.grid(row=2,
+                                column=2,
+                                padx=10,
+                                pady=10,
+                                sticky="ewsn")
+        self.checkbox_player.grid(row=3,
+                                  column=2,
+                                  padx=10,
+                                  pady=10,
+                                  sticky="ewsn")
         button_ok.grid(row=4, column=1, padx=10, pady=10, sticky="ewsn")
         button_cancel.grid(row=4, column=2, padx=10, pady=10, sticky="ewsn")
 
@@ -549,14 +567,13 @@ class PolicyGenGUI(ctk.CTk):
         """
         Create a new policy.
         """
-        self.setup_game(
-            num_rows=int(self.var_row_size.get()),
-            num_cols=int(self.var_column_size.get()),
-            initial_board=self.var_initial_board.get(),
-            perfect_recall=self.checkbox_perfect_recall.get(),
-            include_isomorphic=self.checkbox_isomorphic.get(),
-            pone=self.checkbox_pone.get(),
-            player=self.checkbox_player.get())
+        self.setup_game(num_rows=int(self.var_row_size.get()),
+                        num_cols=int(self.var_column_size.get()),
+                        initial_board=self.var_initial_board.get(),
+                        perfect_recall=self.checkbox_perfect_recall.get(),
+                        include_isomorphic=self.checkbox_isomorphic.get(),
+                        pone=self.checkbox_pone.get(),
+                        player=self.checkbox_player.get())
         self.new_policy_win.destroy()
 
     def on_load_policy(self):
@@ -565,7 +582,7 @@ class PolicyGenGUI(ctk.CTk):
 
     def on_closing(self):
         """ Closes the window. """
-        self.destroy()  
+        self.destroy()
 
     def execute_action(self) -> None:
         the_in = self.entry_text_variable.get()
@@ -573,8 +590,6 @@ class PolicyGenGUI(ctk.CTk):
         new_board, end_game = self.strat_gen.iterate_board(the_in)
 
         self.draw_board(new_board)
-        print(self.strat_gen.current_info_state)
-        self.label_current_info_state.set_text(self.strat_gen.current_info_state)
         self.entry_text_variable.set("")
         if end_game:
             self.setup_end_game()
@@ -594,7 +609,7 @@ class PolicyGenGUI(ctk.CTk):
         self.entry_text_variable.set("")
         if len(self.strat_gen.history_buffer.given_inputs) > 0:
             old_input = self.strat_gen.history_buffer.given_inputs[-1]
-            self.self.entry_text_variable.set(old_input)
+            self.entry_text_variable.set(old_input)
 
     def restart_game(self):
         """ Restarts the game. """
@@ -606,6 +621,8 @@ class PolicyGenGUI(ctk.CTk):
         self.calculate_board_locations()
         for cell_id in range(self.num_rows * self.num_cols):
             self._draw_cell(board_str[cell_id], cell_id)
+        self.label_current_info_state.set_text(
+            self.strat_gen.current_info_state)
 
     def _draw_cell(self, cell_str: str, cell_id: int) -> None:
         """Draws a cell on the canvas."""
@@ -761,9 +778,10 @@ class PolicyGenGUI(ctk.CTk):
         """Saves the file to the default location."""
         # default location is data/nrxnc_new/game_info.pkl
         # find data
+        pretty_time = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
         data_dir = os.path.join(
             os.path.dirname(__file__),
-            f"tmp/strategy_data/{self.num_rows}x{self.num_cols}/{time.time()}",
+            f"tmp/strategy_data/{self.num_rows}x{self.num_cols}/{pretty_time}",
         )
         # create the directory if it doesn't exist
         if not os.path.exists(data_dir):
