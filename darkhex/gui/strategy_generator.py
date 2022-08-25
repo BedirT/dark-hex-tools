@@ -31,13 +31,16 @@ class StrategyGenerator:
         self.initial_state = initial_state
         self.board = util.get_board_from_info_state(initial_state,
                                                     is_perfect_recall)
+        # ! BOARD MUST ALWAYS BE IN xo FORMAT IN THE CLASS !
         self.current_info_state = initial_state
         self.info_states = {}
-        self.moves_and_boards = {}
-        self.move_stack = []
+        self.actions_and_states = {}
+        self.action_stack = []
+        self.perfect_recall = is_perfect_recall
+        self.action_stack_action_history = {}
 
         self.random_roll = False  # if true, take actions until the terminal state.
-        self.target_stack_board = None
+        self.target_stack_state = None
 
         # set history buffer
         self.history_buffer = gameBuffer(self.initial_state, num_rows, num_cols,
@@ -58,23 +61,31 @@ class StrategyGenerator:
             bool: True if the game is over.
         """
         # Check if the given input is valid.
-        actions, probs = self.is_valid_moves(self.board, given_input)
+        actions, probs = self.is_valid_actions(given_input)
         if not actions:
             return self.board, False
 
         # log the action type
         log.info(f"Parsed actions: {actions} / {given_input}")
-        self.info_states[self.board] = self._action_probs(actions, probs)
+        # update the strategy
+        self.info_states[self.current_info_state] = self._action_probs(
+            actions, probs)
+        log.info(f"Current information state: {self.current_info_state}")
+        log.info(
+            f"Updated strategy for the state: {self.info_states[self.current_info_state]}"
+        )
 
         if self.include_isomorphic:
-            iso_state, iso_moves_probs = isomorphic_single(
-                self.board, actions, probs)
+            raise NotImplementedError("isomorphic not implemented")
+            iso_state, iso_actions_probs = isomorphic_single(
+                self.board, actions, probs
+            )  # ! WRONG: Just using the board, should convert to info state
             if iso_state not in self.info_states:
-                self.info_states[iso_state] = iso_moves_probs
+                self.info_states[iso_state] = iso_actions_probs
             else:
                 ls = []
                 d = {}
-                for action, prob in iso_moves_probs:
+                for action, prob in iso_actions_probs:
                     if action not in d:
                         ls.append((action, prob / 2))
                         d[action] = len(ls) - 1
@@ -89,71 +100,89 @@ class StrategyGenerator:
                 self.info_states[iso_state] = ls
 
         collusion_possible = util.is_collusion_possible(self.board, self.p)
+        log.debug(f"Collusion possible: {collusion_possible}")
         addition = 0
         for action in actions:
-            new_board = self.moves_and_boards[f"{action}{self.p}"]
-            if util.is_board_terminal(new_board, self.p):
+            # try inner function to avoid repeated code
+            new_state = self.actions_and_states[f"{action}{self.p}"]
+            new_board = util.get_board_from_info_state(new_state,
+                                                       self.perfect_recall)
+            converted_board = util.convert_xo_to_board(new_board, self.num_rows)
+            log.debug(f"Converted board: {converted_board}")
+            if util.is_board_terminal(converted_board, self.p):
                 log.info(f"Terminal state reached with action {action}.")
-            elif new_board not in self.info_states:
-                self.move_stack.append(new_board)
+            elif new_state not in self.info_states:
+                self.action_stack.append(new_state)
                 addition += 1
             if collusion_possible:
-                new_board = self.moves_and_boards[f"{action}{self.o}"]
-                if util.is_board_terminal(new_board, self.p):
+                new_state = self.actions_and_states[f"{action}{self.o}"]
+                new_board = util.get_board_from_info_state(
+                    new_state, self.perfect_recall)
+                converted_board = util.convert_xo_to_board(
+                    new_board, self.num_rows)
+                if util.is_board_terminal(converted_board, self.p):
                     log.info(f"Terminal state reached with action {action}.")
-                elif new_board not in self.info_states:
-                    self.move_stack.append(new_board)
+                elif new_state not in self.info_states:
+                    self.action_stack.append(new_state)
                     addition += 1
-        if len(self.move_stack) == 0:
+        if len(self.action_stack) == 0:
             self.history_buffer.add_history_buffer(self, given_input)
             log.info(f"Game has ended. No more actions to take.")
-            self.current_info_state = util.get_info_state_from_board(
-                self.board, self.p)
             return self.board, True
-        self.board = self.move_stack.pop()
+        self.current_info_state = self.action_stack.pop()
+        board_in_xo = util.get_board_from_info_state(self.current_info_state,
+                                                     self.perfect_recall)
+        self.board = util.convert_xo_to_board(board_in_xo, self.num_rows)
         self.history_buffer.add_history_buffer(self, given_input)
         if self.random_roll:
             self.random_roll = False
-            self.target_stack_board = deepcopy(self.move_stack[-addition])
-        if self.target_stack_board:
-            if self.target_stack_board == self.board:
-                self.target_stack_board = None
+            self.target_stack_state = deepcopy(self.action_stack[-addition])
+        if self.target_stack_state:
+            if self.target_stack_state == self.current_info_state:
+                self.target_stack_state = None
             else:
                 self.iterate_board("random_roll")
         log.info("Move performed succeded.")
-        self.current_info_state = util.get_info_state_from_board(
-            self.board, self.p)
         return self.board, False
 
-    def is_valid_moves(
-            self, board: str, given_input: str
+    def is_valid_actions(
+            self, given_input: str
     ) -> typing.Tuple[typing.List[int], typing.List[float]]:
         """Returns the valid actions and their probabilities.
 
         Args:
-            board (str): The current board state.
             given_input (str): The action probabilities. i.e. "a4 0.5 b4 0.5" or "= a4 b4"
 
         Returns:
             typing.List[int]: The actions given in the input.
             typing.List[float]: The corresponding probabilities.
         """
-        actions, probs = self._get_moves(board, given_input)
+        actions, probs = self._get_actions(given_input)
         if not actions:
-            log.error(f"Invalid input: {given_input}")
             return [], []
         # Check if the actions are valid. Save the new board states for each action.
-        self.moves_and_boards = {}
+        self.actions_and_states = {}
         for action in actions:
-            new_board = util.board_after_action(board, action, self.o,
-                                                self.num_rows, self.num_cols)
-            new_board_2 = util.board_after_action(board, action, self.p,
+            new_board_0 = util.board_after_action(self.board, action, self.o,
                                                   self.num_rows, self.num_cols)
-            if not new_board:
+            new_board_1 = util.board_after_action(self.board, action, self.p,
+                                                  self.num_rows, self.num_cols)
+            if not new_board_0:
                 log.error(f"Invalid action: {action}")
                 return [], []
-            self.moves_and_boards[f"{action}{self.o}"] = new_board
-            self.moves_and_boards[f"{action}{self.p}"] = new_board_2
+            action_history = self.action_stack_action_history.get(
+                self.current_info_state, []) + [action]
+            new_state_0 = util.get_info_state_from_board(
+                new_board_0, self.p, action_history, self.perfect_recall)
+            new_state_1 = util.get_info_state_from_board(
+                new_board_1, self.o, action_history, self.perfect_recall)
+            self.actions_and_states[f"{action}{self.o}"] = new_state_0
+            self.actions_and_states[f"{action}{self.p}"] = new_state_1
+            self.action_stack_action_history[new_state_0] = deepcopy(
+                action_history)
+            self.action_stack_action_history[new_state_1] = deepcopy(
+                action_history)
+            log.debug(f"States added to stack: {new_state_0}, {new_state_1}")
         # check if sum of probs is 1
         if abs(sum(probs) - 1) > 0.0000001:  # python float comparison
             log.error(f"Values don't add up to one: {probs}->{sum(probs)}")
@@ -161,8 +190,8 @@ class StrategyGenerator:
         log.info(f"Input processed successfully.")
         return actions, probs
 
-    def _get_moves(
-            self, board: str, given_input: str
+    def _get_actions(
+            self, given_input: str
     ) -> typing.Tuple[typing.List[int], typing.List[float]]:
         """Returns the valid actions and their probabilities.
 
@@ -180,9 +209,9 @@ class StrategyGenerator:
             return [], []
         action_probs = given_input.strip().split(" ")
         if action_probs[0] == "random_roll":
-            if self.target_stack_board is None:
+            if self.target_stack_state is None:
                 self.random_roll = True
-            action = board.find('.')
+            action = self.board.find('.')
             return [action], [1]
         if len(action_probs) == 1:
             a = util.convert_alphanumeric_to_position(action_probs[0],
@@ -199,6 +228,7 @@ class StrategyGenerator:
                 for x in action_probs[1:]
             ]
             if False in actions:
+                log.error(f"Invalid action: {action_probs[1:]}")
                 return [], []
             probs = [1 / len(actions)] * len(actions)
         else:
@@ -256,7 +286,9 @@ class StrategyGenerator:
         self.history_buffer = history
         self.history_buffer.stratgen_class = self
         self.board = history.board[-1]
-        self.move_stack = history.move_stack[-1]
-        self.moves_and_boards = history.moves_and_boards[-1]
+        self.action_stack = history.action_stack[-1]
+        self.actions_and_states = history.actions_and_states[-1]
         self.info_states = history.info_states[-1]
         self.initial_state = history.initial_state[-1]
+        self.action_stack_action_history = history.action_stack_action_history[
+            -1]
