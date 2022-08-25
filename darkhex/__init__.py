@@ -1,5 +1,4 @@
 import typing
-import darkhex.utils.util as util
 import logging
 
 
@@ -32,10 +31,11 @@ class CustomFormatter(logging.Formatter):
 
 # Logger configuration
 logger = logging.getLogger("darkhex")
-logger.setLevel(logging.INFO)
+log_level = logging.DEBUG
+logger.setLevel(log_level)
 
 console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
+console_handler.setLevel(log_level)
 console_handler.setFormatter(CustomFormatter())
 
 logger.addHandler(console_handler)
@@ -55,15 +55,3 @@ class cellState:
 
     white_pieces = [kWhite, kWhiteEast, kWhiteWest, kWhiteWin]
     black_pieces = [kBlack, kBlackNorth, kBlackSouth, kBlackWin]
-
-
-def get_all_states(board_size: typing.Tuple[int, int]) -> dict:
-    """
-    Returns a dictionary of all possible states for Imperfect Recall
-    version of the game for given board size.
-
-    Args: 
-        board_size: Tuple of board size.
-    """
-    return util.load_file(
-        f"{util.PathVars.all_states}{board_size[0]}x{board_size[1]}.pkl")

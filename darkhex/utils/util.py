@@ -6,6 +6,7 @@ import dill
 
 import darkhex
 import darkhex.check as CHECK
+from darkhex import logger as log
 
 
 class dotdict(dict):
@@ -232,11 +233,11 @@ def convert_alphanumeric_to_position(alpha_numeric: str, num_cols: int) -> int:
         int: The numeric representation of the action.
     """
     # If not alpha-numeric, return the action as is.
-    action = action.lower().strip()
+    action = alpha_numeric.lower().strip()
     try:
         if not action[0].isalpha():
-            return action
-        row = int(action[1:])
+            return int(action)
+        row = int(action[1:]) - 1
         # for column a -> 0, b -> 1 ...
         col = ord(action[0]) - ord("a")
         return position_from_coordinates(num_cols, row, col)
@@ -325,20 +326,27 @@ def is_board_terminal(board: str, player: int) -> bool:
     return False
 
 
-def get_board_from_info_state(info_state: str) -> str:
+def get_board_from_info_state(info_state: str,
+                              perfect_recall: bool = False) -> str:
     """
-    Gets the board state from the info state. Information states are in the form
-    of "P{player} board". We extract the board state from the info state.
+    Gets the board state from the info state. The info state can be either in the
+    perfect recall format or the imperfect recall format.
     
     Args:
         info_state (str): The info state to get the board state from.
+        perfect_recall (bool): If true, the perfect recall is used.
     Returns:
         str: The board state.
     """
+    if perfect_recall:
+        return info_state.split("\n")[1]
     return info_state.split(" ")[1]
 
 
-def get_info_state_from_board(board: str, player: int) -> str:
+def get_info_state_from_board(board: str, player: int,
+                              action_history: typing.List[int] = None,
+                              history_size: int = None,
+                              perfect_recall: bool = False) -> str:
     """
     Gets the info state from the board state. Information states are in the form
     of "P{player} board". We use the board and the player information to create
@@ -347,10 +355,17 @@ def get_info_state_from_board(board: str, player: int) -> str:
     Args:
         board (str): The board state to get the info state from.
         player (int): The player to get the info state from.
+        action_history (typing.List[int]): The action history to get the info state from. (only for perfect recall)
+        history_size (int): The size of the action history. (only for perfect recall)
+        perfect_recall (bool): If true, the perfect recall is used.
     Returns:
         str: The info state.
     """
-    return "P{} {}".format(player, board)
+    if perfect_recall:
+        if action_history is None or history_size is None:
+            raise ValueError("action_history and history_size must be provided for perfect recall")
+        return get_perfect_recall_state(player, board, action_history, history_size)
+    return get_imperfect_recall_state(player, board)
 
 
 def policy_dict_to_policy_tuple(
@@ -377,3 +392,50 @@ def policy_tuple_to_policy_dict(
     Returns:
     """
     return {k: dict(v) for k, v in policy_tuple.items()}
+
+
+def get_imperfect_recall_state(player: int, board_state: str) -> str:
+    """
+    Gets the imperfect recall state from the board state.
+    
+    Args:
+        player (int): The player to get the imperfect recall state from.
+        board_state (str): The board state to get the imperfect recall state from.
+    Returns:
+        str: The imperfect recall state.
+    """
+    return "P{} {}".format(player, board_state)
+
+
+def get_perfect_recall_state(player: int, board_state: str,
+                             action_sequence: typing.List[int],
+                             hist_size: int) -> str:
+    """
+    Gets the perfect recall state from the board state and action sequence.
+    
+    Args:
+        player (int): The player to get the perfect recall state from.
+        board_state (str): The board state to get the perfect recall state from.
+        action_sequence (typing.List[int]): The action sequence to get the perfect recall state from.
+        hist_size (int): The history size to get the perfect recall state from.
+    Returns:
+        str: The perfect recall state.
+    """
+    str_action_seq = "".join(
+        [f"{player}, {action}" for action in action_sequence])
+    return "P{}\n{}\n{}\n{}".format(player, board_state, hist_size,
+                                    str_action_seq)
+
+
+def get_all_states(board_size: typing.Tuple[int, int]) -> dict:
+    """
+    Returns a dictionary of all possible states for Imperfect Recall
+    version of the game for given board size.
+
+    Args: 
+        board_size: Tuple of board size.
+    Returns:
+        dict: Dictionary of all possible states.
+    """
+    return util.load_file(
+        f"{util.PathVars.all_states}{board_size[0]}x{board_size[1]}.pkl")
