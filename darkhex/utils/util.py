@@ -4,7 +4,7 @@ from copy import deepcopy
 from collections import Counter
 import dill
 
-import darkhex
+from darkhex import cellState
 import darkhex.check as CHECK
 from darkhex import logger as log
 
@@ -51,6 +51,10 @@ def position_from_coordinates(num_cols: int, row_idx: int, col_idx: int) -> int:
     Returns:
         int: The 1d index.
     """
+    if col_idx < 0 or col_idx >= num_cols:
+        raise ValueError("Invalid column index")
+    if row_idx < 0:
+        raise ValueError("Invalid row index")
     return num_cols * row_idx + col_idx
 
 
@@ -106,11 +110,10 @@ def board_after_action(board: str, action: int, player: int, num_rows: int,
     Returns:
         str: The new board state.
     """
-    updated_board = list(deepcopy(board))
-    CHECK.ACTION_BOARD(action, board)
-    color = darkhex.cellState.kBlack if player == 0 else darkhex.cellState.kWhite
+    updated_board = list(layered_board_to_flat(board))
+    color = cellState.kBlack if player == 0 else cellState.kWhite
     # Update the board state with the move.
-    if color == darkhex.cellState.kBlack:
+    if color == cellState.kBlack:
         north_connected = False
         south_connected = False
         if action < num_cols:  # First row
@@ -118,19 +121,19 @@ def board_after_action(board: str, action: int, player: int, num_rows: int,
         elif action >= num_cols * (num_rows - 1):  # Last row
             south_connected = True
         for neighbour in neighbour_indexes(action, num_cols, num_rows):
-            if updated_board[neighbour] == darkhex.cellState.kBlackNorth:
+            if updated_board[neighbour] == cellState.kBlackNorth:
                 north_connected = True
-            elif updated_board[neighbour] == darkhex.cellState.kBlackSouth:
+            elif updated_board[neighbour] == cellState.kBlackSouth:
                 south_connected = True
         if north_connected and south_connected:
-            updated_board[action] = darkhex.cellState.kBlackWin
+            updated_board[action] = cellState.kBlackWin
         elif north_connected:
-            updated_board[action] = darkhex.cellState.kBlackNorth
+            updated_board[action] = cellState.kBlackNorth
         elif south_connected:
-            updated_board[action] = darkhex.cellState.kBlackSouth
+            updated_board[action] = cellState.kBlackSouth
         else:
-            updated_board[action] = darkhex.cellState.kBlack
-    elif color == darkhex.cellState.kWhite:
+            updated_board[action] = cellState.kBlack
+    elif color == cellState.kWhite:
         east_connected = False
         west_connected = False
         if action % num_cols == 0:  # First column
@@ -138,26 +141,22 @@ def board_after_action(board: str, action: int, player: int, num_rows: int,
         elif action % num_cols == num_cols - 1:  # Last column
             east_connected = True
         for neighbour in neighbour_indexes(action, num_cols, num_rows):
-            if updated_board[neighbour] == darkhex.cellState.kWhiteWest:
+            if updated_board[neighbour] == cellState.kWhiteWest:
                 west_connected = True
-            elif updated_board[neighbour] == darkhex.cellState.kWhiteEast:
+            elif updated_board[neighbour] == cellState.kWhiteEast:
                 east_connected = True
         if east_connected and west_connected:
-            updated_board[action] = darkhex.cellState.kWhiteWin
+            updated_board[action] = cellState.kWhiteWin
         elif east_connected:
-            updated_board[action] = darkhex.cellState.kWhiteEast
+            updated_board[action] = cellState.kWhiteEast
         elif west_connected:
-            updated_board[action] = darkhex.cellState.kWhiteWest
+            updated_board[action] = cellState.kWhiteWest
         else:
-            updated_board[action] = darkhex.cellState.kWhite
+            updated_board[action] = cellState.kWhite
 
-    if updated_board[action] in [
-            darkhex.cellState.kBlackWin, darkhex.cellState.kWhiteWin
-    ]:
+    if updated_board[action] in [cellState.kBlackWin, cellState.kWhiteWin]:
         return updated_board[action]
-    elif updated_board[action] not in [
-            darkhex.cellState.kBlack, darkhex.cellState.kWhite
-    ]:
+    elif updated_board[action] not in [cellState.kBlack, cellState.kWhite]:
         # The action is connected to an edge but not a win position.
         # We need to use flood-fill to find the connected edges.
         flood_stack = [action]
@@ -170,22 +169,23 @@ def board_after_action(board: str, action: int, player: int, num_rows: int,
                     flood_stack.append(neighbour)
         # Flood-fill is complete.
     # Convert list back to string
-    return "".join(updated_board)
+    return flat_board_to_layered(convert_board_to_xo("".join(updated_board)),
+                                 num_cols)
 
 
-def load_file(filename: str) -> typing.Any:
+def load_file(file_path: str) -> typing.Any:
     """
     Loads a file and returns the content.
 
     Args:
-        filename (str): The filename to load.
+        file_path (str): The path to load from.
     Returns:
         Any: The content of the file.
     """
     try:
-        return dill.load(open(filename, "rb"))
+        return dill.load(open(file_path, "rb"))
     except IOError:
-        raise IOError(f"File not found: {filename}")
+        raise IOError(f"File not found: {file_path}")
 
 
 def save_file(content: typing.Any, file_path: str) -> None:
@@ -208,7 +208,7 @@ def save_file(content: typing.Any, file_path: str) -> None:
 def convert_position_to_alphanumeric(position: int, num_cols: int) -> str:
     """
     Converts a position of the board to an alphanumeric representation. 
-    i.e. 0 -> a1, 1 -> a2
+    i.e. 0 -> a1, 1 -> b1
 
     Args:
         position (int): The position to convert.
@@ -258,11 +258,72 @@ def convert_board_to_xo(board: str) -> str:
     Returns:
         str: The converted board state.
     """
-    for p in darkhex.cellState.black_pieces:
-        str_board = str_board.replace(p, darkhex.cellState.kBlack)
-    for p in darkhex.cellState.white_pieces:
-        str_board = str_board.replace(p, darkhex.cellState.kWhite)
-    return str_board
+    for p in cellState.black_pieces:
+        board = board.replace(p, cellState.kBlack)
+    for p in cellState.white_pieces:
+        board = board.replace(p, cellState.kWhite)
+    return board
+
+
+def convert_xo_to_board(board_in_xo: str) -> str:
+    """
+    Converts the board cells to location values as in cellState, from xo notation.
+    i.e. North connected x will be converted to y.
+    
+    Uses flood fill to be able to determine the connections.
+
+    Args:
+        board_in_xo (str): The board state to convert.
+    Returns:
+        str: The converted board state.
+    """
+    num_rows = board_in_xo.find("\n")
+    num_cols = board_in_xo.count("\n") + 1
+
+    def flood_fill(state: list, init_pos: int, num_rows: int,
+                   num_cols: int) -> list:
+        if state[init_pos] in cellState.black_pieces:
+            player = cellState.kBlack
+            opposite_type = cellState.kBlackSouth if state[
+                init_pos] == cellState.kBlackNorth else cellState.kBlackNorth
+        elif state[init_pos] in cellState.white_pieces:
+            player = cellState.kWhite
+            opposite_type = cellState.kWhiteEast if state[
+                init_pos] == cellState.kWhiteWest else cellState.kWhiteWest
+        flood_stack = [init_pos]
+        while len(flood_stack) > 0:
+            latest_cell = flood_stack.pop()
+            for n in neighbour_indexes(latest_cell, num_cols, num_rows):
+                if state[n] == player:
+                    state[n] = state[latest_cell]
+                    flood_stack.append(n)
+                elif state[n] == opposite_type:
+                    state[
+                        n] = cellState.kBlackWin if player == cellState.kBlack else cellState.kWhiteWin
+        return state
+
+    # first row
+    board_as_list = list(layered_board_to_flat(board_in_xo))
+    for i in range(num_cols):
+        if board_as_list[i] in cellState.black_pieces:
+            board_as_list[i] = cellState.kBlackNorth
+            board_as_list = flood_fill(board_as_list, i, num_rows, num_cols)
+    # last row
+    for i in range(num_rows * num_cols - num_cols, num_rows * num_cols):
+        if board_as_list[i] in cellState.black_pieces:
+            board_as_list[i] = cellState.kBlackSouth
+            board_as_list = flood_fill(board_as_list, i, num_rows, num_cols)
+    # first column
+    for i in range(0, num_rows * num_cols, num_cols):
+        if board_as_list[i] in cellState.white_pieces:
+            board_as_list[i] = cellState.kWhiteWest
+            board_as_list = flood_fill(board_as_list, i, num_rows, num_cols)
+    # last column
+    for i in range(num_rows * num_cols - 1, -1, -num_cols):
+        if board_as_list[i] in cellState.white_pieces:
+            board_as_list[i] = cellState.kWhiteEast
+            board_as_list = flood_fill(board_as_list, i, num_rows, num_cols)
+    return flat_board_to_layered("".join(board_as_list), num_cols)
 
 
 def is_collusion_possible(board: str, player: int) -> bool:
@@ -278,25 +339,23 @@ def is_collusion_possible(board: str, player: int) -> bool:
     CHECK.PLAYER(player)
     count = Counter(board)
     if player == 1:
-        player_pieces = sum([
-            s for x, s in count.items() if x in darkhex.cellState.white_pieces
-        ])
-        opponent_pieces = sum([
-            s for x, s in count.items() if x in darkhex.cellState.black_pieces
-        ])
+        player_pieces = sum(
+            [s for x, s in count.items() if x in cellState.white_pieces])
+        opponent_pieces = sum(
+            [s for x, s in count.items() if x in cellState.black_pieces])
         return opponent_pieces <= player_pieces
     player_pieces = sum(
-        [s for x, s in count.items() if x in darkhex.cellState.black_pieces])
+        [s for x, s in count.items() if x in cellState.black_pieces])
     opponent_pieces = sum(
-        [s for x, s in count.items() if x in darkhex.cellState.white_pieces])
+        [s for x, s in count.items() if x in cellState.white_pieces])
     return opponent_pieces < player_pieces
 
 
 def is_board_terminal(board: str, player: int) -> bool:
     """
-    Checks if the board state is a terminal state.
-
-    Todo: Have a terminal state lookup table.
+    Checks if the board is in a terminal state by looking at the number of
+    pieces or if there is a connection. Works with player boards. Functions
+    both with xo and connection boards.
 
     Args:
         board (str): The board state to check.
@@ -304,23 +363,26 @@ def is_board_terminal(board: str, player: int) -> bool:
     Returns:
         bool: True if the board state is a terminal state, False otherwise.
     """
-    if (board.count(darkhex.cellState.kBlackWin) +
-            board.count(darkhex.cellState.kWhiteWin) > 0):
+    board = convert_xo_to_board(board)
+    if (board.count(cellState.kBlackWin) + board.count(cellState.kWhiteWin) >
+            0):
         return True
+
+    # Checking the number of pieces on the board for end game.
     ct = Counter(board)
-    empty_cells = ct[darkhex.cellState.kEmpty]
+    empty_cells = ct[cellState.kEmpty]
     if player == 0:
         opponent_pieces = sum(
-            [s for x, s in ct.items() if x in darkhex.cellState.white_pieces])
+            [s for x, s in ct.items() if x in cellState.white_pieces])
         player_pieces = sum(
-            [s for x, s in ct.items() if x in darkhex.cellState.black_pieces])
+            [s for x, s in ct.items() if x in cellState.black_pieces])
         if opponent_pieces + empty_cells == player_pieces:
             return True
     else:
         opponent_pieces = sum(
-            [s for x, s in ct.items() if x in darkhex.cellState.black_pieces])
+            [s for x, s in ct.items() if x in cellState.black_pieces])
         player_pieces = sum(
-            [s for x, s in ct.items() if x in darkhex.cellState.white_pieces])
+            [s for x, s in ct.items() if x in cellState.white_pieces])
         if opponent_pieces + empty_cells == player_pieces + 1:
             return True
     return False
@@ -338,14 +400,49 @@ def get_board_from_info_state(info_state: str,
     Returns:
         str: The board state.
     """
+    split_items = info_state.split("\n")
     if perfect_recall:
-        return info_state.split("\n")[1]
-    return info_state.split(" ")[1]
+        return "\n".join(split_items[1:-1])
+    return "\n".join(split_items[1:])
 
 
-def get_info_state_from_board(board: str, player: int,
+def get_imperfect_recall_state(player: int, board_state: str) -> str:
+    """
+    Gets the imperfect recall state from the board state.
+    
+    Args:
+        player (int): The player to get the imperfect recall state from.
+        board_state (str): The board state to get the imperfect recall state from.
+    Returns:
+        str: The imperfect recall state.
+    """
+    CHECK.PLAYER(player)
+    board_state = convert_board_to_xo(board_state)
+    return "P{}\n{}".format(player, board_state)
+
+
+def get_perfect_recall_state(player: int, board_state: str,
+                             action_sequence: typing.List[int]) -> str:
+    """
+    Gets the perfect recall state from the board state and action sequence.
+    
+    Args:
+        player (int): The player to get the perfect recall state from.
+        board_state (str): The board state to get the perfect recall state from.
+        action_sequence (typing.List[int]): The action sequence to get the perfect recall state from.
+    Returns:
+        str: The perfect recall state.
+    """
+    CHECK.PLAYER(player)
+    str_action_seq = "".join(
+        [f"{player}, {action} " for action in action_sequence])
+    board_state = convert_board_to_xo(board_state)
+    return "P{}\n{}\n{}".format(player, board_state, str_action_seq)
+
+
+def get_info_state_from_board(board: str,
+                              player: int,
                               action_history: typing.List[int] = None,
-                              history_size: int = None,
                               perfect_recall: bool = False) -> str:
     """
     Gets the info state from the board state. Information states are in the form
@@ -356,16 +453,45 @@ def get_info_state_from_board(board: str, player: int,
         board (str): The board state to get the info state from.
         player (int): The player to get the info state from.
         action_history (typing.List[int]): The action history to get the info state from. (only for perfect recall)
-        history_size (int): The size of the action history. (only for perfect recall)
         perfect_recall (bool): If true, the perfect recall is used.
     Returns:
         str: The info state.
     """
     if perfect_recall:
-        if action_history is None or history_size is None:
-            raise ValueError("action_history and history_size must be provided for perfect recall")
-        return get_perfect_recall_state(player, board, action_history, history_size)
+        if action_history is None:
+            raise ValueError(
+                "action_history must be provided for perfect recall")
+        return get_perfect_recall_state(player, board, action_history)
     return get_imperfect_recall_state(player, board)
+
+
+def layered_board_to_flat(board: str) -> str:
+    """
+    Converts a layered board to a flat board. Layered board has a newline character
+    between each row, and flat board has no newline characters.
+    
+    Args:
+        board (str): The board state to get the flat board from.
+    Returns:
+        str: The flat board.
+    """
+    return board.replace("\n", "")
+
+
+def flat_board_to_layered(board: str, num_cols: int) -> str:
+    """
+    Converts a flat board to a layered board. Flat board has no newline characters,
+    and layered board has a newline character between each row.
+    
+    Args:
+        board (str): The board state to get the layered board from.
+        num_cols (int): The number of columns in the board.
+    Returns:
+        str: The layered board.
+    """
+    assert len(board) % num_cols == 0, "Board is not a multiple of num_cols"
+    return "\n".join(
+        board[i:i + num_cols] for i in range(0, len(board), num_cols))
 
 
 def policy_dict_to_policy_tuple(
@@ -378,7 +504,7 @@ def policy_dict_to_policy_tuple(
         policy_dict (typing.Dict[str, typing.Dict[int, float]]): The policy dictionary to convert.
     Returns:
     """
-    return {k: tuple(v.items()) for k, v in policy_dict.items()}
+    return {k: list(v.items()) for k, v in policy_dict.items()}
 
 
 def policy_tuple_to_policy_dict(
@@ -392,39 +518,6 @@ def policy_tuple_to_policy_dict(
     Returns:
     """
     return {k: dict(v) for k, v in policy_tuple.items()}
-
-
-def get_imperfect_recall_state(player: int, board_state: str) -> str:
-    """
-    Gets the imperfect recall state from the board state.
-    
-    Args:
-        player (int): The player to get the imperfect recall state from.
-        board_state (str): The board state to get the imperfect recall state from.
-    Returns:
-        str: The imperfect recall state.
-    """
-    return "P{} {}".format(player, board_state)
-
-
-def get_perfect_recall_state(player: int, board_state: str,
-                             action_sequence: typing.List[int],
-                             hist_size: int) -> str:
-    """
-    Gets the perfect recall state from the board state and action sequence.
-    
-    Args:
-        player (int): The player to get the perfect recall state from.
-        board_state (str): The board state to get the perfect recall state from.
-        action_sequence (typing.List[int]): The action sequence to get the perfect recall state from.
-        hist_size (int): The history size to get the perfect recall state from.
-    Returns:
-        str: The perfect recall state.
-    """
-    str_action_seq = "".join(
-        [f"{player}, {action}" for action in action_sequence])
-    return "P{}\n{}\n{}\n{}".format(player, board_state, hist_size,
-                                    str_action_seq)
 
 
 def get_all_states(board_size: typing.Tuple[int, int]) -> dict:

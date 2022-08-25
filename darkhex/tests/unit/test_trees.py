@@ -1,4 +1,5 @@
-from darkhex.algorithms.tree_generator import TreeGenerator
+import pytest
+from darkhex.algorithms.game_tree_generator import TreeGenerator
 import darkhex.policy as policy
 import os
 
