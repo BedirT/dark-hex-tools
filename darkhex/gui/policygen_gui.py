@@ -41,7 +41,12 @@ class PolicyGenGUI(ctk.CTk):
 
     def __init__(self):
         super().__init__()
-        self.setup_game(3, 3, True, 0)
+        self.setup_game(4,
+                        3,
+                        False,
+                        1,
+                        perfect_recall=True,
+                        include_isomorphic=False)
 
     def setup_main_frame(self):
         self.title("Policy Generator")
@@ -103,7 +108,7 @@ class PolicyGenGUI(ctk.CTk):
 
     def reload_board(self, event):
         self.frame_board.update_idletasks()
-        self.draw_board(self.state)
+        self.draw_board(self.board_state)
 
     def setup_game(self,
                    num_rows: int,
@@ -135,14 +140,14 @@ class PolicyGenGUI(ctk.CTk):
                     "Given a non empty board state and empty history or action sequence. The actions"
                     + " sequence and history must be matching the board state.")
             self.initial_state = util.get_perfect_recall_state(
-                self.player, self.board_state, len(self.history),
-                self.action_sequence)
+                self.player, self.board_state, self.action_sequence)
         else:
             self.initial_state = util.get_imperfect_recall_state(
                 self.player, self.board_state)
         self.strat_gen = StrategyGenerator(self.initial_state, self.num_rows,
                                            self.num_cols, self.player,
-                                           self.include_isomorphic)
+                                           self.include_isomorphic,
+                                           self.perfect_recall)
 
         self.information_state = copy.deepcopy(self.initial_state)
         self.setup_main_frame()
@@ -554,7 +559,7 @@ class PolicyGenGUI(ctk.CTk):
         # ctrl + o to open a policy (load)
         self.bind("<Control-o>", self.on_load_policy)
         # alt + r for random action
-        self.bind("<Alt-r>", self.random_action)
+        self.bind("<Alt-r>", lambda event: self.random_action())
         # ctrl + z for rewind
         self.bind("<Control-z>", self.rewind_action)
         # ctrl + r for reloading the board
@@ -766,8 +771,8 @@ class PolicyGenGUI(ctk.CTk):
     def save_file(self) -> None:
         """Saves the board to a file."""
         cur_dir = os.getcwd()
-        path = filedialog.asksaveasfilename(
-            initialdir=cur_dir + "darkhex/data/",
+        path = tk.filedialog.asksaveasfilename(
+            initialdir=cur_dir,
             title="Select a Folder",
             filetypes=(("all files", "*.*"), ("python files", "*.pkl")),
         )
