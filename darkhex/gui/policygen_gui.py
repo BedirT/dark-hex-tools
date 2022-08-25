@@ -129,8 +129,8 @@ class PolicyGenGUI(ctk.CTk):
             raise ValueError(
                 "Perfect recall is not compatible with isomorphic games.")
         # using open_spiels game representations
-        self.board_state = initial_board if initial_board else '.' * (
-            self.num_rows * self.num_cols)
+        self.board_state = initial_board if initial_board else util.flat_board_to_layered('.' * (
+            self.num_rows * self.num_cols), self.num_cols)
         if self.perfect_recall:
             self.action_sequence = []
             self.history = []
@@ -593,8 +593,11 @@ class PolicyGenGUI(ctk.CTk):
         the_in = self.entry_text_variable.get()
         # run the strategy generator
         new_board, end_game = self.strat_gen.iterate_board(the_in)
+        log.debug(msg="new board: {}".format(new_board))
+        log.debug(msg="end game: {}".format(end_game))
+        log.debug(f"info_state: {self.strat_gen.current_info_state}")
 
-        self.draw_board(new_board)
+        self.draw_board(util.layered_board_to_flat(new_board))
         self.entry_text_variable.set("")
         if end_game:
             self.setup_end_game()

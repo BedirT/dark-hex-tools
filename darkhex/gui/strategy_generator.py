@@ -31,7 +31,6 @@ class StrategyGenerator:
         self.initial_state = initial_state
         self.board = util.get_board_from_info_state(initial_state,
                                                     is_perfect_recall)
-        # ! BOARD MUST ALWAYS BE IN xo FORMAT IN THE CLASS !
         self.current_info_state = initial_state
         self.info_states = {}
         self.actions_and_states = {}
@@ -57,11 +56,11 @@ class StrategyGenerator:
             given_input (str): The action probabilities. i.e. "a4 0.5 b4 0.5" or "= a4 b4"
         
         Returns:
-            str: The new information state.
+            str: The new board. [layered, xo]
             bool: True if the game is over.
         """
         # Check if the given input is valid.
-        actions, probs = self.is_valid_actions(given_input)
+        actions, probs = self.is_valid_actions(self.board, given_input)
         if not actions:
             return self.board, False
 
@@ -70,10 +69,6 @@ class StrategyGenerator:
         # update the strategy
         self.info_states[self.current_info_state] = self._action_probs(
             actions, probs)
-        log.info(f"Current information state: {self.current_info_state}")
-        log.info(
-            f"Updated strategy for the state: {self.info_states[self.current_info_state]}"
-        )
 
         if self.include_isomorphic:
             raise NotImplementedError("isomorphic not implemented")
@@ -98,18 +93,19 @@ class StrategyGenerator:
                     else:
                         ls[d[action]] = (action, ls[d[action]][1] + prob / 2)
                 self.info_states[iso_state] = ls
-
+        
         collusion_possible = util.is_collusion_possible(self.board, self.p)
         log.debug(f"Collusion possible: {collusion_possible}")
         addition = 0
         for action in actions:
             # try inner function to avoid repeated code
             new_state = self.actions_and_states[f"{action}{self.p}"]
+            log.debug(new_state)
             new_board = util.get_board_from_info_state(new_state,
                                                        self.perfect_recall)
-            converted_board = util.convert_xo_to_board(new_board, self.num_rows)
-            log.debug(f"Converted board: {converted_board}")
-            if util.is_board_terminal(converted_board, self.p):
+            if len(new_board) > 1:
+                new_board = util.convert_xo_to_board(new_board)
+            if util.is_board_terminal(new_board, self.p):
                 log.info(f"Terminal state reached with action {action}.")
             elif new_state not in self.info_states:
                 self.action_stack.append(new_state)
@@ -118,9 +114,10 @@ class StrategyGenerator:
                 new_state = self.actions_and_states[f"{action}{self.o}"]
                 new_board = util.get_board_from_info_state(
                     new_state, self.perfect_recall)
-                converted_board = util.convert_xo_to_board(
-                    new_board, self.num_rows)
-                if util.is_board_terminal(converted_board, self.p):
+                log.debug(new_board)
+                if len(new_board) > 1:
+                    new_board = util.convert_xo_to_board(new_board)
+                if util.is_board_terminal(new_board, self.p):
                     log.info(f"Terminal state reached with action {action}.")
                 elif new_state not in self.info_states:
                     self.action_stack.append(new_state)
@@ -130,9 +127,8 @@ class StrategyGenerator:
             log.info(f"Game has ended. No more actions to take.")
             return self.board, True
         self.current_info_state = self.action_stack.pop()
-        board_in_xo = util.get_board_from_info_state(self.current_info_state,
-                                                     self.perfect_recall)
-        self.board = util.convert_xo_to_board(board_in_xo, self.num_rows)
+        self.board = util.get_board_from_info_state(self.current_info_state,
+                                                    self.perfect_recall)
         self.history_buffer.add_history_buffer(self, given_input)
         if self.random_roll:
             self.random_roll = False
@@ -146,27 +142,28 @@ class StrategyGenerator:
         return self.board, False
 
     def is_valid_actions(
-            self, given_input: str
+            self, board:str, given_input: str
     ) -> typing.Tuple[typing.List[int], typing.List[float]]:
         """Returns the valid actions and their probabilities.
 
         Args:
+            board (str): The current board. [layered, xo]
             given_input (str): The action probabilities. i.e. "a4 0.5 b4 0.5" or "= a4 b4"
 
         Returns:
             typing.List[int]: The actions given in the input.
             typing.List[float]: The corresponding probabilities.
         """
-        actions, probs = self._get_actions(given_input)
+        board = deepcopy(board)
+        actions, probs = self._get_actions(board, given_input)
         if not actions:
             return [], []
         # Check if the actions are valid. Save the new board states for each action.
         self.actions_and_states = {}
         for action in actions:
-            new_board_0 = util.board_after_action(self.board, action, self.o,
-                                                  self.num_rows, self.num_cols)
-            new_board_1 = util.board_after_action(self.board, action, self.p,
-                                                  self.num_rows, self.num_cols)
+            print(board)
+            new_board_0 = util.board_after_action(board, action, self.o)
+            new_board_1 = util.board_after_action(board, action, self.p)
             if not new_board_0:
                 log.error(f"Invalid action: {action}")
                 return [], []
@@ -191,19 +188,18 @@ class StrategyGenerator:
         return actions, probs
 
     def _get_actions(
-            self, given_input: str
+            self, board:str, given_input: str
     ) -> typing.Tuple[typing.List[int], typing.List[float]]:
         """Returns the valid actions and their probabilities.
 
         Args:
-            board (str): The current board state.
+            board (str): The current board state. [layered, xo]
             given_input (str): The action probabilities. i.e. "a4 0.5 b4 0.5" or "= a4 b4"
 
         Returns:
             typing.List[int]: The actions given in the input.
             typing.List[float]: The corresponding probabilities.
         """
-
         if len(given_input) < 1:
             log.error(f"Empty input: {given_input}")
             return [], []
@@ -211,14 +207,19 @@ class StrategyGenerator:
         if action_probs[0] == "random_roll":
             if self.target_stack_state is None:
                 self.random_roll = True
-            action = self.board.find('.')
+            action = util.get_random_action(board)
+            if action == -1:
+                log.error(f"No empty spaces on board: {board}")
+                return [], []
             return [action], [1]
         if len(action_probs) == 1:
             a = util.convert_alphanumeric_to_position(action_probs[0],
                                                       self.num_cols)
             if isinstance(a, int):
-                actions = [a]
-                probs = [1]
+                if util.is_valid_action(board, a):
+                    return [a], [1]
+                log.error(f"Invalid action: {action_probs[0]}")
+                return [], []
             else:
                 log.error(f"Invalid action: {action_probs[0]}")
                 return [], []
