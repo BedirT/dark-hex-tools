@@ -87,6 +87,7 @@ def test_convert_alphanumeric_to_position():
     assert util.convert_alphanumeric_to_position("d3", num_cols) == 13
     assert util.convert_alphanumeric_to_position("f4", num_cols) == False
     assert util.convert_alphanumeric_to_position("5", num_cols) == 5
+    assert util.convert_alphanumeric_to_position("a", num_cols) == False
 
 
 def test_convert_board_to_xo():
@@ -105,6 +106,8 @@ def test_convert_xo_to_board():
     assert util.convert_xo_to_board(board) == "y..\npOq\n.z."
     board = "xx.\noxo\n.x."
     assert util.convert_xo_to_board(board) == "yy.\npXq\n.z."
+    board = "..x\n..o\n.ox\nox."
+    assert util.convert_xo_to_board(board) == "..y\n..q\n.Oz\npz."
 
 
 def test_is_collusion_possible():

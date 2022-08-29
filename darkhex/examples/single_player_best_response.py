@@ -28,7 +28,13 @@ def single_player_br_policy_and_value(policy_name: str):
     """Test single player full BR on a small Dark Hex problem."""
     start = time.time()
     darkhex_policy = darkhexPolicy.SinglePlayerTabularPolicy(policy=policy_name)
-    game = pyspiel.load_game(
+    if darkhex_policy.is_perfect_recall:
+        game = pyspiel.load_game("dark_hex", {
+            "num_rows": darkhex_policy.num_rows,
+            "num_cols": darkhex_policy.num_cols
+        })
+    else:
+        game = pyspiel.load_game(
         "dark_hex_ir", {
             "num_rows": darkhex_policy.num_rows,
             "num_cols": darkhex_policy.num_cols,
@@ -37,9 +43,9 @@ def single_player_br_policy_and_value(policy_name: str):
     # Open Spiel PartialTabularPolicy requires a policy with tuples:
     # info_state -> [(action, probability)]
     # we have the function util.policy_dict_to_policy_tuple() to convert
-    os_tuple_policy = util.policy_dict_to_policy_tuple(darkhex_policy.policy)
+    # os_tuple_policy = util.policy_dict_to_policy_tuple(darkhex_policy.policy)
     pyspiel_policy = open_spiel_policy.PartialTabularPolicy(
-        game, policy=os_tuple_policy, player=darkhex_policy.player)
+        game, policy=darkhex_policy.policy, player=darkhex_policy.player)
     br = best_response.BestResponsePolicyIR(game,
                                             policy=pyspiel_policy,
                                             player_id=1 - darkhex_policy.player)
@@ -60,4 +66,4 @@ def single_player_br_policy_and_value(policy_name: str):
 
 
 if __name__ == "__main__":
-    single_player_br_policy_and_value("4x3_handcrafted_second_player")
+    single_player_br_policy_and_value("3x3_first_player_win")

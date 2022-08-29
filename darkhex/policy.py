@@ -12,6 +12,7 @@ class Policy:
                  policy,
                  board_size: typing.Tuple[int, int],
                  initial_state: pyspiel.State,
+                 is_perfect_recall: bool = False,
                  is_best_response: bool = False) -> None:
         """
         Initialize the policy.
@@ -20,6 +21,7 @@ class Policy:
             policy: The policy.
             board_size (typing.Tuple[int, int]): The board size.
             initial_state (pyspiel.State): The initial state.
+            is_perfect_recall (bool): Whether the policy is perfect recall.
             is_best_response (bool): Whether the policy is best response.
         """
         if isinstance(policy, str):
@@ -38,6 +40,8 @@ class Policy:
         self.num_rows = self.board_size[0]
         self.num_cols = self.board_size[1]
         self.num_cells = self.num_rows * self.num_cols
+        self.is_perfect_recall = is_perfect_recall
+        self.is_best_response = is_best_response
 
     def get_action_probabilities(self,
                                  info_state: str) -> typing.Dict[int, float]:
@@ -77,9 +81,12 @@ class Policy:
             else:
                 path = util.PathVars.policies + policy_name + "/policy.pkl"
         data = util.load_file(path)
+        log.debug(f"Loaded data from path: {path} | {data}")
         self.policy = data.policy
         self.initial_state = data.initial_state
         self.board_size = data.board_size
+        self.is_perfect_recall = data.is_perfect_recall
+        self.is_best_response = is_best_response
         if data.player in [0, 1]:
             self.player = data.player
 
@@ -97,7 +104,9 @@ class Policy:
             policy=self.policy,
             initial_state=self.initial_state,
             board_size=self.board_size,
-            player=self.player if hasattr(self, "player") else None)
+            player=self.player if hasattr(self, "player") else None,
+            is_perfect_recall=self.is_perfect_recall,
+            is_best_response=is_best_response)
         if policy_name.find("/") != -1 and policy_name.find(
                 ".") != -1:  # policy_name is a path
             path = policy_name
@@ -117,6 +126,7 @@ class TabularPolicy(Policy):
         policy,
         board_size: typing.Tuple[int] = None,
         initial_state: pyspiel.State = None,
+        is_perfect_recall: bool = False,
         is_best_response: bool = False,
     ):
         """
@@ -126,9 +136,11 @@ class TabularPolicy(Policy):
             policy (str or dict[str, dict[int, float]]): The policy name or a dictionary of action probability dictionary.
             board_size (list): The size of the board.
             initial_state (pyspiel.State): The initial state of the board.
+            is_perfect_recall (bool): Whether the policy is perfect recall.
             is_best_response (bool): Whether the policy is best response.
         """
-        super().__init__(policy, board_size, initial_state, is_best_response)
+        super().__init__(policy, board_size, initial_state, is_perfect_recall,
+                         is_best_response)
 
     def get_action_probabilities(self,
                                  info_state: str) -> typing.Dict[int, float]:
@@ -151,6 +163,7 @@ class SinglePlayerTabularPolicy(TabularPolicy):
         board_size: typing.Tuple[int] = None,
         initial_state: pyspiel.State = None,
         player: int = None,
+        is_perfect_recall: bool = False,
         is_best_response: bool = False,
     ):
         """
@@ -161,9 +174,11 @@ class SinglePlayerTabularPolicy(TabularPolicy):
             board_size (list): The size of the board.
             initial_state (pyspiel.State): The initial state of the board.
             player (int): The player the policy belongs to.
+            is_perfect_recall (bool): Whether the policy is perfect recall.
             is_best_response (bool): Whether the policy is a best response policy.
         """
-        super().__init__(policy, board_size, initial_state, is_best_response)
+        super().__init__(policy, board_size, initial_state, is_perfect_recall,
+                         is_best_response)
         if not hasattr(self, 'player'):
             self.player = player
         CHECK.PLAYER(self.player)
@@ -190,7 +205,8 @@ class PyspielSolverPolicy(Policy):
                  solver=None,
                  path=None,
                  board_size: typing.Tuple[int] = None,
-                 initial_state: pyspiel.State = None):
+                 initial_state: pyspiel.State = None,
+                 is_perfect_recall: bool = False):
         """
         Setup a pyspiel policy that uses a solver. A policy file that has a type where average
         policy can be accessed using a solver can be used.
@@ -201,6 +217,7 @@ class PyspielSolverPolicy(Policy):
             path (str): The path to the policy file. Cannot be used with solver.
             board_size (list): The size of the board.
             initial_state (pyspiel.State): The initial state of the board.
+            is_perfect_recall (bool): Whether the policy is perfect recall.
         """
         if (solver is None and path is None) or (solver is not None and
                                                  path is not None):

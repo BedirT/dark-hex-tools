@@ -100,7 +100,7 @@ class PolicyGenGUI(ctk.CTk):
 
         self.setup_right_frame()
 
-        self.draw_board(self.board_state)
+        self.draw_board(self.init_board)
         self.setup_bindings()
 
         # set default values
@@ -108,7 +108,9 @@ class PolicyGenGUI(ctk.CTk):
 
     def reload_board(self, event):
         self.frame_board.update_idletasks()
-        self.draw_board(self.board_state)
+        board = util.get_board_from_info_state(
+            self.strat_gen.current_info_state, self.perfect_recall)
+        self.draw_board(board)
 
     def setup_game(self,
                    num_rows: int,
@@ -129,27 +131,15 @@ class PolicyGenGUI(ctk.CTk):
             raise ValueError(
                 "Perfect recall is not compatible with isomorphic games.")
         # using open_spiels game representations
-        self.board_state = initial_board if initial_board else util.flat_board_to_layered('.' * (
-            self.num_rows * self.num_cols), self.num_cols)
-        if self.perfect_recall:
-            self.action_sequence = []
-            self.history = []
-            if (self.history or self.action_sequence
-               ) and self.board_state != '.' * (self.num_rows * self.num_cols):
-                raise ValueError(
-                    "Given a non empty board state and empty history or action sequence. The actions"
-                    + " sequence and history must be matching the board state.")
-            self.initial_state = util.get_perfect_recall_state(
-                self.player, self.board_state, self.action_sequence)
-        else:
-            self.initial_state = util.get_imperfect_recall_state(
-                self.player, self.board_state)
+        self.init_board = initial_board if initial_board else util.flat_board_to_layered(
+            '.' * (self.num_rows * self.num_cols), self.num_cols)
+        self.initial_state = util.get_info_state_from_board(
+            self.init_board, self.player, [], self.perfect_recall)
         self.strat_gen = StrategyGenerator(self.initial_state, self.num_rows,
                                            self.num_cols, self.player,
                                            self.include_isomorphic,
                                            self.perfect_recall)
-
-        self.information_state = copy.deepcopy(self.initial_state)
+        self.last_state = [self.initial_state]
         self.setup_main_frame()
 
     def setup_left_frame(self):
@@ -221,7 +211,7 @@ class PolicyGenGUI(ctk.CTk):
             master=self.frame_info_state_history,
             font=self.FONT_TEXTBOX,
             wrap=tk.WORD,
-            state=tk.DISABLED,
+            state=tk.NORMAL,
             background="#52595D",
             foreground="#CECECE",
             highlightthickness=0,
@@ -309,9 +299,10 @@ class PolicyGenGUI(ctk.CTk):
             justify=tk.RIGHT,
             anchor=tk.E,
         )
+        state_info = self.strat_gen.current_info_state.replace("\n", r"\n")
         self.label_current_info_state = ctk.CTkLabel(
             master=self.frame_actions,
-            text=self.strat_gen.current_info_state,
+            text=state_info,
             justify=tk.LEFT,
             anchor=tk.W)
         self.entry_text_variable = tk.StringVar()
@@ -410,36 +401,11 @@ class PolicyGenGUI(ctk.CTk):
         self.save_win.title("End of game")
         self.save_win.resizable(False, False)
 
-        label_file_explorer = ctk.CTkLabel(
-            master=self.save_win,
-            text="The strategy is complete, do you want to save?",
-            anchor=tk.CENTER)
-
-        # create the buttons
-        button_save = ctk.CTkButton(master=self.save_win,
-                                    text="Save",
-                                    command=self.save_file)
-        button_cancel = ctk.CTkButton(master=self.save_win,
-                                      text="Cancel",
-                                      command=self.save_win.destroy)
-        button_default_save = ctk.CTkButton(master=self.save_win,
-                                            text="Save to default",
-                                            command=self.save_file_default)
-
-        # place the widgets
-        label_file_explorer.grid(row=0,
-                                 column=0,
-                                 padx=25,
-                                 pady=25,
-                                 columnspan=3,
-                                 sticky="ewsn")
-        button_save.grid(row=1, column=0, padx=25, pady=25, sticky="ewsn")
-        button_default_save.grid(row=1,
-                                 column=1,
-                                 padx=25,
-                                 pady=25,
-                                 sticky="ewsn")
-        button_cancel.grid(row=1, column=2, padx=25, pady=25, sticky="ewsn")
+        dialog = ctk.CTkInputDialog(
+            master=self,
+            text="Policy Complete. Please type the name to save.",
+            title="Save Policy")
+        self._save_to(dialog.get_input())
 
     def setup_new_policy(self):
         """
@@ -470,7 +436,7 @@ class PolicyGenGUI(ctk.CTk):
 
         self.var_row_size.set(self.num_rows)
         self.var_column_size.set(self.num_cols)
-        self.var_initial_board.set(self.board_state)
+        self.var_initial_board.set(self.init_board)
         self.var_perfect_recall.set(self.perfect_recall)
         self.var_isomorphic.set(self.include_isomorphic)
         self.var_pone.set(self.pone)
@@ -592,45 +558,59 @@ class PolicyGenGUI(ctk.CTk):
     def execute_action(self) -> None:
         the_in = self.entry_text_variable.get()
         # run the strategy generator
-        new_board, end_game = self.strat_gen.iterate_board(the_in)
-        log.debug(msg="new board: {}".format(new_board))
-        log.debug(msg="end game: {}".format(end_game))
-        log.debug(f"info_state: {self.strat_gen.current_info_state}")
-
-        self.draw_board(util.layered_board_to_flat(new_board))
-        self.entry_text_variable.set("")
+        end_game = self.strat_gen.iterate_board(the_in)
+        self.update_state()
         if end_game:
             self.setup_end_game()
 
     def random_action(self):
         """ Randomly selects an action. """
-        new_board, end_game = self.strat_gen.iterate_board("random_roll")
-        self.draw_board(new_board)
-        self.entry_text_variable.set("")
+        end_game = self.strat_gen.iterate_board("r") # random
+        self.update_history_text()
+        self.update_state()
         if end_game:
             self.setup_end_game()
 
-    def rewind_action(self):
+    def rewind_action(self, rewind="1"):
         """ Rewinds the game. """
         self.strat_gen.history_buffer.rewind()
-        self.draw_board(self.strat_gen.board)
-        self.entry_text_variable.set("")
-        if len(self.strat_gen.history_buffer.given_inputs) > 0:
-            old_input = self.strat_gen.history_buffer.given_inputs[-1]
-            self.entry_text_variable.set(old_input)
+        self.update_state(rewind=True)
 
     def restart_game(self):
         """ Restarts the game. """
         self.strat_gen.history_buffer.restart()
-        self.draw_board(self.strat_gen.board)
+        self.update_state(rewind='all')
+        
+    def update_state(self, rewind=False) -> None:
+        board = util.get_board_from_info_state(
+            self.strat_gen.current_info_state)
+        board = util.layered_board_to_flat(board)
+        self.draw_board(board)
+        self.entry_text_variable.set("")
+        info_text = self.strat_gen.current_info_state.replace("\n", r"\n")
+        self.label_current_info_state.set_text(info_text)
+        # history_text fields
+        self.update_history_text()
+        self.last_state.append(self.strat_gen.current_info_state)
+
+    def update_history_text(self):
+        self.text_info_state_history.configure(state=tk.NORMAL)
+        self.text_info_state_history.delete("1.0", tk.END)
+        self.text_info_state_history.see(index=tk.END)
+        for info_state, action_probs in self.strat_gen.info_states.items():
+            info_text = info_state.replace("\n", r"\n")
+            a_p_text = ", ".join(f"[{action}: {prob}]" for action, prob in action_probs)
+            self.text_info_state_history.insert(tk.END, f"{info_text}: {a_p_text}\n")
+        self.text_info_state_history.update()
+        self.text_info_state_history.after(100, self.text_info_state_history.see(tk.END))
+        self.text_info_state_history.configure(state=tk.DISABLED)
+
 
     def draw_board(self, board_str: str) -> None:
         self.canvas.delete("all")
         self.calculate_board_locations()
         for cell_id in range(self.num_rows * self.num_cols):
             self._draw_cell(board_str[cell_id], cell_id)
-        self.label_current_info_state.set_text(
-            self.strat_gen.current_info_state)
 
     def _draw_cell(self, cell_str: str, cell_id: int) -> None:
         """Draws a cell on the canvas."""
@@ -658,8 +638,7 @@ class PolicyGenGUI(ctk.CTk):
             )
         # Draw the cell id.
         # convert cell_id to alphanumeric id
-        text_id = chr(ord("a") + cell_id %
-                      self.num_cols) + str(cell_id // self.num_cols + 1)
+        text_id = util.convert_position_to_alphanumeric(cell_id, self.num_cols)
         self.canvas.create_text(self.loc_cen[cell_id],
                                 text=str(text_id),
                                 fill=self.COLORS["white"])
@@ -771,46 +750,8 @@ class PolicyGenGUI(ctk.CTk):
                                                     self.num_rows)
         return (w, h)
 
-    def save_file(self) -> None:
-        """Saves the board to a file."""
-        cur_dir = os.getcwd()
-        path = tk.filedialog.asksaveasfilename(
-            initialdir=cur_dir,
-            title="Select a Folder",
-            filetypes=(("all files", "*.*"), ("python files", "*.pkl")),
-        )
-        path = self._save_to(path)
-        self.save_win.destroy()
-
-    def save_file_default(self) -> None:
-        """Saves the file to the default location."""
-        # default location is data/nrxnc_new/game_info.pkl
-        # find data
-        pretty_time = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-        data_dir = os.path.join(
-            os.path.dirname(__file__),
-            f"tmp/strategy_data/{self.num_rows}x{self.num_cols}/{pretty_time}",
-        )
-        # create the directory if it doesn't exist
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)
-        # save the file
-        path = self._save_to(data_dir)
-        self.save_win.destroy()
-
     def _save_to(self, path) -> str:
-        data = {
-            "num_cols": self.num_cols,
-            "num_rows": self.num_rows,
-            "player": self.player,
-            "isomorphic": self.include_isomorphic,
-            "initial_state": self.initial_state,
-            "strategy": self.strat_gen.get_darkhex_policy(),
-        }
-        # save the file
-        util.save_file(data, path + "/game_info.pkl")
-        log.info(f"Saved the policy to {path}/game_info.pkl")
-        return path
+        self.strat_gen.save_darkhex_policy(path)
 
 
 if __name__ == "__main__":
