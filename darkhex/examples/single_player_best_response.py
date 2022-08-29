@@ -66,4 +66,4 @@ def single_player_br_policy_and_value(policy_name: str):
 
 
 if __name__ == "__main__":
-    single_player_br_policy_and_value("3x3_first_player_win")
+    single_player_br_policy_and_value("4x3_white_hp_pr")

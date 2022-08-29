@@ -3,7 +3,7 @@ import darkhex.utils.util as util
 import pyspiel
 import os
 import darkhex.check as CHECK
-from darkhex import logger
+from darkhex import logger as log
 
 
 class Policy:
@@ -37,11 +37,11 @@ class Policy:
             # Todo: CHECK.BOARD_SIZE(board_size, initial_state)
             self.board_size = board_size
             self.policy = policy
+            self.is_perfect_recall = is_perfect_recall
+            self.is_best_response = is_best_response
         self.num_rows = self.board_size[0]
         self.num_cols = self.board_size[1]
         self.num_cells = self.num_rows * self.num_cols
-        self.is_perfect_recall = is_perfect_recall
-        self.is_best_response = is_best_response
 
     def get_action_probabilities(self,
                                  info_state: str) -> typing.Dict[int, float]:
@@ -116,7 +116,7 @@ class Policy:
             else:
                 path = util.PathVars.policies + policy_name + "/policy.pkl"
         util.save_file(data, path)
-        logger.info("Saved policy to path: " + path)
+        log.info("Saved policy to path: " + path)
 
 
 class TabularPolicy(Policy):
@@ -290,9 +290,9 @@ class PyspielSolverPolicy(Policy):
             path = policy_name
         else:
             path = util.PathVars.policies + policy_name + "/policy.pkl"
-        logger.debug(path)
+        log.debug(path)
         util.save_file(data, path)
-        logger.info("Saved policy to path: " + path)
+        log.info("Saved policy to path: " + path)
 
 
 def convert_pyspiel_policy_to_darkhex_policy():

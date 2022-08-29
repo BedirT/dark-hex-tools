@@ -211,7 +211,7 @@ class PolicyGenGUI(ctk.CTk):
             master=self.frame_info_state_history,
             font=self.FONT_TEXTBOX,
             wrap=tk.WORD,
-            state=tk.NORMAL,
+            state=tk.DISABLED,
             background="#52595D",
             foreground="#CECECE",
             highlightthickness=0,

@@ -604,7 +604,9 @@ def get_action_history(info_state: str) -> typing.List[int]:
     player_action_pairs = info_state.split('\n')[-1]
     if not player_action_pairs:
         return []
-    return [int(x) for x in player_action_pairs[2::4]]
+    action_pairs = player_action_pairs.split(' ')[:-1]
+    log.debug(action_pairs)
+    return [int(action_pair.split(',')[1]) for action_pair in action_pairs]
 
 
 def get_player_from_info_state(info_state: str) -> int:

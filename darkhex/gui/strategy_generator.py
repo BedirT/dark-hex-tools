@@ -101,7 +101,10 @@ class StrategyGenerator:
         self.history_buffer.add_history_buffer(self)
         if self.random_act:
             self.random_act = False
-            self.target_stack_state = deepcopy(self.action_stack[-addition])
+            try:
+                self.target_stack_state = deepcopy(self.action_stack[-addition])
+            except IndexError:
+                self.target_stack_state = None
         if self.target_stack_state:
             if self.target_stack_state == self.current_info_state:
                 self.target_stack_state = None
