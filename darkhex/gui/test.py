@@ -1,0 +1,15 @@
+import pyspiel
+
+game = pyspiel.load_game("dark_hex(board_size=3)")
+state = game.new_initial_state()
+print(state.information_state_string(0))
+state.apply_action(0)
+print(state.information_state_string(0))
+state.apply_action(0)
+print(state.information_state_string(0))
+state.apply_action(1)
+print(state.information_state_string(0))
+state.apply_action(1)
+print(state.information_state_string(0))
+state.apply_action(2)
+print(state.information_state_string(0))

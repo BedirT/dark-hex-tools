@@ -213,3 +213,21 @@ def COLUMN_INDEX(column_to_check: int, num_columns: int) -> None:
         raise ValueError(
             f"{column_to_check} is not a valid column index for {num_columns} columns"
         )
+
+
+# def BOARD(board: str) -> None:
+#     """
+#     Check if the board is valid.
+#         - Type should be str
+#         - The board should be a valid board
+
+#     Args:
+#         board (str): The board to check.
+#     """
+#     if not isinstance(board, str):
+#         raise ValueError(f"{board} is not a string")
+#     for cell in board:
+#         if cell not in darkhex.cellState.white_pieces + darkhex.cellState.black_pieces + [
+#                 darkhex.cellState.kEmpty
+#         ]:
+#             raise ValueError(f"{cell} is not a valid cell state")
